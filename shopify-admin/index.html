@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theo's Store · Home</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' rx='5' fill='%23008060'/%3E%3Cpath d='M6 8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z' fill='white'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="onboarding" class="onboarding" hidden>
+      <span>
+        This is a private, self-contained mock of the Shopify Admin UI &mdash; nothing here is connected to a real
+        store. Click any bold number to edit it; sessions, conversion rate, sales, and every chart recalculate to
+        stay consistent.
+      </span>
+      <button id="onboardingClose" class="onboarding-close" aria-label="Dismiss">&times;</button>
+    </div>
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn nav-toggle" id="navToggle" aria-label="Toggle navigation">
+          <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <div class="store-switcher" id="storeSwitcher">
+          <span class="store-logo" id="storeLogo">T</span>
+          <span class="store-name" id="storeNameTop">Theo's Store</span>
+          <svg viewBox="0 0 20 20" width="14" height="14" class="chevron"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <div class="search-box">
+          <svg viewBox="0 0 20 20" width="16" height="16"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M17 17l-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input type="search" id="globalSearch" placeholder="Search" autocomplete="off" />
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" aria-label="Notifications" id="notifBtn">
+          <svg viewBox="0 0 20 20" width="18" height="18"><path d="M5 8a5 5 0 0 1 10 0c0 3.2 1 4.5 1.5 5H3.5C4 12.5 5 11.2 5 8z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" aria-label="Help">
+          <svg viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7.8 7.8a2.2 2.2 0 1 1 3.1 2c-.7.5-1.1.9-1.1 1.9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="10" cy="14.3" r=".9" fill="currentColor"/></svg>
+        </button>
+        <button class="avatar" id="avatarBtn" title="Account">T</button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <nav class="sidebar" id="sidebar">
+        <ul class="nav-list">
+          <li><a href="#home" class="nav-link" data-view="home">
+            <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 10.5 10 4l7 6.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9v7a1 1 0 0 0 1 1h3v-4h2v4h3a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+            <span>Home</span>
+          </a></li>
+          <li><a href="#orders" class="nav-link" data-view="orders">
+            <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 7l7-4 7 4-7 4-7-4z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M3 7v6l7 4 7-4V7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M10 11v6" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span>Orders</span>
+            <span class="nav-badge" id="navOrdersBadge">0</span>
+          </a></li>
+          <li><a href="#products" class="nav-link" data-view="products">
+            <svg viewBox="0 0 20 20" width="20" height="20"><path d="M10 3h4.5A1.5 1.5 0 0 1 16 4.5V9a1 1 0 0 1-.3.7l-6.6 6.6a1 1 0 0 1-1.4 0L3.7 12.3a1 1 0 0 1 0-1.4L10.3 4.3A1 1 0 0 1 10 3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><circle cx="12.3" cy="6.7" r="1.1" fill="currentColor"/></svg>
+            <span>Products</span>
+          </a></li>
+          <li><a href="#customers" class="nav-link" data-view="customers">
+            <svg viewBox="0 0 20 20" width="20" height="20"><circle cx="7.2" cy="6.8" r="2.6" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="14.2" cy="8" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M2.3 16.5c0-2.9 2.2-4.9 4.9-4.9s4.9 2 4.9 4.9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12.8 12.1c1.9.3 3.4 1.9 3.6 4.4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            <span>Customers</span>
+          </a></li>
+          <li><a href="#analytics" class="nav-link" data-view="analytics">
+            <svg viewBox="0 0 20 20" width="20" height="20"><path d="M4 16.5V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9.3 16.5V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14.6 16.5v-7.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.3 17.3h15.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Analytics</span>
+          </a></li>
+          <li class="nav-divider"></li>
+          <li><a href="#marketing" class="nav-link" data-view="marketing">
+            <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 8.3h3l6-3.3v10l-6-3.3H3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M12.4 8.4a2.3 2.3 0 0 1 0 3.4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M6.3 12v2.6a1 1 0 0 0 1 1h.4a1 1 0 0 0 1-1.2L8.2 12" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+            <span>Marketing</span>
+          </a></li>
+          <li><a href="#discounts" class="nav-link" data-view="discounts">
+            <svg viewBox="0 0 20 20" width="20" height="20"><circle cx="6.3" cy="6.3" r="1.7" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="13.7" cy="13.7" r="1.7" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Discounts</span>
+          </a></li>
+          <li><a href="#content" class="nav-link" data-view="content">
+            <svg viewBox="0 0 20 20" width="20" height="20"><rect x="4.3" y="2.3" width="11.4" height="15.4" rx="1.4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 6.3h6M7 9.3h6M7 12.3h3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <span>Content</span>
+          </a></li>
+          <li class="nav-divider"></li>
+          <li><a href="#settings" class="nav-link" data-view="settings">
+            <svg viewBox="0 0 20 20" width="20" height="20"><circle cx="10" cy="10" r="2.6" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 3v2.1M10 14.9V17M3 10h2.1M14.9 10H17M5.3 5.3l1.5 1.5M13.2 13.2l1.5 1.5M14.7 5.3l-1.5 1.5M6.8 13.2l-1.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <span>Settings</span>
+          </a></li>
+        </ul>
+      </nav>
+
+      <main class="content" id="content">
+        <section class="view" id="view-home" data-view="home">
+          <div class="view-header">
+            <div>
+              <h1>Home</h1>
+              <p class="muted" id="greeting">Good afternoon, Theo</p>
+            </div>
+            <div class="period-select" id="periodSelect">
+              <button type="button" data-days="1">Today</button>
+              <button type="button" data-days="7">Last 7 days</button>
+              <button type="button" data-days="30" class="active">Last 30 days</button>
+              <button type="button" data-days="90">Last 90 days</button>
+            </div>
+          </div>
+
+          <div class="kpi-grid" id="kpiGrid"></div>
+
+          <div class="panel-grid panel-grid-2">
+            <div class="card chart-card">
+              <div class="card-header">
+                <h2>Total sales</h2>
+                <span class="value-lg" id="chartTotalSalesLabel"></span>
+              </div>
+              <svg id="mainChart" class="main-chart"></svg>
+            </div>
+            <div class="card chart-card">
+              <div class="card-header">
+                <h2>Sessions</h2>
+                <span class="value-lg" id="chartSessionsLabel"></span>
+              </div>
+              <svg id="sessionsChart" class="main-chart"></svg>
+            </div>
+          </div>
+
+          <div class="panel-grid panel-grid-3">
+            <div class="card">
+              <h2>Sales by channel</h2>
+              <div class="breakdown-list" id="channelList"></div>
+            </div>
+            <div class="card">
+              <h2>Sessions by device</h2>
+              <div class="breakdown-list" id="deviceList"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h2>Top selling products</h2></div>
+              <table class="mini-table">
+                <tbody id="topProductsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-orders" data-view="orders" hidden>
+          <div class="view-header">
+            <h1>Orders</h1>
+            <div class="header-actions">
+              <div class="search-box search-box-inline">
+                <svg viewBox="0 0 20 20" width="16" height="16"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M17 17l-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <input type="search" id="orderSearch" placeholder="Search orders" autocomplete="off" />
+              </div>
+            </div>
+          </div>
+          <div class="card table-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order</th><th>Date</th><th>Customer</th><th>Payment</th><th>Fulfillment</th><th class="num">Total</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+            <div class="table-footer" id="ordersFooter"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-products" data-view="products" hidden>
+          <div class="view-header"><h1>Products</h1></div>
+          <div class="card table-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Product</th><th>Status</th><th class="num">Inventory</th><th class="num">Sold</th><th class="num">Price</th></tr>
+              </thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view" id="view-customers" data-view="customers" hidden>
+          <div class="view-header"><h1>Customers</h1></div>
+          <div class="card table-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Customer</th><th>Location</th><th class="num">Orders</th><th class="num">Amount spent</th></tr>
+              </thead>
+              <tbody id="customersTableBody"></tbody>
+            </table>
+            <div class="table-footer" id="customersFooter"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-analytics" data-view="analytics" hidden>
+          <div class="view-header"><h1>Analytics</h1></div>
+          <div class="card">
+            <h2>How customers reach checkout</h2>
+            <div class="funnel" id="funnel"></div>
+          </div>
+          <div class="panel-grid panel-grid-2">
+            <div class="card chart-card">
+              <div class="card-header"><h2>Orders over time</h2></div>
+              <svg id="ordersChart" class="main-chart"></svg>
+            </div>
+            <div class="card chart-card">
+              <div class="card-header"><h2>Average order value</h2></div>
+              <svg id="aovChart" class="main-chart"></svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-marketing" data-view="marketing" hidden></section>
+        <section class="view" id="view-discounts" data-view="discounts" hidden></section>
+        <section class="view" id="view-content" data-view="content" hidden></section>
+
+        <section class="view" id="view-settings" data-view="settings" hidden>
+          <div class="view-header"><h1>Settings</h1></div>
+          <div class="card settings-card">
+            <h2>Store details</h2>
+            <label class="field">
+              <span>Store name</span>
+              <input type="text" id="settingStoreName" />
+            </label>
+            <label class="field">
+              <span>Owner name</span>
+              <input type="text" id="settingOwnerName" />
+            </label>
+            <label class="field">
+              <span>Currency symbol</span>
+              <input type="text" id="settingCurrency" maxlength="3" />
+            </label>
+          </div>
+          <div class="card settings-card">
+            <h2>Sample data</h2>
+            <p class="muted">This page is a personal, offline mock &mdash; every number below is made up and stored only in this browser.</p>
+            <div class="settings-actions">
+              <button type="button" class="btn" id="randomizeBtn">Shuffle chart pattern</button>
+              <button type="button" class="btn btn-secondary" id="resetBtn">Reset to sample data</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
