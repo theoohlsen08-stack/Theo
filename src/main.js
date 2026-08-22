@@ -78,10 +78,10 @@ for (const room of rooms) {
 const controls = new FirstPersonControls(camera, canvas, colliders, SPAWN);
 scene.add(controls.object);
 
-overlay.addEventListener("click", () => controls.lock());
-controls.onLockChange = (locked) => {
-  overlay.classList.toggle("hidden", locked);
-  crosshair.classList.toggle("visible", locked);
+overlay.addEventListener("click", () => controls.start());
+controls.onStartChange = (started) => {
+  overlay.classList.toggle("hidden", started);
+  crosshair.classList.toggle("visible", started);
 };
 
 let minimapVisible = true;

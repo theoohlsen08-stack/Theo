@@ -28,6 +28,11 @@ body {
   inset: 0;
   display: block;
   outline: none;
+  cursor: grab;
+}
+
+#scene.dragging {
+  cursor: grabbing;
 }
 
 /* ---- HUD ---- */

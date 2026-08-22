@@ -10,7 +10,8 @@ export class FirstPersonControls {
   constructor(camera, domElement, colliders, spawn) {
     this.domElement = domElement;
     this.colliders = colliders;
-    this.enabled = false;
+    this.started = false; // game running: keys + look active, overlay hidden
+    this.pointerLocked = false; // true only if the OS actually granted pointer lock
 
     this.yawObject = new THREE.Object3D();
     this.pitchObject = new THREE.Object3D();
@@ -26,45 +27,117 @@ export class FirstPersonControls {
     this._right = new THREE.Vector3();
     this._wishDir = new THREE.Vector3();
 
+    this._dragging = false;
+    this._lastX = 0;
+    this._lastY = 0;
+
     this._onMouseMove = this._onMouseMove.bind(this);
+    this._onMouseDown = this._onMouseDown.bind(this);
+    this._onDragMove = this._onDragMove.bind(this);
+    this._onDragEnd = this._onDragEnd.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
     this._onPointerLockChange = this._onPointerLockChange.bind(this);
+    this._onPointerLockError = this._onPointerLockError.bind(this);
 
     document.addEventListener("pointerlockchange", this._onPointerLockChange);
+    document.addEventListener("pointerlockerror", this._onPointerLockError);
     document.addEventListener("keydown", this._onKeyDown);
     document.addEventListener("keyup", this._onKeyUp);
+    this.domElement.addEventListener("mousedown", this._onMouseDown);
 
-    this.onLockChange = null; // callback(locked: boolean)
+    this.onStartChange = null; // callback(started: boolean)
   }
 
   get object() {
     return this.yawObject;
   }
 
-  lock() {
-    this.domElement.requestPointerLock();
+  // Begin play: hides the overlay immediately and enables WASD + click-drag
+  // look right away. Pointer Lock is attempted as an enhancement (hides the
+  // cursor, gives unbounded mouse-look) but play works fully without it —
+  // some embedding contexts (e.g. a sandboxed iframe) silently refuse
+  // Pointer Lock, and previously that left the game stuck on the overlay
+  // with no fallback at all.
+  start() {
+    if (this.started) return;
+    this.started = true;
+    if (this.onStartChange) this.onStartChange(true);
+    try {
+      const result = this.domElement.requestPointerLock?.();
+      if (result && typeof result.catch === "function") {
+        result.catch(() => {
+          /* Pointer Lock unavailable — click-drag look stays active. */
+        });
+      }
+    } catch {
+      /* Some browsers throw synchronously instead of rejecting. */
+    }
   }
 
-  unlock() {
-    document.exitPointerLock();
+  pause() {
+    if (!this.started) return;
+    this.started = false;
+    if (document.pointerLockElement === this.domElement) document.exitPointerLock();
+    this.keys.forward = this.keys.back = this.keys.left = this.keys.right = false;
+    this._dragging = false;
+    this.domElement.classList.remove("dragging");
+    document.removeEventListener("mousemove", this._onDragMove);
+    document.removeEventListener("mouseup", this._onDragEnd);
+    if (this.onStartChange) this.onStartChange(false);
   }
 
   _onPointerLockChange() {
-    this.enabled = document.pointerLockElement === this.domElement;
-    if (this.enabled) {
+    this.pointerLocked = document.pointerLockElement === this.domElement;
+    if (this.pointerLocked) {
       document.addEventListener("mousemove", this._onMouseMove);
     } else {
       document.removeEventListener("mousemove", this._onMouseMove);
-      this.keys.forward = this.keys.back = this.keys.left = this.keys.right = false;
+      // The browser exits pointer lock on its own Esc handling; treat that
+      // the same as our own pause so the overlay comes back.
+      if (this.started) this.pause();
     }
-    if (this.onLockChange) this.onLockChange(this.enabled);
+  }
+
+  _onPointerLockError() {
+    this.pointerLocked = false; // click-drag look remains available
   }
 
   _onMouseMove(e) {
+    this._applyLook(e.movementX, e.movementY);
+  }
+
+  // Click-and-drag look — the fallback that always works, regardless of
+  // Pointer Lock availability.
+  _onMouseDown(e) {
+    if (!this.started || this.pointerLocked) return;
+    this._dragging = true;
+    this.domElement.classList.add("dragging");
+    this._lastX = e.clientX;
+    this._lastY = e.clientY;
+    document.addEventListener("mousemove", this._onDragMove);
+    document.addEventListener("mouseup", this._onDragEnd);
+  }
+
+  _onDragMove(e) {
+    const dx = e.clientX - this._lastX;
+    const dy = e.clientY - this._lastY;
+    this._lastX = e.clientX;
+    this._lastY = e.clientY;
+    this._applyLook(dx, dy);
+  }
+
+  _onDragEnd() {
+    this._dragging = false;
+    this.domElement.classList.remove("dragging");
+    document.removeEventListener("mousemove", this._onDragMove);
+    document.removeEventListener("mouseup", this._onDragEnd);
+  }
+
+  _applyLook(dx, dy) {
     const sensitivity = 0.0022;
-    this.yawObject.rotation.y -= e.movementX * sensitivity;
-    this.pitchObject.rotation.x -= e.movementY * sensitivity;
+    this.yawObject.rotation.y -= dx * sensitivity;
+    this.pitchObject.rotation.x -= dy * sensitivity;
     const maxPitch = Math.PI / 2 - 0.05;
     this.pitchObject.rotation.x = Math.max(-maxPitch, Math.min(maxPitch, this.pitchObject.rotation.x));
   }
@@ -97,7 +170,11 @@ export class FirstPersonControls {
   }
 
   _onKeyDown(e) {
-    if (!this.enabled) return;
+    if (!this.started) return;
+    if (e.code === "Escape") {
+      this.pause();
+      return;
+    }
     this._setKey(e.code, true);
   }
 
@@ -156,8 +233,12 @@ export class FirstPersonControls {
 
   dispose() {
     document.removeEventListener("pointerlockchange", this._onPointerLockChange);
+    document.removeEventListener("pointerlockerror", this._onPointerLockError);
     document.removeEventListener("keydown", this._onKeyDown);
     document.removeEventListener("keyup", this._onKeyUp);
     document.removeEventListener("mousemove", this._onMouseMove);
+    document.removeEventListener("mousemove", this._onDragMove);
+    document.removeEventListener("mouseup", this._onDragEnd);
+    this.domElement.removeEventListener("mousedown", this._onMouseDown);
   }
 }
