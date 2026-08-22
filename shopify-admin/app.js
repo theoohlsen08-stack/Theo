@@ -574,8 +574,6 @@
   function renderShell() {
     var pd = getPeriodData();
     els.storeNameTop.textContent = state.storeName;
-    var logoChar = (state.storeName || 'S').trim().charAt(0).toUpperCase() || 'S';
-    els.storeLogo.textContent = logoChar;
     var avatarChar = (state.ownerName || 'T').trim().charAt(0).toUpperCase() || 'T';
     els.avatarBtn.textContent = avatarChar;
     document.title = state.storeName + ' · ' + capitalize(currentView());
