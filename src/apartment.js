@@ -7,7 +7,14 @@ import {
   CEILING_HEIGHT,
   WALL_THICKNESS,
 } from "./data/floorplan.js";
-import { parquetTexture, tileTexture, wallPaintTexture } from "./textures.js";
+import {
+  parquetTexture,
+  tileTexture,
+  darkTileTexture,
+  wallPaintTexture,
+  ceilingPlankTexture,
+  logWallTexture,
+} from "./textures.js";
 
 const EXTERIOR_THICKNESS = 0.22;
 
@@ -50,10 +57,14 @@ export function buildApartment() {
     roughness: 0.95,
     metalness: 0.02,
   });
+  const logWallMat = new THREE.MeshStandardMaterial({
+    map: logWallTexture(2.5),
+    roughness: 0.75,
+  });
   const frameMat = new THREE.MeshStandardMaterial({
-    color: "#5b4636",
-    roughness: 0.6,
-    metalness: 0.1,
+    color: "#f7f5f0",
+    roughness: 0.5,
+    metalness: 0.05,
   });
   const glassMat = new THREE.MeshPhysicalMaterial({
     color: "#bcd6e6",
@@ -73,19 +84,29 @@ export function buildApartment() {
     transmission: 0.4,
     side: THREE.DoubleSide,
   });
+  const darkGlassMat = new THREE.MeshPhysicalMaterial({
+    color: "#14100a",
+    transparent: true,
+    opacity: 0.72,
+    roughness: 0.15,
+    transmission: 0.35,
+    side: THREE.DoubleSide,
+  });
   const ceilingMat = new THREE.MeshStandardMaterial({
-    color: "#fbfaf6",
-    roughness: 1,
+    map: ceilingPlankTexture(3.2),
+    roughness: 0.85,
   });
 
-  const parquet = parquetTexture(5);
-  const tiles = tileTexture(4);
+  const wood = parquetTexture(5);
+  const tilesGray = tileTexture(4);
+  const tilesDark = darkTileTexture(4);
   const floorMats = {
-    parquet: new THREE.MeshStandardMaterial({ map: parquet, roughness: 0.55 }),
-    tile: new THREE.MeshStandardMaterial({ map: tiles, roughness: 0.35 }),
+    wood: new THREE.MeshStandardMaterial({ map: wood, roughness: 0.5 }),
+    tile_gray: new THREE.MeshStandardMaterial({ map: tilesGray, roughness: 0.3 }),
+    tile_dark: new THREE.MeshStandardMaterial({ map: tilesDark, roughness: 0.35 }),
   };
 
-  // --- Floors, ceilings, and labels per room ---
+  // --- Floors, ceilings (wood-plank throughout, per photos), and labels ---
   for (const room of rooms) {
     const w = room.x2 - room.x1;
     const d = room.z2 - room.z1;
@@ -94,7 +115,7 @@ export function buildApartment() {
 
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(w, d),
-      floorMats[room.floor] ?? floorMats.parquet
+      floorMats[room.floor] ?? floorMats.wood
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.set(cx, 0, cz);
@@ -111,7 +132,7 @@ export function buildApartment() {
     group.add(label);
   }
 
-  // Balcony decking (exterior, slightly recessed material)
+  // Balcony decking (exterior)
   {
     const w = balcony.x2 - balcony.x1;
     const d = balcony.z2 - balcony.z1;
@@ -127,9 +148,11 @@ export function buildApartment() {
 
   // --- Wall segments ---
   for (const seg of walls) {
+    if (seg.open) continue; // fully open-plan threshold: no wall, no collider
+
     const thickness = seg.exterior ? EXTERIOR_THICKNESS : WALL_THICKNESS;
     const half = thickness / 2;
-    const mat = seg.exterior ? exteriorWallMat : wallMat;
+    const mat = seg.exterior ? exteriorWallMat : seg.wood ? logWallMat : wallMat;
     const openings = [...seg.openings].sort((a, b) => a.from - b.from);
 
     const addSolidBox = (from, to, yFrom, yTo, material = mat) => {
@@ -149,21 +172,22 @@ export function buildApartment() {
       group.add(mesh);
     };
 
-    const addGlass = (from, to, sill, head) => {
+    const addGlassPane = (from, to, sill, head, glassMaterial) => {
       const len = to - from;
       const height = head - sill;
       let mesh;
-      const gm = seg.frosted ? frostedGlassMat : glassMat;
       if (seg.axis === "z") {
-        mesh = new THREE.Mesh(new THREE.BoxGeometry(len, height, 0.02), gm);
+        mesh = new THREE.Mesh(new THREE.BoxGeometry(len, height, 0.02), glassMaterial);
         mesh.position.set(from + len / 2, sill + height / 2, seg.at);
       } else {
-        mesh = new THREE.Mesh(new THREE.BoxGeometry(0.02, height, len), gm);
+        mesh = new THREE.Mesh(new THREE.BoxGeometry(0.02, height, len), glassMaterial);
         mesh.position.set(seg.at, sill + height / 2, from + len / 2);
       }
       group.add(mesh);
+    };
 
-      // Simple frame (mullion) outline
+    const addWindow = (from, to, sill, head, frosted) => {
+      addGlassPane(from, to, sill, head, frosted ? frostedGlassMat : glassMat);
       const frameThickness = 0.06;
       const frameDepth = thickness * 0.9;
       const mkFrameBar = (len2, axisIsZ, px, py, pz) => {
@@ -174,6 +198,7 @@ export function buildApartment() {
         bar.position.set(px, py, pz);
         group.add(bar);
       };
+      const len = to - from;
       if (seg.axis === "z") {
         mkFrameBar(len, true, from + len / 2, sill, seg.at);
         mkFrameBar(len, true, from + len / 2, head, seg.at);
@@ -183,16 +208,17 @@ export function buildApartment() {
       }
     };
 
-    const addDoorFrame = (from, to, head) => {
+    const addDoor = (from, to, head, opening) => {
       const len = to - from;
       const frameW = 0.08;
       const frameDepth = thickness;
+      const doorFrameMat = opening.dark ? new THREE.MeshStandardMaterial({ color: "#c9a06a", roughness: 0.55 }) : frameMat;
       const mkVert = (px, pz) => {
         const geo =
           seg.axis === "z"
             ? new THREE.BoxGeometry(frameW, head, frameDepth)
             : new THREE.BoxGeometry(frameDepth, head, frameW);
-        const bar = new THREE.Mesh(geo, frameMat);
+        const bar = new THREE.Mesh(geo, doorFrameMat);
         bar.position.set(px, head / 2, pz);
         group.add(bar);
       };
@@ -202,6 +228,11 @@ export function buildApartment() {
       } else {
         mkVert(seg.at, from);
         mkVert(seg.at, to);
+      }
+      // Glazed doors (balcony sliding door, dark sauna glass door) get a
+      // pane too, but remain fully walkable (no sill collider added below).
+      if (opening.glass) {
+        addGlassPane(from, to, 0.02, head - 0.02, opening.dark ? darkGlassMat : glassMat);
       }
     };
 
@@ -248,9 +279,9 @@ export function buildApartment() {
       }
       if (op.type === "window") {
         if (op.sill > 0.001) addSolidBox(op.from, op.to, 0, op.sill);
-        addGlass(op.from, op.to, op.sill, op.head);
+        addWindow(op.from, op.to, op.sill, op.head, op.frosted);
       } else {
-        addDoorFrame(op.from, op.to, op.head);
+        addDoor(op.from, op.to, op.head, op);
       }
     }
   }
@@ -278,7 +309,6 @@ export function buildApartment() {
     }
     group.add(mesh);
 
-    // collider so the player cannot walk off the balcony
     const half = 0.06;
     if (edge.axis === "z") {
       colliders.push({ x1: edge.from - half, x2: edge.to + half, z1: edge.at - half, z2: edge.at + half });
@@ -296,7 +326,6 @@ export function buildApartment() {
       group.add(post);
     }
   }
-  // Handrail cap
   for (const edge of balconyRailing) {
     const len = edge.to - edge.from;
     const cap = new THREE.Mesh(

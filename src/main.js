@@ -36,8 +36,8 @@ const hemi = new THREE.HemisphereLight("#bcd6ea", "#7d6b52", 0.65);
 scene.add(hemi);
 
 const sun = new THREE.DirectionalLight("#fff2df", 1.7);
-sun.position.set(3, 20, -25);
-sun.target.position.set(4, 0, 3);
+sun.position.set(-22, 20, 8);
+sun.target.position.set(4.1, 0, 3.6);
 sun.castShadow = true;
 sun.shadow.mapSize.set(1024, 1024);
 sun.shadow.camera.left = -10;
@@ -59,7 +59,7 @@ addFurniture(scene);
 // (bathroom/hall/corridor have little or no window) — keeps the light count,
 // and therefore per-pixel shading cost, low.
 const pendantMat = new THREE.MeshStandardMaterial({ color: "#2a2a2a", roughness: 0.4, metalness: 0.5 });
-const LIT_ROOMS = new Set(["bathroom", "entry", "corridor"]);
+const LIT_ROOMS = new Set(["badrum", "entre", "bastu"]);
 for (const room of rooms) {
   const cx = (room.x1 + room.x2) / 2;
   const cz = (room.z1 + room.z2) / 2;
@@ -103,7 +103,7 @@ function findRoom(x, z) {
 
 // ---- Minimap --------------------------------------------------------------
 
-const mapBounds = { minX: -0.6, maxX: 9.2, minZ: -2.1, maxZ: 7.4 };
+const mapBounds = { minX: -2.0, maxX: 8.8, minZ: -0.5, maxZ: 7.9 };
 function worldToMap(x, z) {
   const w = minimapCanvas.width;
   const h = minimapCanvas.height;
@@ -134,7 +134,7 @@ function drawMinimap() {
     const y = Math.min(p1.y, p2.y);
     const rw = Math.abs(p2.x - p1.x);
     const rh = Math.abs(p2.y - p1.y);
-    minimapCtx.fillStyle = room.floor === "tile" ? "rgba(180,195,200,0.55)" : "rgba(210,175,130,0.4)";
+    minimapCtx.fillStyle = room.floor.startsWith("tile") ? "rgba(180,195,200,0.55)" : "rgba(210,175,130,0.4)";
     minimapCtx.fillRect(x, y, rw, rh);
     minimapCtx.strokeStyle = "rgba(255,255,255,0.55)";
     minimapCtx.lineWidth = 1.5;

@@ -21,28 +21,34 @@ npm run dev
 
 `npm run build` bygger en fristående produktionsversion i `dist/`.
 
-## Viktigt om datakällan
+## Om datakällan
 
-**hemnet.se och booli.se är blockerade av nätverkspolicyn i den sandlåda den här sessionen kör i** (`EGRESS_BLOCKED`), så annonsens faktiska bilder och den riktiga planritningen gick inte att hämta direkt. Den här modellen är därför en **rekonstruktion baserad på annonsens textuppgifter**, insamlade via sökmotorträffar på annonsens innehåll — inte en skanning av den riktiga ritningen.
+hemnet.se och booli.se är blockerade av nätverkspolicyn i den sandlåda den här sessionen körs i (`EGRESS_BLOCKED`), så annonsens bilder gick inte att hämta direkt via länken. Layouten, materialen och möbleringen i den här modellen är istället byggda utifrån **den riktiga planritningen och samtliga annonsbilder**, som klistrades in direkt i konversationen och analyserades bild för bild.
 
-Uppgifter som är hämtade från annonsen (bekräftade via flera oberoende sökträffar):
+Det som är hämtat direkt från planritningen:
 
-- 4 rum och kök, 57 m² boarea, våning 1 av 3, ingen hiss
-- 3 sovrum — ett större och två mindre
-- Öppen planlösning kök/vardagsrum med stora fönster mot fjällvärlden
-- Helkaklat badrum med bastu
-- Parkettgolv och golvvärme i hela lägenheten
-- Södervänd balkong/uteplats med fjällutsikt
-- Ski-in/ski-out — Gunnilbacken direkt bakom huset
-- Byggår 2017, avgift 3 672 kr/mån, pris 3 300 000 kr
+- Rummens inbördes placering: **Sovrum 1–3** ligger i rad längs norrfasaden och öppnar var för sig rakt ut mot **Allrum** — ingen separat hall/korridor finns.
+- **Allrum** och **Kök** är en sammanhängande öppen yta (bekräftat av bildtexten "Kök och allrum i öppen planlösning").
+- **Entré** möter Allrum vid en öppen tröskel (streckad linje på ritningen, dvs. ingen dörr).
+- **Bastu** nås inifrån **Badrum**, inte direkt utifrån.
+- Rummens ungefärliga proportioner, skalade mot annonsens uppgivna 57 m² boarea (ritningen saknar utsatta mått, så exakta siffror är en rimlig skalning, inte en uppmätning).
 
-Det som **inte** kunde verifieras (och som är rimliga antaganden, inte fakta ur annonsen):
+Det som är hämtat från fotona (stil, material, möblering):
 
-- Rummens exakta form, mått och inbördes placering
-- Möblering, färgval, material och exakta fönsterplaceringar
-- Exakt takhöjd, dörrbredder och husets exakta fasadutseende
+- Brädtak i ljus furu genomgående i hela lägenheten.
+- Träpanelvägg (liggande, honungsbrun) på väggen mellan sovrummen och Allrum, med vita dörrar, TV och korslagda skidor monterade på den.
+- Grått kök i en rak rad med vitt kakel, rostfria vitvaror och öppna trähyllor.
+- Hörnsoffa, rund matbord med vita korsryggstolar, och två rentaljuskronor i Allrum/matplats.
+- Helkaklat badrum (vitt kakel, grått klinker) med dusch, tvättmaskin och en glasdörr in till bastun.
+- Sovrum 1 (störst) med dubbelsäng, träpanelvägg med skidor och rådjurshornstavla; Sovrum 2 och 3 med enkelsängar, rutiga gardiner och djurmotiv på väggarna.
+- Entré med bänk, klädkrokar, förvaringsfack och en dörr rakt ut mot snön.
 
-Se `src/data/floorplan.js` för den fullständiga planlösningsdatan och kommentaren högst upp i filen. Om du har tillgång till de riktiga bilderna eller planritningen (t.ex. genom att öppna annonsen själv och beskriva den, eller klistra in bilderna) går layouten enkelt att korrigera i den filen.
+Det som fortfarande är rimliga antaganden (annonsen ger inga exakta mått eller kompassriktningar):
+
+- Exakta väggmått, takhöjd och dörrbredder.
+- Fönstrens exakta placering på fasaderna (annonstexten nämner en söderbalkong; den stora utsiktsfönstret sitter i den här modellen på Allrums västvägg, i linje med fönstermarkeringen på ritningen).
+
+Se `src/data/floorplan.js` för den fullständiga planlösningsdatan och kommentaren högst upp i filen.
 
 ## Struktur
 
@@ -50,15 +56,15 @@ Se `src/data/floorplan.js` för den fullständiga planlösningsdatan och komment
 src/
   data/floorplan.js  Rums-/vägg-/dörr-/fönsterdata (källan till sanningen för layouten)
   apartment.js       Bygger golv, tak, väggar, fönster och dörröppningar från floorplan.js
-  furniture.js        Möbler per rum (kök, sängar, våningssäng, bastu, etc.)
+  furniture.js        Möbler per rum (kök, hörnsoffa, sängar, bastu, etc.), utifrån bilderna
   sky.js               Himmel, fjällsiluetter, snö och skog utanför fönstren
   controls.js         Förstapersonskontroller: WASD + muslås + kollision mot väggar
-  textures.js          Procedurellt genererade texturer (parkett, kakel, bastupanel, ...)
+  textures.js          Procedurellt genererade texturer (trägolv, brädtak, timmerpanel, kakel, ...)
   main.js              Sätter ihop scenen, belysning, HUD och spelloop
 ```
 
 ## Tekniska val
 
-- **Kollision**: spelaren är en cirkel (radie 0,28 m) som testas mot väggarnas axelparallella boxar; dörröppningar lämnar medvetet luckor i kollisionslistan så att man kan gå igenom dem, medan fönster (som har en solid bröstning) blockerar.
-- **Rörelse**: dämpad acceleration mot målhastighet ger mjuk start/stopp, med rörelsen upplöst axel för axel så att man glider längs väggar istället för att fastna.
-- **Belysning**: ett lågt "solljus" från söder genom balkongfönstren plus varma taklampor i varje rum, så att alla utrymmen är läsbara oavsett solvinkel.
+- **Kollision**: spelaren är en cirkel (radie 0,24 m) som testas mot väggarnas axelparallella boxar; dörröppningar och den öppna tröskeln mellan Allrum/Kök/Entré lämnar medvetet luckor i kollisionslistan, medan fönster (som har en solid bröstning) blockerar.
+- **Rörelse**: världsrymdens rörelseriktning härleds direkt från kamerans egen quaternion (inte handskriven trigonometri), så att WASD alltid matchar tittriktningen; diagonal rörelse är hastighetsbegränsad så att den inte blir snabbare än att gå rakt fram.
+- **Belysning**: ett lågt solljus genom Allrums västfönster plus varma taklampor i badrum/entré/bastu (rummen utan egna fönster), för att hålla antalet realtidsljus lågt utan att rum blir mörka.
