@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tegefjällsvägen 79 — 3D-rundtur</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene"></canvas>
+
+      <div id="hud">
+        <div id="room-label">Kök &amp; Vardagsrum</div>
+        <canvas id="minimap" width="220" height="170"></canvas>
+      </div>
+
+      <div id="crosshair"></div>
+
+      <div id="overlay">
+        <div class="panel">
+          <h1>Tegefjällsvägen 79, lgh A</h1>
+          <p class="subtitle">Tegefjäll, Åre kommun — 4 rum, 57&nbsp;m², 3D-rundtur</p>
+          <p class="cta">Klicka för att gå in</p>
+          <ul class="controls-list">
+            <li><b>W A S D</b> / piltangenter — gå</li>
+            <li><b>Mus</b> — vrid dig om och titta runt</li>
+            <li><b>Shift</b> — spring</li>
+            <li><b>M</b> — visa/dölj planlösning</li>
+            <li><b>Esc</b> — pausa</li>
+          </ul>
+          <p class="note">
+            Rekonstruerad utifrån annonsens textuppgifter (hemnet.se var
+            blockerat i den här miljön). Se README för detaljer.
+          </p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
