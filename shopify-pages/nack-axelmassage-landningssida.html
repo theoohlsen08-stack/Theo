@@ -1,0 +1,468 @@
+<!-- ============================================================
+     Kneadwell — landningssida (advertorial) för Nack- & Axelmassage
+     All CSS är scopad under .kw-lp för att inte krocka med temat.
+     ============================================================ -->
+<div class="kw-lp">
+<style>
+.kw-lp{--ink:#1E2624;--ink-soft:#4A5652;--cream:#FBF8F5;--cream-2:#F3EDE6;--line:#E4DBD1;--rose:#C4756B;--rose-dk:#A85C53;--sage:#5F8574;--sage-lt:#EAF1ED;--gold:#D8A24A;--radius:18px;--shadow:0 1px 2px rgba(30,38,36,.05),0 8px 28px rgba(30,38,36,.07);color:var(--ink);background:var(--cream);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.kw-lp *,.kw-lp *::before,.kw-lp *::after{box-sizing:border-box}
+.kw-lp img{max-width:100%;height:auto;display:block}
+.kw-lp p{margin:0 0 1em}
+.kw-lp h1,.kw-lp h2,.kw-lp h3,.kw-lp h4{margin:0 0 .5em;line-height:1.18;letter-spacing:-.018em;font-weight:700;color:var(--ink)}
+.kw-lp h1{font-size:clamp(2rem,5.2vw,3.4rem)}
+.kw-lp h2{font-size:clamp(1.6rem,3.6vw,2.4rem)}
+.kw-lp h3{font-size:1.16rem}
+.kw-lp ul{margin:0 0 1em;padding-left:1.15em}
+.kw-lp li{margin:.35em 0}
+.kw-lp a{color:inherit}
+.kw-wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.kw-narrow{max-width:760px;margin:0 auto;padding:0 20px}
+.kw-sec{padding:clamp(48px,7vw,88px) 0}
+.kw-sec--alt{background:var(--cream-2)}
+.kw-sec--ink{background:var(--ink);color:#F4F1EC}
+.kw-sec--ink h2,.kw-sec--ink h3{color:#fff}
+.kw-eyebrow{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-dk);margin:0 0 14px}
+.kw-lead{font-size:clamp(1.03rem,1.9vw,1.2rem);color:var(--ink-soft);max-width:62ch}
+.kw-center{text-align:center}
+.kw-center .kw-lead{margin-left:auto;margin-right:auto}
+
+/* Topbar */
+.kw-topbar{background:var(--ink);color:#EFEAE3;font-size:.82rem;letter-spacing:.02em;padding:9px 20px;text-align:center}
+.kw-topbar span{white-space:nowrap}
+.kw-topbar span + span::before{content:'•';margin:0 10px;opacity:.45}
+
+/* Buttons */
+.kw-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--rose);color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem;padding:17px 34px;border-radius:999px;border:0;cursor:pointer;box-shadow:0 6px 20px rgba(196,117,107,.32);transition:transform .15s ease,background .15s ease,box-shadow .15s ease;text-align:center}
+.kw-btn:hover{background:var(--rose-dk);transform:translateY(-1px);box-shadow:0 10px 26px rgba(196,117,107,.38)}
+.kw-btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.kw-btn--ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.kw-btn--ghost:hover{background:#fff;border-color:var(--ink);color:var(--ink)}
+.kw-btn--wide{width:100%;max-width:420px}
+.kw-btn-note{font-size:.86rem;color:var(--ink-soft);margin:12px 0 0}
+
+/* Stars */
+.kw-stars{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;color:var(--ink-soft)}
+.kw-stars svg{width:15px;height:15px;fill:var(--gold);flex:0 0 auto}
+
+/* Hero */
+.kw-hero{background:linear-gradient(180deg,#fff 0%,var(--cream) 100%);padding:clamp(36px,5vw,64px) 0 clamp(44px,6vw,80px);border-bottom:1px solid var(--line)}
+.kw-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,60px);align-items:center}
+.kw-hero h1{margin-bottom:18px}
+.kw-hero-media{position:relative;border-radius:24px;overflow:hidden;background:var(--cream-2);box-shadow:var(--shadow)}
+.kw-hero-media img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.kw-badge{position:absolute;left:16px;top:16px;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-radius:999px;padding:8px 15px;font-size:.79rem;font-weight:700;letter-spacing:.02em;box-shadow:0 2px 10px rgba(30,38,36,.12)}
+.kw-hero-cta{margin-top:26px}
+.kw-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.kw-trust li{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.84rem;font-weight:600;margin:0}
+.kw-trust svg{width:14px;height:14px;fill:none;stroke:var(--sage);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+/* Cards / grids */
+.kw-grid{display:grid;gap:20px}
+.kw-grid-2{grid-template-columns:repeat(2,1fr)}
+.kw-grid-3{grid-template-columns:repeat(3,1fr)}
+.kw-grid-4{grid-template-columns:repeat(4,1fr)}
+.kw-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.kw-card h3{margin-bottom:8px}
+.kw-card p{margin:0;color:var(--ink-soft);font-size:.96rem}
+.kw-ico{width:42px;height:42px;border-radius:12px;background:var(--sage-lt);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.kw-ico svg{width:21px;height:21px;fill:none;stroke:var(--sage);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kw-ico--rose{background:#F8EDEB}
+.kw-ico--rose svg{stroke:var(--rose-dk)}
+
+/* Steps */
+.kw-steps{counter-reset:kwstep;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:36px}
+.kw-step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);position:relative}
+.kw-step::before{counter-increment:kwstep;content:counter(kwstep);display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;font-size:1rem;margin-bottom:16px}
+.kw-step p{margin:0;color:var(--ink-soft);font-size:.96rem}
+
+/* Split feature */
+.kw-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,5vw,56px);align-items:center}
+.kw-split-media img{border-radius:20px;box-shadow:var(--shadow);aspect-ratio:1/1;object-fit:cover;width:100%}
+.kw-checks{list-style:none;padding:0;margin:22px 0 0}
+.kw-checks li{display:flex;gap:12px;align-items:flex-start;margin:0 0 13px;font-size:1rem}
+.kw-checks svg{width:20px;height:20px;flex:0 0 auto;margin-top:2px;fill:none;stroke:var(--sage);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* Timeline */
+.kw-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:38px;border-top:2px solid var(--line)}
+.kw-tl{padding:26px 22px 0;border-right:1px solid var(--line);position:relative}
+.kw-tl:last-child{border-right:0}
+.kw-tl::before{content:'';position:absolute;top:-8px;left:22px;width:14px;height:14px;border-radius:50%;background:var(--rose);border:3px solid var(--cream-2)}
+.kw-tl h3{font-size:1rem;margin-bottom:6px}
+.kw-tl p{color:var(--ink-soft);font-size:.94rem;margin:0}
+
+/* Reviews */
+.kw-review{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.kw-review blockquote{margin:14px 0 18px;font-size:1rem;color:var(--ink);flex:1}
+.kw-review footer{font-size:.88rem;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px}
+.kw-review footer strong{color:var(--ink);display:block;font-size:.95rem}
+
+/* Table */
+.kw-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:34px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow)}
+.kw-table{border-collapse:collapse;width:100%;min-width:660px;font-size:.95rem}
+.kw-table th,.kw-table td{padding:15px 18px;text-align:left;border-bottom:1px solid var(--line)}
+.kw-table thead th{background:var(--cream-2);font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+.kw-table tbody tr:last-child td,.kw-table tbody tr:last-child th{border-bottom:0}
+.kw-table tbody th{font-weight:600}
+.kw-table .kw-col-own{background:#FBF6F5;font-weight:600}
+.kw-table thead .kw-col-own{background:#F5E7E4;color:var(--rose-dk)}
+.kw-yes,.kw-no{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center}
+.kw-yes svg{stroke:var(--sage)}
+.kw-no svg{stroke:#B9AFA5}
+.kw-yes svg,.kw-no svg{width:18px;height:18px;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* Offer */
+.kw-offer{background:#fff;border:1px solid var(--line);border-radius:26px;padding:clamp(28px,4vw,44px);box-shadow:0 20px 50px rgba(30,38,36,.09);max-width:640px;margin:0 auto;text-align:center}
+.kw-price{display:flex;align-items:baseline;justify-content:center;gap:12px;margin:18px 0 6px}
+.kw-price b{font-size:clamp(2.3rem,6vw,3rem);letter-spacing:-.03em;line-height:1}
+.kw-incl{list-style:none;padding:0;margin:24px 0 28px;text-align:left;display:inline-block}
+.kw-incl li{display:flex;gap:11px;align-items:flex-start;margin:0 0 11px;font-size:.98rem}
+.kw-incl svg{width:19px;height:19px;flex:0 0 auto;margin-top:3px;fill:none;stroke:var(--sage);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.kw-variants{display:flex;gap:10px;justify-content:center;margin:0 0 22px;flex-wrap:wrap}
+.kw-variants span{border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:.88rem;font-weight:600;background:var(--cream)}
+
+/* Guarantee */
+.kw-guarantee{display:flex;gap:24px;align-items:center;background:var(--sage-lt);border-radius:var(--radius);padding:clamp(24px,4vw,36px);border:1px solid #D5E4DC}
+.kw-guarantee-seal{flex:0 0 auto;width:76px;height:76px;border-radius:50%;background:#fff;border:2px solid var(--sage);display:flex;align-items:center;justify-content:center}
+.kw-guarantee-seal svg{width:34px;height:34px;fill:none;stroke:var(--sage);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kw-guarantee p{margin:0;color:var(--ink-soft);font-size:.97rem}
+.kw-guarantee h3{margin-bottom:6px}
+
+/* FAQ */
+.kw-faq{max-width:760px;margin:34px auto 0}
+.kw-faq details{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.kw-faq summary{cursor:pointer;list-style:none;padding:18px 54px 18px 22px;font-weight:650;font-size:1.01rem;position:relative}
+.kw-faq summary::-webkit-details-marker{display:none}
+.kw-faq summary:focus-visible{outline:3px solid var(--rose);outline-offset:-3px}
+.kw-faq summary::after{content:'';position:absolute;right:22px;top:50%;width:11px;height:11px;border-right:2.4px solid var(--ink-soft);border-bottom:2.4px solid var(--ink-soft);transform:translateY(-70%) rotate(45deg);transition:transform .2s ease}
+.kw-faq details[open] summary::after{transform:translateY(-25%) rotate(225deg)}
+.kw-faq .kw-faq-body{padding:0 22px 20px;color:var(--ink-soft);font-size:.97rem}
+.kw-faq .kw-faq-body p:last-child{margin-bottom:0}
+
+/* Gallery */
+.kw-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px}
+.kw-gallery img{border-radius:14px;aspect-ratio:1/1;object-fit:cover;width:100%}
+
+/* Final CTA */
+.kw-final{text-align:center}
+.kw-final .kw-lead{color:#C9D2CE}
+
+/* Disclaimer */
+.kw-fine{font-size:.82rem;color:#8A8079;text-align:center;padding:30px 20px 40px;max-width:820px;margin:0 auto;line-height:1.6}
+
+/* Sticky mobile bar */
+.kw-sticky{position:sticky;bottom:0;z-index:40;display:none;background:rgba(251,248,245,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:11px 16px;gap:14px;align-items:center;justify-content:space-between}
+.kw-sticky .kw-sticky-price{font-weight:700;font-size:1rem;line-height:1.25}
+.kw-sticky .kw-sticky-price small{display:block;font-weight:500;font-size:.76rem;color:var(--ink-soft)}
+.kw-sticky .kw-btn{padding:13px 24px;font-size:.97rem;box-shadow:none}
+
+@media (max-width:900px){
+  .kw-hero-grid,.kw-split{grid-template-columns:1fr}
+  .kw-hero-media{order:-1}
+  .kw-grid-3,.kw-grid-4,.kw-steps{grid-template-columns:repeat(2,1fr)}
+  .kw-timeline{grid-template-columns:1fr;border-top:0}
+  .kw-tl{border-right:0;border-left:2px solid var(--line);padding:6px 0 22px 24px}
+  .kw-tl::before{top:6px;left:-8px}
+  .kw-gallery{grid-template-columns:repeat(2,1fr)}
+  .kw-sticky{display:flex}
+}
+@media (max-width:560px){
+  .kw-lp{font-size:16px}
+  .kw-grid-2,.kw-grid-3,.kw-grid-4,.kw-steps{grid-template-columns:1fr}
+  .kw-btn{width:100%}
+  .kw-sticky .kw-btn{width:auto}
+  .kw-guarantee{flex-direction:column;text-align:center}
+  .kw-topbar span + span::before{margin:0 7px}
+}
+@media (prefers-reduced-motion:reduce){.kw-lp *{transition:none!important}}
+</style>
+
+<div class="kw-topbar"><span>Fri frakt i hela Sverige</span><span>30 dagars öppet köp</span><span>Skickas inom 24 timmar</span></div>
+
+<section class="kw-hero">
+  <div class="kw-wrap kw-hero-grid">
+    <div>
+      <span class="kw-eyebrow">Nack- &amp; axelspänningar</span>
+      <h1>Dagens spänningar sitter i nacken. Tio minuter räcker för att släppa dem.</h1>
+      <p class="kw-lead">Kneadwell Sladdlös Nack- &amp; Axelmassage läggs runt nacken och ger en skonsam pulsmassage exakt där det är stelt — vid skrivbordet, i bilen eller i soffan. Ingen sladd, ingen bokad tid, inga tabletter.</p>
+      <div class="kw-hero-cta">
+        <a class="kw-btn kw-btn--wide" href="/products/kneadwell-cordless-shiatsu-neck-amp-shoulder-massager">Beställ din Kneadwell — 499 kr</a>
+        <p class="kw-btn-note">Fri frakt · Levereras på 2–4 arbetsdagar · 30 dagars öppet köp</p>
+      </div>
+      <ul class="kw-trust">
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>16 intensitetsnivåer</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Sladdlös</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Automatisk timer</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Väger under 300 g</li>
+      </ul>
+    </div>
+    <div class="kw-hero-media">
+      <span class="kw-badge">Bäst säljande</span>
+      <img src="https://cdn.shopify.com/s/files/1/1085/5986/0044/files/ChatGPTImageAug27_2026_01_29_32AM_1.png?v=1787787037&amp;width=1000" alt="Kneadwell sladdlös nack- och axelmassage i rosa, sedd framifrån" width="1000" height="1000" fetchpriority="high">
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec">
+  <div class="kw-wrap">
+    <div class="kw-center" style="margin-bottom:38px">
+      <span class="kw-eyebrow">Känner du igen dig?</span>
+      <h2>Åtta timmar vid skärmen märks någonstans</h2>
+      <p class="kw-lead">Och nästan alltid först i nacken. Det börjar som en stelhet vid lunch och slutar som en tyngd du bär med dig hem.</p>
+    </div>
+    <div class="kw-grid kw-grid-4">
+      <div class="kw-card">
+        <div class="kw-ico kw-ico--rose"><svg viewBox="0 0 24 24"><path d="M3 5h18M3 12h12M3 19h18"/></svg></div>
+        <h3>Stel nacke efter skärmtid</h3>
+        <p>Huvudet lutar framåt några centimeter i timmen — och nackmusklerna får hålla emot hela dagen.</p>
+      </div>
+      <div class="kw-card">
+        <div class="kw-ico kw-ico--rose"><svg viewBox="0 0 24 24"><path d="M12 3v6m0 0 3-3m-3 3L9 6M5 21h14"/></svg></div>
+        <h3>Axlar som kryper uppåt</h3>
+        <p>Stress lägger sig i trapeziusmuskeln. Du märker det oftast först när du försöker slappna av.</p>
+      </div>
+      <div class="kw-card">
+        <div class="kw-ico kw-ico--rose"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Tyngd i huvudet mot kvällen</h3>
+        <p>Spända nackmuskler gör sig ofta påminda som en molande tryckkänsla runt tinningarna.</p>
+      </div>
+      <div class="kw-card">
+        <div class="kw-ico kw-ico--rose"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></div>
+        <h3>Svårt att varva ner</h3>
+        <p>En kropp som aldrig fick landa har svårare att somna — och vaknar stelare nästa morgon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec kw-sec--alt">
+  <div class="kw-wrap">
+    <div class="kw-center">
+      <span class="kw-eyebrow">Så fungerar det</span>
+      <h2>Tre steg. Tio minuter. Klart.</h2>
+      <p class="kw-lead">Kneadwell använder skonsamma elektriska pulser — samma princip som en fysioterapeut arbetar med — för att få spända nackmuskler att växla mellan sammandragning och avslappning. Det är den växlingen som gör att spänningen släpper.</p>
+    </div>
+    <div class="kw-steps">
+      <div class="kw-step">
+        <h3>Lägg den runt nacken</h3>
+        <p>Den böjda elektroddesignen har en flytande platta som formar sig efter din nacke, så att kontakten sitter jämnt utan att du håller emot.</p>
+      </div>
+      <div class="kw-step">
+        <h3>Välj din nivå</h3>
+        <p>Sexton steg, från en knappt märkbar puls till en djup, kraftfull massage. Börja lågt — de flesta landar runt nivå 5–8.</p>
+      </div>
+      <div class="kw-step">
+        <h3>Låt den jobba</h3>
+        <p>Timern stänger av sessionen automatiskt. Du kan svara på mejl, sitta som passagerare i bilen eller bara blunda under tiden.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec">
+  <div class="kw-wrap kw-split">
+    <div class="kw-split-media">
+      <img src="https://cdn.shopify.com/s/files/1/1085/5986/0044/files/661130b3-e613-483f-9ac5-e0ae80b98f40.png?v=1787787196&amp;width=900" alt="Närbild på den böjda elektroddesignen som följer nackens form" width="900" height="900" loading="lazy">
+    </div>
+    <div>
+      <span class="kw-eyebrow">Designen</span>
+      <h2>Byggd för att sitta kvar utan att du tänker på den</h2>
+      <p class="kw-lead">Den vanligaste anledningen till att massageapparater blir liggande i lådan är att de är obekväma. Kneadwell är formad efter nacken istället för tvärtom.</p>
+      <ul class="kw-checks">
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Flytande kontaktplatta</strong> som följer nackens kurva och håller jämnt tryck.</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Sladdlös och uppladdningsbar</strong> — inget uttag, ingen kabel i vägen.</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Tillräckligt tyst</strong> för att användas på kontoret utan att någon vänder sig om.</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Under 300 gram</strong> — får plats i väskan, handväskan eller handskfacket.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec kw-sec--alt">
+  <div class="kw-wrap">
+    <div class="kw-center" style="margin-bottom:38px">
+      <span class="kw-eyebrow">Därför fastnar folk för den</span>
+      <h2>Sex saker du märker direkt</h2>
+    </div>
+    <div class="kw-grid kw-grid-3">
+      <div class="kw-card"><div class="kw-ico"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div><h3>Verkar på tio minuter</h3><p>En kort session mellan två möten räcker för att nacken ska kännas rörligare.</p></div>
+      <div class="kw-card"><div class="kw-ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10Z"/><circle cx="12" cy="11" r="2.5"/></svg></div><h3>Fungerar var som helst</h3><p>Skrivbordsstolen, tåget, soffan. Ingen bokad tid och ingen resa dit.</p></div>
+      <div class="kw-card"><div class="kw-ico"><svg viewBox="0 0 24 24"><path d="M4 20V10m5 10V4m5 16v-7m5 7V8"/></svg></div><h3>16 nivåer att växla mellan</h3><p>Mjukt på morgonen, kraftfullt efter träningen. Du styr själv.</p></div>
+      <div class="kw-card"><div class="kw-ico"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="17" height="10" rx="2.5"/><path d="M22 11v2"/></svg></div><h3>Laddas som telefonen</h3><p>USB-laddning och batteri som räcker för flera sessioner på en laddning.</p></div>
+      <div class="kw-card"><div class="kw-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Stänger av sig själv</h3><p>Den automatiska timern gör att du kan somna till den utan att oroa dig.</p></div>
+      <div class="kw-card"><div class="kw-ico"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><h3>Ingen medicin inblandad</h3><p>Ett drogfritt alternativ när nacken bara behöver få slappna av en stund.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec">
+  <div class="kw-wrap">
+    <div class="kw-center">
+      <span class="kw-eyebrow">Vad du kan förvänta dig</span>
+      <h2>Rimliga förväntningar, dag för dag</h2>
+      <p class="kw-lead">Vi lovar inga mirakel. Så här beskriver de flesta av våra kunder sin första månad.</p>
+    </div>
+    <div class="kw-timeline">
+      <div class="kw-tl"><h3>Dag 1</h3><p>En varm, pirrande känsla under sessionen och en tydligt lättare nacke direkt efteråt. För många räcker det för att bli nyfikna på fortsättningen.</p></div>
+      <div class="kw-tl"><h3>Vecka 1</h3><p>Tio minuter blir en vana — oftast efter jobbet. Stelheten kommer tillbaka långsammare under dagen än den brukade.</p></div>
+      <div class="kw-tl"><h3>Vecka 4</h3><p>Nacke och axlar känns rörligare som utgångsläge. Många beskriver att de slutat tänka på nacken flera dagar i sträck.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- OBS: Ersätt platshållarna nedan med RIKTIGA kundrecensioner innan sidan publiceras. -->
+<section class="kw-sec kw-sec--alt">
+  <div class="kw-wrap">
+    <div class="kw-center" style="margin-bottom:38px">
+      <span class="kw-eyebrow">Från våra kunder</span>
+      <h2>Vad de säger som redan använder den</h2>
+      <p class="kw-lead">[Platshållare — byt ut mot verkliga recensioner från din butik innan publicering.]</p>
+    </div>
+    <div class="kw-grid kw-grid-3">
+      <div class="kw-review">
+        <span class="kw-stars" aria-label="5 av 5 stjärnor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg></span>
+        <blockquote>[Recension 1 — klistra in en riktig kundrecension här.]</blockquote>
+        <footer><strong>[Kundens namn]</strong>[Ort] · Verifierat köp</footer>
+      </div>
+      <div class="kw-review">
+        <span class="kw-stars" aria-label="5 av 5 stjärnor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg></span>
+        <blockquote>[Recension 2 — klistra in en riktig kundrecension här.]</blockquote>
+        <footer><strong>[Kundens namn]</strong>[Ort] · Verifierat köp</footer>
+      </div>
+      <div class="kw-review">
+        <span class="kw-stars" aria-label="5 av 5 stjärnor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8L12 2Z"/></svg></span>
+        <blockquote>[Recension 3 — klistra in en riktig kundrecension här.]</blockquote>
+        <footer><strong>[Kundens namn]</strong>[Ort] · Verifierat köp</footer>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec">
+  <div class="kw-wrap">
+    <div class="kw-center">
+      <span class="kw-eyebrow">Jämförelse</span>
+      <h2>Kneadwell mot alternativen</h2>
+      <p class="kw-lead">Massören gör ett bättre jobb — en gång i månaden. Kneadwell finns där de andra 29 dagarna.</p>
+    </div>
+    <div class="kw-tablewrap">
+      <table class="kw-table">
+        <thead>
+          <tr>
+            <th scope="col">&nbsp;</th>
+            <th scope="col" class="kw-col-own">Kneadwell</th>
+            <th scope="col">Massör</th>
+            <th scope="col">Värmedyna</th>
+            <th scope="col">Värktabletter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Kostnad</th><td class="kw-col-own">499 kr en gång</td><td>800–1 200 kr / gång</td><td>300–600 kr</td><td>Löpande</td></tr>
+          <tr><th scope="row">Tillgänglig direkt</th><td class="kw-col-own"><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="kw-no"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></td><td><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td></tr>
+          <tr><th scope="row">Fungerar utanför hemmet</th><td class="kw-col-own"><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="kw-no"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></td><td><span class="kw-no"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></td><td><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td></tr>
+          <tr><th scope="row">Justerbar intensitet</th><td class="kw-col-own">16 nivåer</td><td>Ja</td><td><span class="kw-no"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></td><td><span class="kw-no"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></td></tr>
+          <tr><th scope="row">Drogfritt</th><td class="kw-col-own"><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="kw-yes"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="kw-no"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span></td></tr>
+          <tr><th scope="row">Tid det tar</th><td class="kw-col-own">10 min hemma</td><td>1–2 timmar med resa</td><td>20–30 min</td><td>Ca 30 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec kw-sec--alt">
+  <div class="kw-wrap kw-center">
+    <span class="kw-eyebrow">I detalj</span>
+    <h2>Se den närmare</h2>
+    <div class="kw-gallery">
+      <img src="https://cdn.shopify.com/s/files/1/1085/5986/0044/files/6ae97bec-03e3-49c0-bd9f-44456f66bd4d.png?v=1787787219&amp;width=520" alt="Kneadwell nackmassage sedd från sidan" width="520" height="520" loading="lazy">
+      <img src="https://cdn.shopify.com/s/files/1/1085/5986/0044/files/757eac0d-1eb5-4d1a-8b08-e50aa404135c.png?v=1787787238&amp;width=520" alt="Kontrollpanelen med intensitetsnivåer" width="520" height="520" loading="lazy">
+      <img src="https://cdn.shopify.com/s/files/1/1085/5986/0044/files/5bf9b1fc-80fa-4903-8b4e-1867cdcf1828.png?v=1787787257&amp;width=520" alt="Kneadwell nackmassage i vit färg" width="520" height="520" loading="lazy">
+      <img src="https://cdn.shopify.com/s/files/1/1085/5986/0044/files/3c8cedc1-feec-4b92-87ff-cbc605e24f51.png?v=1787787276&amp;width=520" alt="Massagen buren runt nacken" width="520" height="520" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec" id="kw-kop">
+  <div class="kw-wrap">
+    <div class="kw-offer">
+      <span class="kw-eyebrow">Beställ idag</span>
+      <h2>Kneadwell Sladdlös Nack- &amp; Axelmassage</h2>
+      <div class="kw-price"><b>499 kr</b></div>
+      <p style="color:#4A5652;font-size:.94rem;margin:0">Inklusive moms. Fri frakt i hela Sverige.</p>
+      <div class="kw-variants" style="margin-top:20px"><span>Rosa</span><span>Vit</span></div>
+      <ul class="kw-incl">
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Kneadwell nack- &amp; axelmassage</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>USB-laddkabel</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Svensk snabbguide</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>30 dagars öppet köp</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Svensk kundtjänst</li>
+      </ul>
+      <a class="kw-btn kw-btn--wide" href="/products/kneadwell-cordless-shiatsu-neck-amp-shoulder-massager">Lägg i varukorgen</a>
+      <p class="kw-btn-note">Skickas inom 24 timmar · Leverans 2–4 arbetsdagar</p>
+    </div>
+    <div class="kw-guarantee" style="margin-top:38px;max-width:760px;margin-left:auto;margin-right:auto">
+      <div class="kw-guarantee-seal"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 8.2-7 9-4-.8-7-4.6-7-9V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <div>
+        <h3>30 dagars öppet köp — utan krångel</h3>
+        <p>Prova Kneadwell i lugn och ro. Känns den inte som din, hör av dig inom 30 dagar så tar vi emot den i retur och betalar tillbaka. Du behöver inte motivera varför.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="kw-sec kw-sec--alt">
+  <div class="kw-wrap kw-center">
+    <span class="kw-eyebrow">Vanliga frågor</span>
+    <h2>Det de flesta undrar</h2>
+  </div>
+  <div class="kw-faq kw-wrap">
+    <details>
+      <summary>Hur ofta ska jag använda den?</summary>
+      <div class="kw-faq-body"><p>En session på cirka tio minuter om dagen räcker för de flesta. Har du en särskilt stel dag går det bra med två pass, men ta gärna några timmar mellan dem. Mer är inte automatiskt bättre.</p></div>
+    </details>
+    <details>
+      <summary>Gör det ont?</summary>
+      <div class="kw-faq-body"><p>Nej. De första nivåerna känns som ett lätt pirr eller en varm vibration. Ju högre nivå du väljer desto tydligare blir muskelsammandragningen, men den ska aldrig vara smärtsam — sänk nivån om den blir obehaglig. Börja på 1–3 första gången.</p></div>
+    </details>
+    <details>
+      <summary>Passar den alla nackstorlekar?</summary>
+      <div class="kw-faq-body"><p>Ja. Den flytande kontaktplattan och den böjda designen gör att den formar sig efter både smala och kraftigare nackar. Har du långt hår är det lättast att lägga det åt sidan så att elektroderna får direktkontakt med huden.</p></div>
+    </details>
+    <details>
+      <summary>Hur länge räcker batteriet?</summary>
+      <div class="kw-faq-body"><p>Ett fulladdat batteri räcker till flera sessioner. Du laddar den med den medföljande USB-kabeln, precis som en telefon — de flesta laddar den en gång i veckan.</p></div>
+    </details>
+    <details>
+      <summary>Kan jag använda den på axlarna eller ryggen?</summary>
+      <div class="kw-faq-body"><p>Den är formgiven för nacke och övre axelparti, och det är där den sitter bäst. Många använder den också mot skulderbladen genom att lägga den lite längre ner, men den är inte tänkt som en helkroppsmassage.</p></div>
+    </details>
+    <details>
+      <summary>Finns det någon som inte bör använda den?</summary>
+      <div class="kw-faq-body"><p>Ja. Använd den inte om du har pacemaker eller annat implanterat elektroniskt hjälpmedel, är gravid, har epilepsi, hjärtsjukdom, en känd blodpropp, eller sår, utslag och hudåkommor på området. Är du osäker, eller behandlas du för något i nacke eller rygg — prata med din läkare eller fysioterapeut först.</p></div>
+    </details>
+    <details>
+      <summary>Hur snabbt får jag den?</summary>
+      <div class="kw-faq-body"><p>Vi skickar din order inom 24 timmar på vardagar. Normal leveranstid inom Sverige är 2–4 arbetsdagar, och frakten är kostnadsfri.</p></div>
+    </details>
+    <details>
+      <summary>Vad gäller om jag inte är nöjd?</summary>
+      <div class="kw-faq-body"><p>Du har 30 dagars öppet köp. Hör av dig till vår kundtjänst så får du returinstruktioner, och pengarna är tillbaka på ditt konto så snart returen kommit fram. Ingen förklaring behövs.</p></div>
+    </details>
+  </div>
+</section>
+
+<section class="kw-sec kw-sec--ink kw-final">
+  <div class="kw-narrow">
+    <h2>Fem minuter mellan mötena. Det är hela ritualen.</h2>
+    <p class="kw-lead" style="margin:0 auto 28px">Nacken bär dagen åt dig. Ge den tio minuter tillbaka.</p>
+    <a class="kw-btn kw-btn--wide" href="/products/kneadwell-cordless-shiatsu-neck-amp-shoulder-massager">Beställ din Kneadwell — 499 kr</a>
+    <p class="kw-btn-note" style="color:#A9B4B0">Fri frakt · 30 dagars öppet köp · Svensk kundtjänst</p>
+  </div>
+</section>
+
+<div class="kw-sticky">
+  <div class="kw-sticky-price">499 kr<small>Fri frakt · 30 dagars öppet köp</small></div>
+  <a class="kw-btn" href="/products/kneadwell-cordless-shiatsu-neck-amp-shoulder-massager">Köp nu</a>
+</div>
+
+<p class="kw-fine">Kneadwell är en konsumentprodukt för avslappning och välbefinnande — inte en medicinteknisk produkt, och den är inte avsedd att diagnostisera, behandla eller bota sjukdom. Den ersätter inte kontakt med vården. Vid ihållande eller kraftig smärta i nacke, axlar eller huvud, kontakta läkare eller fysioterapeut.</p>
+</div>
