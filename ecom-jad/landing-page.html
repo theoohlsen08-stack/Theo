@@ -1,0 +1,990 @@
+<title>The Jad Method</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  /* ============================================================
+     The Jad Method — landing page
+     Single committed dark theme: this is brand surface, so every
+     viewer sees the identical page regardless of host theme.
+     Every colour is painted explicitly for that reason.
+     ============================================================ */
+
+  :root {
+    /* ground + surfaces */
+    --void:    #05070F;
+    --deep:    #0A1024;
+    --panel:   #0E1630;
+    --edge:    #1C2748;
+    --edge-lit:#2A3A66;
+
+    /* text — blue-biased neutrals, never flat grey */
+    --ice:     #E6EDFB;
+    --mute:    #8497BF;
+    --dim:     #5B6C96;
+
+    /* accents — cyan is the single bold spend */
+    --beam:    #2DE2FF;
+    --signal:  #4B7BFF;
+    --gain:    #3DDC97;
+    --warn:    #FF6B6B;
+
+    --display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+    --body:    "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --shell:   1080px;
+    --cut:     14px; /* corner bevel, echoes the display face */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--ice);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* blueprint grid — ambient, never loud */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--edge) 1px, transparent 1px),
+      linear-gradient(90deg, var(--edge) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: .16;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .shell {
+    position: relative;
+    z-index: 1;
+    width: min(100% - 44px, var(--shell));
+    margin-inline: auto;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  h1, h2, h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; max-width: 66ch; }
+
+  a { color: var(--beam); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--beam);
+    margin: 0;
+  }
+
+  .eyebrow.quiet { color: var(--dim); }
+
+  :focus-visible {
+    outline: 2px solid var(--beam);
+    outline-offset: 3px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    position: relative;
+    z-index: 3;
+    border-bottom: 1px solid var(--edge);
+    background: rgba(5, 7, 15, .82);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+  }
+
+  .masthead .shell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 15px;
+  }
+
+  .wordmark {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: .01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wordmark .dot {
+    width: 9px; height: 9px;
+    background: var(--beam);
+    box-shadow: 0 0 12px var(--beam);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+
+  .wordmark span { color: var(--beam); }
+
+  /* ---------- buttons ---------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: .01em;
+    padding: 14px 26px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--beam), var(--signal));
+    color: #04101C;
+    box-shadow: 0 0 0 rgba(45, 226, 255, 0);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 34px rgba(45, 226, 255, .28);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--edge-lit);
+    color: var(--ice);
+  }
+
+  .btn-ghost:hover { border-color: var(--beam); color: var(--beam); }
+
+  .btn-sm { padding: 10px 18px; font-size: 14px; --cut: 10px; }
+
+  /* ---------- hero ---------- */
+
+  .hero {
+    padding-block: 84px 76px;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    top: -280px; left: 50%;
+    transform: translateX(-50%);
+    width: 900px; height: 620px;
+    background: radial-gradient(ellipse at center, rgba(45,226,255,.16), rgba(75,123,255,.07) 42%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero .shell { position: relative; z-index: 1; }
+
+  .hero h1 {
+    font-size: clamp(40px, 6.4vw, 70px);
+    line-height: 1.04;
+    margin-block: 20px 0;
+    max-width: 15ch;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(120deg, var(--beam), var(--signal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero .lede {
+    font-size: 19px;
+    color: var(--mute);
+    margin-top: 22px;
+    max-width: 56ch;
+  }
+
+  .buy-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 22px;
+    margin-top: 38px;
+  }
+
+  .price-tag {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-family: var(--mono);
+  }
+
+  .price-tag .amount {
+    font-family: var(--display);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--ice);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .price-tag .meta {
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .assurances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    margin-top: 30px;
+    padding-top: 26px;
+    border-top: 1px solid var(--edge);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--mute);
+    list-style: none;
+    padding-inline: 0;
+  }
+
+  .assurances li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .assurances svg { flex: none; color: var(--gain); }
+
+  /* ---------- section frame ---------- */
+
+  .band { padding-block: 76px; }
+
+  .band-deep {
+    background: var(--deep);
+    border-block: 1px solid var(--edge);
+  }
+
+  .band-head { max-width: 62ch; }
+
+  .band-head h2 {
+    font-size: clamp(28px, 3.6vw, 40px);
+    line-height: 1.14;
+    margin-block: 14px 0;
+  }
+
+  .band-head p { color: var(--mute); margin-top: 16px; }
+
+  /* ---------- ledger: dropshipping vs the method ---------- */
+
+  .ledger {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+    margin-top: 44px;
+  }
+
+  .col {
+    border: 1px solid var(--edge);
+    background: var(--panel);
+    padding: 30px 28px 32px;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  .col.is-method {
+    border-color: var(--edge-lit);
+    background:
+      linear-gradient(180deg, rgba(45,226,255,.07), transparent 180px),
+      var(--panel);
+  }
+
+  .col h3 {
+    font-size: 21px;
+    margin-bottom: 4px;
+  }
+
+  .col .col-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .col.is-method .col-tag { color: var(--beam); }
+
+  .col ul {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .col li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+    font-size: 15.5px;
+    color: var(--mute);
+    line-height: 1.5;
+  }
+
+  .col.is-method li { color: var(--ice); }
+
+  .col li svg { margin-top: 4px; }
+
+  .mark-no { color: var(--warn); }
+  .mark-yes { color: var(--gain); }
+
+  /* ---------- what's inside ---------- */
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 44px;
+  }
+
+  .card {
+    border: 1px solid var(--edge);
+    background: var(--panel);
+    padding: 26px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    transition: border-color .2s ease;
+  }
+
+  .card:hover { border-color: var(--edge-lit); }
+
+  .card .idx {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--beam);
+    letter-spacing: .12em;
+  }
+
+  .card h3 { font-size: 18px; line-height: 1.3; }
+
+  .card p { font-size: 15px; color: var(--mute); }
+
+  /* ---------- delivery steps (a real sequence) ---------- */
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0;
+    margin-top: 44px;
+    border: 1px solid var(--edge);
+    background: var(--panel);
+  }
+
+  .step {
+    padding: 30px 26px 34px;
+    border-right: 1px solid var(--edge);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step:last-child { border-right: none; }
+
+  .step .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .16em;
+    color: var(--dim);
+  }
+
+  .step h3 { font-size: 18px; }
+
+  .step p { font-size: 15px; color: var(--mute); }
+
+  /* ---------- audience split ---------- */
+
+  .split {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 22px;
+    margin-top: 44px;
+  }
+
+  .split ul {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .split li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 12px;
+    font-size: 15.5px;
+    color: var(--mute);
+    line-height: 1.5;
+  }
+
+  /* ---------- reviews ---------- */
+
+  .reviews-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 40px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--edge);
+  }
+
+  .score {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .score .stars { display: flex; gap: 4px; }
+
+  .score .count {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--dim);
+  }
+
+  .review-empty {
+    margin-top: 34px;
+    border: 1px dashed var(--edge-lit);
+    background: rgba(14, 22, 48, .5);
+    padding: 44px 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .review-empty h3 { font-size: 19px; }
+
+  .review-empty p {
+    color: var(--mute);
+    font-size: 15px;
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .review-form {
+    margin-top: 26px;
+    border: 1px solid var(--edge);
+    background: var(--panel);
+    padding: 28px 26px 30px;
+  }
+
+  .review-form h3 { font-size: 18px; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 22px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  .field label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .field input,
+  .field textarea {
+    background: var(--void);
+    border: 1px solid var(--edge);
+    color: var(--ice);
+    font-family: var(--body);
+    font-size: 15px;
+    padding: 11px 13px;
+    width: 100%;
+  }
+
+  .field input:focus,
+  .field textarea:focus { border-color: var(--beam); outline: none; }
+
+  .field textarea { resize: vertical; min-height: 96px; }
+
+  .field-wide { grid-column: 1 / -1; }
+
+  .rating-input { display: flex; gap: 6px; }
+
+  .form-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 20px;
+    margin-top: 22px;
+  }
+
+  .btn[disabled] {
+    opacity: .45;
+    cursor: not-allowed;
+    filter: grayscale(.4);
+  }
+
+  .form-note {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--dim);
+    max-width: 44ch;
+    line-height: 1.55;
+  }
+
+  /* ---------- faq ---------- */
+
+  .faq { margin-top: 40px; border-top: 1px solid var(--edge); }
+
+  details {
+    border-bottom: 1px solid var(--edge);
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 22px 40px 22px 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 17.5px;
+    position: relative;
+    color: var(--ice);
+  }
+
+  summary::-webkit-details-marker { display: none; }
+
+  summary::after {
+    content: "+";
+    position: absolute;
+    right: 6px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--mono);
+    font-size: 20px;
+    color: var(--beam);
+  }
+
+  details[open] summary::after { content: "–"; }
+
+  details p {
+    color: var(--mute);
+    font-size: 15.5px;
+    padding-bottom: 24px;
+    padding-right: 40px;
+  }
+
+  /* ---------- closer ---------- */
+
+  .closer {
+    text-align: center;
+    padding-block: 88px;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--edge);
+  }
+
+  .closer::after {
+    content: "";
+    position: absolute;
+    inset: auto 50% -220px;
+    transform: translateX(50%);
+    width: 760px; height: 420px;
+    background: radial-gradient(ellipse at center, rgba(45,226,255,.15), transparent 68%);
+    pointer-events: none;
+  }
+
+  .closer .shell { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+  .closer h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; }
+
+  .closer p { color: var(--mute); text-align: center; }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    border-top: 1px solid var(--edge);
+    background: var(--deep);
+    padding-block: 34px 40px;
+    font-size: 14px;
+    color: var(--dim);
+  }
+
+  footer .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
+
+  footer p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
+
+  footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  footer a { color: var(--mute); text-decoration: none; }
+  footer a:hover { color: var(--beam); }
+
+  .legal {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--edge);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 720px) {
+    .step { border-right: none; border-bottom: 1px solid var(--edge); }
+    .step:last-child { border-bottom: none; }
+    .hero { padding-block: 56px 60px; }
+    .band { padding-block: 58px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .btn-primary:hover { transform: none; }
+  }
+</style>
+
+<header class="masthead">
+  <div class="shell">
+    <div class="wordmark"><span class="dot"></span>ECOM <span>JAD</span></div>
+    <a class="btn btn-primary btn-sm" href="#get">Get the method — $9.90</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="shell">
+    <p class="eyebrow">A digital e-commerce model</p>
+    <h1>It isn't dropshipping. <em>It's the model that replaces it.</em></h1>
+    <p class="lede">
+      No inventory. No supplier. No product to ship. The Jad Method is a fully digital
+      approach to e-commerce, written down step by step and sent to your inbox the
+      moment you buy.
+    </p>
+
+    <div class="buy-row">
+      <a class="btn btn-primary" href="#get">
+        Get instant access
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </a>
+      <div class="price-tag">
+        <span class="amount">$9.90</span>
+        <span class="meta">USD · one-time</span>
+      </div>
+    </div>
+
+    <ul class="assurances">
+      <li>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        Delivered by email in seconds
+      </li>
+      <li>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        No inventory, no shipping
+      </li>
+      <li>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        Beginner-friendly, no experience needed
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band-deep">
+  <div class="shell">
+    <div class="band-head">
+      <p class="eyebrow">The difference</p>
+      <h2>Everyone starts with dropshipping. Most quit there.</h2>
+      <p>
+        Dropshipping asks you to fund inventory risk, supplier problems and shipping
+        delays before you have made a single sale. The Jad Method removes the physical
+        product from the equation entirely — which is exactly why it costs so much
+        less to start.
+      </p>
+    </div>
+
+    <div class="ledger">
+      <div class="col">
+        <p class="col-tag">The usual route</p>
+        <h3>Dropshipping</h3>
+        <ul>
+          <li><svg class="mark-no" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> You depend on a supplier you have never met</li>
+          <li><svg class="mark-no" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> Shipping times you cannot control, and refunds you pay for</li>
+          <li><svg class="mark-no" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> Ad budget burned before the first order lands</li>
+          <li><svg class="mark-no" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> Margins split with everyone in the chain</li>
+        </ul>
+      </div>
+
+      <div class="col is-method">
+        <p class="col-tag">This course</p>
+        <h3>The Jad Method</h3>
+        <ul>
+          <li><svg class="mark-yes" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> No supplier — there is nothing to source</li>
+          <li><svg class="mark-yes" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> No warehouse, no packing, no shipping</li>
+          <li><svg class="mark-yes" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> A far smaller amount of starting capital</li>
+          <li><svg class="mark-yes" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Fully digital, run from a laptop or a phone</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     THEO: the four cards below describe the structure of the
+     guide. Confirm the PDF actually covers all four, or send me
+     the real table of contents and I will swap these titles and
+     descriptions for it.
+     ============================================================ -->
+<section class="band" id="inside">
+  <div class="shell">
+    <div class="band-head">
+      <p class="eyebrow">What you get</p>
+      <h2>The whole method, written down.</h2>
+      <p>
+        One digital guide covering the model end to end — what it is, how to set it up,
+        and how to get your first sale. Yours to keep and reread.
+      </p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <span class="idx">01</span>
+        <h3>The model, explained</h3>
+        <p>What the method actually is, why it works without a physical product, and how it differs from what everyone else is doing.</p>
+      </article>
+      <article class="card">
+        <span class="idx">02</span>
+        <h3>Setup, start to finish</h3>
+        <p>Every step to get running, in order — what to set up first, what can wait, and what you can skip entirely.</p>
+      </article>
+      <article class="card">
+        <span class="idx">03</span>
+        <h3>Getting your first sale</h3>
+        <p>Where the demand is, how to reach it, and what to do in the first weeks before anything is proven.</p>
+      </article>
+      <article class="card">
+        <span class="idx">04</span>
+        <h3>Mistakes that cost money</h3>
+        <p>The errors that drain a beginner's budget fastest, and the checks that catch them before they do.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band band-deep" id="get">
+  <div class="shell">
+    <div class="band-head">
+      <p class="eyebrow">How delivery works</p>
+      <h2>Buy it, and it is in your inbox before you close the tab.</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="num">STEP 01</span>
+        <h3>Check out</h3>
+        <p>One payment of $9.90. No subscription, no upsell, nothing recurring.</p>
+      </div>
+      <div class="step">
+        <span class="num">STEP 02</span>
+        <h3>Check your email</h3>
+        <p>The complete guide arrives automatically at the address you paid with, within seconds.</p>
+      </div>
+      <div class="step">
+        <span class="num">STEP 03</span>
+        <h3>Start the same day</h3>
+        <p>Open it and work through it in order. Everything you need to begin is inside.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="shell">
+    <div class="band-head">
+      <p class="eyebrow quiet">Honest fit</p>
+      <h2>Who this is for — and who it isn't.</h2>
+    </div>
+
+    <div class="split">
+      <div class="col">
+        <p class="col-tag">A good fit if</p>
+        <ul>
+          <li><svg class="mark-yes" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> You want to start e-commerce but have very little to invest</li>
+          <li><svg class="mark-yes" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> You have tried dropshipping and it did not work out</li>
+          <li><svg class="mark-yes" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> You would rather follow one clear method than ten scattered videos</li>
+        </ul>
+      </div>
+      <div class="col">
+        <p class="col-tag">Not for you if</p>
+        <ul>
+          <li><svg class="mark-no" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> You are looking for income without doing the work</li>
+          <li><svg class="mark-no" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> You expect results in a set number of days</li>
+          <li><svg class="mark-no" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg> You already run a working store and want advanced tactics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     REVIEWS — deliberately empty. No testimonials have been
+     written here, because there are no customers yet and
+     invented reviews are illegal to publish in the EU.
+     Connect a review app (Judge.me is free) and real reviews
+     will populate this block.
+     ============================================================ -->
+<section class="band band-deep" id="reviews">
+  <div class="shell">
+    <div class="band-head">
+      <p class="eyebrow">Reviews</p>
+      <h2>What buyers say.</h2>
+    </div>
+
+    <div class="reviews-head">
+      <div class="score">
+        <div class="stars" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+        </div>
+        <span class="count">No rating yet · 0 reviews</span>
+      </div>
+      <a class="btn btn-ghost btn-sm" href="#write-review">Write a review</a>
+    </div>
+
+    <div class="review-empty">
+      <h3>No reviews yet</h3>
+      <p>
+        This section fills up with verified buyer reviews as they come in. Nothing here
+        is written in advance.
+      </p>
+    </div>
+
+    <form class="review-form" id="write-review" novalidate>
+      <h3>Leave a review</h3>
+      <div class="field-grid">
+        <div class="field">
+          <label for="rv-name">Name</label>
+          <input id="rv-name" name="name" type="text" autocomplete="name" placeholder="How you want to be shown">
+        </div>
+        <div class="field">
+          <label for="rv-rating">Rating</label>
+          <div class="rating-input" id="rv-rating">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+          </div>
+        </div>
+        <div class="field field-wide">
+          <label for="rv-title">Headline</label>
+          <input id="rv-title" name="title" type="text" placeholder="Sum it up in a line">
+        </div>
+        <div class="field field-wide">
+          <label for="rv-body">Your review</label>
+          <textarea id="rv-body" name="body" placeholder="What did you actually get out of it?"></textarea>
+        </div>
+      </div>
+      <div class="form-foot">
+        <button class="btn btn-primary" type="submit" disabled>Submit review</button>
+        <p class="form-note">Review submissions open once the course launches. Only verified buyers can post.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="band">
+  <div class="shell">
+    <div class="band-head">
+      <p class="eyebrow quiet">Questions</p>
+      <h2>Before you buy.</h2>
+    </div>
+
+    <div class="faq">
+      <details open>
+        <summary>Is this dropshipping?</summary>
+        <p>No. There is no supplier, no product to source and nothing to ship. That is the whole point of the method — it removes the physical product, and with it most of the cost and risk of starting.</p>
+      </details>
+      <details>
+        <summary>How much money do I need to start?</summary>
+        <p>Considerably less than a dropshipping store, because there is no inventory to buy and nothing to ship. The guide sets out exactly what you do and do not need to spend money on before you begin.</p>
+      </details>
+      <details>
+        <summary>How do I receive the course?</summary>
+        <p>Automatically by email, within seconds of your payment going through. It arrives at the address you check out with, so use one you can actually open.</p>
+      </details>
+      <details>
+        <summary>Do I need any experience?</summary>
+        <p>No. It is written for someone starting from nothing, and it assumes no prior e-commerce background.</p>
+      </details>
+      <details>
+        <summary>Will this make me money?</summary>
+        <p>It is a method, not a guarantee. What you get is the model written out in full and the steps to run it. What you make depends on the work you put in, and nobody who tells you otherwise is being honest with you.</p>
+      </details>
+      <details>
+        <summary>Can I get a refund?</summary>
+        <p>The guide is delivered digitally and immediately, so by completing your purchase you agree to receive it right away and waive the statutory 14-day right of withdrawal. If your file does not arrive, contact us and we will fix it.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="shell">
+    <p class="eyebrow">One payment · Instant delivery</p>
+    <h2>Start with the method, not the guesswork.</h2>
+    <p>The complete Jad Method, in your inbox in the next minute — $9.90.</p>
+    <a class="btn btn-primary" href="#get" style="margin-top:8px">
+      Get the method — $9.90
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="shell">
+    <div class="wordmark" style="font-size:16px"><span class="dot"></span>ECOM <span>JAD</span></div>
+    <nav>
+      <a href="/policies/privacy-policy">Privacy</a>
+      <a href="/policies/terms-of-service">Terms</a>
+      <a href="/pages/contact">Contact</a>
+    </nav>
+  </div>
+  <div class="shell">
+    <p class="legal">
+      The Jad Method is an educational digital product. It does not promise, guarantee or
+      imply any level of income. Results depend entirely on your own work, and no
+      outcome is typical. Ecom Jad is a content brand and is not affiliated with,
+      endorsed by or connected to any brand shown in its social media content.
+    </p>
+  </div>
+</footer>
