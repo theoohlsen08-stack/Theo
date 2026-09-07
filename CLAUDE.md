@@ -57,14 +57,36 @@ Garderob No.2, återanvänd. Nudie Jeans-projektet är nedlagt: den 2026-09-07 r
 tomma standardobjekt — kollektionen `Home page` (`frontpage`, som temat kräver), sidan `Contact`,
 bloggen `News` och en integritetspolicy.
 
-Butiken ska sälja **The Jad Method**, en kurs om att tjäna pengar. Innehåll, omfattning och pris
-är ännu inte bestämda.
+#### The Jad Method
 
-Kvar att göra: domänen är fortfarande `garderobno2.com` och kontakt-e-posten
-`info.garderobno2@gmail.com` (Theo fixar båda själv); temat är kvar i klädbutiksskick.
+Butikens enda produkt: en digital kurs i e-handel, **$9.90 USD**, engångsköp. Levereras som en
+fil (PDF eller presentation) automatiskt via mejl direkt efter köp. Positionering: *inte*
+dropshipping — helt digitalt, inget lager, ingen produkt, mycket lägre startkapital.
+Kursens faktiska innehåll är ännu inte skrivet.
 
-Butiksnamnet går **inte** att ändra via Admin-API:t — det finns ingen `shopUpdate`-mutation,
-`Shop` är i praktiken skrivskyddat. Namnet byts för hand i Inställningar → Butiksuppgifter.
+- Produkt `gid://shopify/Product/15936421462400`, variant `…/ProductVariant/58879923749248`,
+  SKU `JAD-METHOD-01`. Status **DRAFT** tills mejlleveransen fungerar.
+- `requiresShipping: false` och `tracked: false` är satta — utan det kräver kassan
+  leveransadress och fraktpris, vilket bryter ett digitalt köp.
+- Landningssida: `/pages/the-jad-method`, `gid://shopify/Page/715405164928`. Källan ligger i
+  `ecom-jad/landing-page.html`; Shopify-versionen är samma sida med all CSS scopad till
+  `#jad-lp` (annars läcker stilarna ut i temat) och Google Fonts via `@import` (Shopify
+  strippar `<link>` i sidinnehåll).
+- Recensionssektionen renderas från listan `JAD_REVIEWS` högst upp i sidans skript. Den är
+  avsiktligt tom. **Fyll den aldrig med påhittade omdömen** — falska recensioner står på
+  svarta listan i direktivet om otillbörliga affärsmetoder och är förbjudna i svensk
+  marknadsföringslag. Riktiga omdömen kommer via en recensionsapp, t.ex. Judge.me.
+
+Kvar att göra: mejlleveransen (appen Digital Downloads) är inte uppsatt; domänen är fortfarande
+`garderobno2.com` och kontakt-e-posten `info.garderobno2@gmail.com` (Theo fixar båda själv);
+temat är kvar i klädbutiksskick.
+
+Butiksnamnet och butiksvalutan går **inte** att ändra via Admin-API:t — det finns ingen
+`shopUpdate`-mutation, `Shop` är i praktiken skrivskyddat. Båda byts för hand i Inställningar.
+Valutan var SEK och är sedan 2026-09-07 **USD**; eftersom butiken redan hade 6 ordrar från
+Garderob No.2-tiden var fältet låst i admin och bytet fick gå via Shopify Support.
+Marknaden `Sweden` har fortfarande SEK som lokal valuta, så svenska besökare ser ett
+omräknat kronpris i stället för $9.90.
 
 ## Anslutna tjänster
 
