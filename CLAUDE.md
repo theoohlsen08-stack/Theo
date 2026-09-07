@@ -66,6 +66,8 @@ Kursens faktiska innehåll är ännu inte skrivet.
 
 - Produkt `gid://shopify/Product/15936421462400`, variant `…/ProductVariant/58879923749248`,
   SKU `JAD-METHOD-01`. Status **DRAFT** tills mejlleveransen fungerar.
+- Tre produktbilder (1600×2000) är inlagda, renderade ur `ecom-jad/product/product-images.html`
+  på samma sätt som hero-bilden. Omslaget är huvudbild.
 - `requiresShipping: false` och `tracked: false` är satta — utan det kräver kassan
   leveransadress och fraktpris, vilket bryter ett digitalt köp.
 - Landningssida: `/pages/the-jad-method`, `gid://shopify/Page/715405164928`. Källan ligger i

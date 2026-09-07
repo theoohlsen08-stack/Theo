@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --void:#05070F; --deep:#0A1024; --panel:#0E1630;
+    --edge:#1C2748; --lit:#2A3A66;
+    --ice:#E6EDFB; --mute:#8497BF; --dim:#5B6C96;
+    --beam:#2DE2FF; --signal:#4B7BFF;
+    --display: "Segoe UI Semibold", system-ui, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "DejaVu Sans Mono", Menlo, monospace;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:1600px; height:2000px; overflow:hidden; background:var(--void);
+    font-family:system-ui,"Helvetica Neue",Arial,"Liberation Sans",sans-serif; }
+
+  .card {
+    position:relative; width:1600px; height:2000px;
+    background:var(--void); color:var(--ice);
+    padding:130px 120px; display:none; flex-direction:column;
+  }
+  body[data-v="1"] .v1, body[data-v="2"] .v2, body[data-v="3"] .v3 { display:flex; }
+
+  .card::before {
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--edge) 1px, transparent 1px),
+      linear-gradient(90deg, var(--edge) 1px, transparent 1px);
+    background-size:80px 80px; opacity:.34;
+  }
+  .card > * { position:relative; z-index:1; }
+  .halo {
+    position:absolute; z-index:0; left:50%; transform:translateX(-50%);
+    width:1700px; height:1300px;
+    background:radial-gradient(ellipse at center, rgba(45,226,255,.20), rgba(75,123,255,.08) 42%, transparent 68%);
+  }
+  .halo.top { top:-380px; }
+  .halo.mid { top:280px; }
+
+  .eyebrow {
+    font-family:var(--mono); font-size:30px; letter-spacing:.30em;
+    text-transform:uppercase; color:var(--beam);
+  }
+  .rule { height:1px; background:var(--edge); margin:44px 0; }
+
+  .wordmark {
+    margin-top:70px; display:flex; align-items:center; gap:20px;
+    font-family:var(--display); font-weight:700; font-size:38px; letter-spacing:.02em;
+  }
+  .wordmark .dot {
+    width:20px; height:20px; background:var(--beam);
+    box-shadow:0 0 26px var(--beam);
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  }
+  .wordmark b { color:var(--beam); font-weight:700; }
+
+  /* ---------- 1: cover ---------- */
+  .v1 h1 {
+    font-family:var(--display); font-weight:800;
+    font-size:172px; line-height:.94; letter-spacing:-.02em;
+    margin-top:52px; text-transform:uppercase;
+  }
+  .v1 h1 em {
+    font-style:normal;
+    background:linear-gradient(115deg,var(--beam),var(--signal));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .v1 .sub { font-size:44px; color:var(--mute); margin-top:46px; line-height:1.35; max-width:20ch; }
+  .v1 .spark { flex:1; display:flex; align-items:center; }
+
+  /* ---------- 2: delivery ---------- */
+  .v2 h2 {
+    font-family:var(--display); font-weight:800; font-size:104px;
+    line-height:1.02; letter-spacing:-.02em; margin-top:46px; text-transform:uppercase;
+  }
+  .flow { flex:1; display:flex; flex-direction:column; justify-content:center; gap:34px; }
+  .step {
+    display:grid; grid-template-columns:96px 1fr; gap:34px; align-items:center;
+    border:1px solid var(--edge); background:var(--panel); padding:38px 40px;
+  }
+  .step .n {
+    font-family:var(--mono); font-size:34px; color:var(--beam);
+    letter-spacing:.1em;
+  }
+  .step .t { font-family:var(--display); font-weight:700; font-size:46px; }
+  .step .d { font-size:30px; color:var(--mute); margin-top:10px; }
+  .step.hot { border-color:var(--lit); box-shadow:0 0 70px rgba(45,226,255,.16) inset; }
+
+  /* ---------- 3: contents ---------- */
+  .v3 h2 {
+    font-family:var(--display); font-weight:800; font-size:104px;
+    line-height:1.02; letter-spacing:-.02em; margin-top:46px; text-transform:uppercase;
+  }
+  .list { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .item { display:grid; grid-template-columns:120px 1fr; gap:30px; padding:44px 0; border-top:1px solid var(--edge); }
+  .item:last-child { border-bottom:1px solid var(--edge); }
+  .item .n { font-family:var(--mono); font-size:32px; color:var(--beam); letter-spacing:.12em; }
+  .item .t { font-family:var(--display); font-weight:700; font-size:52px; line-height:1.1; }
+  .item .d { font-size:29px; color:var(--mute); margin-top:14px; line-height:1.4; }
+</style>
+</head>
+<body>
+
+<div class="card v1">
+  <div class="halo top"></div>
+  <p class="eyebrow">Digital guide</p>
+  <h1>The<br><em>Jad</em><br>Method</h1>
+  <p class="sub">E-commerce without inventory, suppliers or shipping.</p>
+  <div class="spark">
+    <svg width="1360" height="180" viewBox="0 0 1360 180">
+      <defs>
+        <linearGradient id="s1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#4B7BFF"/><stop offset="100%" stop-color="#2DE2FF"/>
+        </linearGradient>
+        <linearGradient id="f1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2DE2FF" stop-opacity=".34"/>
+          <stop offset="100%" stop-color="#2DE2FF" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#f1)" d="M0,152 C120,146 190,124 300,130 C420,136 470,96 590,88 C700,80 760,110 880,86 C1000,62 1080,30 1360,14 L1360,180 L0,180 Z"/>
+      <path fill="none" stroke="url(#s1)" stroke-width="6" stroke-linecap="round"
+        d="M0,152 C120,146 190,124 300,130 C420,136 470,96 590,88 C700,80 760,110 880,86 C1000,62 1080,30 1360,14"/>
+      <circle cx="1360" cy="14" r="12" fill="#2DE2FF"/>
+    </svg>
+  </div>
+  <div class="wordmark"><span class="dot"></span>ECOM&nbsp;<b>JAD</b></div>
+</div>
+
+<div class="card v2">
+  <div class="halo mid"></div>
+  <p class="eyebrow">Instant delivery</p>
+  <h2>In your inbox<br>in seconds</h2>
+  <div class="flow">
+    <div class="step"><span class="n">01</span><div><div class="t">Check out</div><div class="d">One payment. Nothing recurring.</div></div></div>
+    <div class="step hot"><span class="n">02</span><div><div class="t">Check your email</div><div class="d">The complete guide arrives automatically.</div></div></div>
+    <div class="step"><span class="n">03</span><div><div class="t">Start the same day</div><div class="d">Everything you need to begin is inside.</div></div></div>
+  </div>
+  <div class="wordmark"><span class="dot"></span>ECOM&nbsp;<b>JAD</b></div>
+</div>
+
+<div class="card v3">
+  <div class="halo top"></div>
+  <p class="eyebrow">What's inside</p>
+  <h2>The whole<br>method</h2>
+  <div class="list">
+    <div class="item"><span class="n">01</span><div><div class="t">The model, explained</div><div class="d">Why it works without a physical product.</div></div></div>
+    <div class="item"><span class="n">02</span><div><div class="t">Setup, start to finish</div><div class="d">Every step in order, and what to skip.</div></div></div>
+    <div class="item"><span class="n">03</span><div><div class="t">Getting your first sale</div><div class="d">Where the demand is and how to reach it.</div></div></div>
+    <div class="item"><span class="n">04</span><div><div class="t">Mistakes that cost money</div><div class="d">The errors that drain a budget fastest.</div></div></div>
+  </div>
+  <div class="wordmark"><span class="dot"></span>ECOM&nbsp;<b>JAD</b></div>
+</div>
+
+<script>
+  var v = new URLSearchParams(location.search).get("v") || "1";
+  document.body.setAttribute("data-v", v);
+</script>
+</body>
+</html>
