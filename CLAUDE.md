@@ -70,6 +70,9 @@ Kursens faktiska innehåll är ännu inte skrivet.
   på samma sätt som hero-bilden. Omslaget är huvudbild.
 - `requiresShipping: false` och `tracked: false` är satta — utan det kräver kassan
   leveransadress och fraktpris, vilket bryter ett digitalt köp.
+- Produktens handle är `the-jad-method`, samma som landningssidans — men olika prefix
+  (`/products/` mot `/pages/`), så de krockar inte. Landningssidans tre cyanknappar länkar
+  till `/products/the-jad-method` (relativt, så det följer med om en egen domän kopplas).
 - Landningssida: `/pages/the-jad-method`, `gid://shopify/Page/715405164928`. Källan ligger i
   `ecom-jad/landing-page.html`; Shopify-versionen är samma sida med all CSS scopad till
   `#jad-lp` (annars läcker stilarna ut i temat) och Google Fonts via `@import` (Shopify
