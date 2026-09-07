@@ -77,10 +77,16 @@ Kursens faktiska innehåll är ännu inte skrivet.
   `ecom-jad/landing-page.html`; Shopify-versionen är samma sida med all CSS scopad till
   `#jad-lp` (annars läcker stilarna ut i temat) och Google Fonts via `@import` (Shopify
   strippar `<link>` i sidinnehåll).
-- Recensionssektionen renderas från listan `JAD_REVIEWS` högst upp i sidans skript. Den är
-  avsiktligt tom. **Fyll den aldrig med påhittade omdömen** — falska recensioner står på
-  svarta listan i direktivet om otillbörliga affärsmetoder och är förbjudna i svensk
-  marknadsföringslag. Riktiga omdömen kommer via en recensionsapp, t.ex. Judge.me.
+- Recensionssektionen är tio handredigerade `<article class="review-card">` med platshållare
+  inom hakparenteser, samma upplägg som Kneadwell-sidan. Ingen JavaScript — korten är ren HTML
+  så att de går att skriva i direkt i Shopifys sidredigerare utan att ett syntaxfel släcker
+  sektionen. Snittbetyget i `.reviews-head` sätts också för hand.
+- Testarna får produkten gratis, så korten bär raden `Free test copy, honest review`. Den ska
+  stå kvar — under EU:s konsumentregler måste det framgå att ett omdöme inte kommer från ett
+  vanligt köp. `Verified purchase` används bara om personen faktiskt betalat.
+- **Skriv aldrig påhittade omdömen.** Falska recensioner står på svarta listan i direktivet om
+  otillbörliga affärsmetoder och är förbjudna i svensk marknadsföringslag. Riktiga omdömen från
+  riktiga testare är däremot helt i sin ordning.
 
 #### Temat
 

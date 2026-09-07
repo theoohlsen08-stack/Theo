@@ -475,36 +475,6 @@
     color: var(--dim);
   }
 
-  .review-empty {
-    margin-top: 34px;
-    border: 1px dashed var(--edge-lit);
-    background: rgba(14, 22, 48, .5);
-    padding: 44px 30px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .review-empty h3 { font-size: 19px; }
-
-  .review-empty p {
-    color: var(--mute);
-    font-size: 15px;
-    max-width: 46ch;
-    margin-inline: auto;
-  }
-
-  .review-form {
-    margin-top: 26px;
-    border: 1px solid var(--edge);
-    background: var(--panel);
-    padding: 28px 26px 30px;
-  }
-
-  .review-form h3 { font-size: 18px; }
-
   .review-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -521,120 +491,31 @@
     gap: 11px;
   }
 
-  .review-card .rc-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 14px;
-  }
-
-  .review-card .rc-name { font-family: var(--display); font-weight: 600; font-size: 15.5px; }
-  .review-card .rc-loc { font-family: var(--mono); font-size: 11.5px; color: var(--dim); }
   .review-card .rc-stars { display: flex; gap: 3px; flex: none; }
   .review-card .rc-title { font-family: var(--display); font-weight: 600; font-size: 16px; }
   .review-card .rc-body { font-size: 15px; color: var(--mute); line-height: 1.55; }
 
   .review-card .rc-foot {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     margin-top: auto;
-    padding-top: 4px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--gain);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  .deck-nav {
+    padding-top: 16px;
+    border-top: 1px solid var(--edge);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    margin-top: 28px;
+    flex-direction: column;
+    gap: 3px;
   }
 
-  .deck-btn {
-    width: 40px; height: 40px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--edge-lit);
-    background: transparent;
-    color: var(--ice);
-    cursor: pointer;
-    transition: border-color .2s ease, color .2s ease;
-  }
-
-  .deck-btn:hover:not(:disabled) { border-color: var(--beam); color: var(--beam); }
-  .deck-btn:disabled { opacity: .3; cursor: not-allowed; }
-
-  .deck-pos {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--dim);
-    font-variant-numeric: tabular-nums;
-    min-width: 14ch;
-    text-align: center;
-  }
-
-  .field-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 22px;
-  }
-
-  .field { display: flex; flex-direction: column; gap: 7px; }
-
-  .field label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--dim);
-  }
-
-  .field input,
-  .field textarea {
-    background: var(--void);
-    border: 1px solid var(--edge);
-    color: var(--ice);
-    font-family: var(--body);
+  .review-card .rc-foot strong {
+    font-family: var(--display);
+    font-weight: 600;
     font-size: 15px;
-    padding: 11px 13px;
-    width: 100%;
+    color: var(--ice);
   }
 
-  .field input:focus,
-  .field textarea:focus { border-color: var(--beam); outline: none; }
-
-  .field textarea { resize: vertical; min-height: 96px; }
-
-  .field-wide { grid-column: 1 / -1; }
-
-  .rating-input { display: flex; gap: 6px; }
-
-  .form-foot {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 14px 20px;
-    margin-top: 22px;
-  }
-
-  .btn[disabled] {
-    opacity: .45;
-    cursor: not-allowed;
-    filter: grayscale(.4);
-  }
-
-  .form-note {
+  .review-card .rc-foot span {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--dim);
-    max-width: 44ch;
-    line-height: 1.55;
+    letter-spacing: .04em;
   }
 
   /* ---------- faq ---------- */
@@ -941,64 +822,118 @@
 
     <div class="reviews-head">
       <div class="score">
-        <div class="stars" id="jad-agg-stars" aria-hidden="true"></div>
-        <span class="count" id="jad-agg-count">No rating yet · 0 reviews</span>
-      </div>
-      <a class="btn btn-ghost btn-sm" href="#write-review">Write a review</a>
-    </div>
-
-    <div class="review-empty" id="jad-review-empty">
-      <h3>No reviews yet</h3>
-      <p>
-        This section fills up with verified buyer reviews as they come in. Nothing here
-        is written in advance.
-      </p>
-    </div>
-
-    <div class="review-deck" id="jad-review-deck" hidden>
-      <div class="review-grid" id="jad-review-grid"></div>
-      <div class="deck-nav">
-        <button class="deck-btn" id="jad-prev" type="button" aria-label="Previous reviews">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <span class="deck-pos" id="jad-deck-pos"></span>
-        <button class="deck-btn" id="jad-next" type="button" aria-label="Next reviews">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        </button>
+        <div class="stars" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <span class="count">[Snittbetyg] out of 5 · [antal] reviews</span>
       </div>
     </div>
 
-    <form class="review-form" id="write-review" novalidate>
-      <h3>Leave a review</h3>
-      <div class="field-grid">
-        <div class="field">
-          <label for="rv-name">Name</label>
-          <input id="rv-name" name="name" type="text" autocomplete="name" placeholder="How you want to be shown">
-        </div>
-        <div class="field">
-          <label for="rv-rating">Rating</label>
-          <div class="rating-input" id="rv-rating">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A66" stroke-width="1.6"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
-          </div>
-        </div>
-        <div class="field field-wide">
-          <label for="rv-title">Headline</label>
-          <input id="rv-title" name="title" type="text" placeholder="Sum it up in a line">
-        </div>
-        <div class="field field-wide">
-          <label for="rv-body">Your review</label>
-          <textarea id="rv-body" name="body" placeholder="What did you actually get out of it?"></textarea>
-        </div>
-      </div>
-      <div class="form-foot">
-        <button class="btn btn-primary" type="submit" disabled>Submit review</button>
-        <p class="form-note">Review submissions open once the course launches. Only verified buyers can post.</p>
-      </div>
-    </form>
+    <!-- ================================================================
+         RECENSIONER — fylls i för hand.
+
+         Varje <article class="review-card"> nedan är ett kort. Skriv över
+         texten inom hakparenteser. Ta bort de kort du inte använder, eller
+         kopiera ett helt kort för att lägga till fler.
+
+         Vill du ge någon fyra stjärnor i stället för fem: byt fill och
+         stroke till "none" respektive "#2A3A66" på den sista <svg>.
+
+         Raden "Free test copy, honest review" ska stå kvar på alla som
+         fått produkten gratis. Har någon faktiskt köpt den skriver du
+         "Verified purchase" i stället. Blanda inte ihop dem.
+         ================================================================ -->
+
+    <div class="review-grid">
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 1 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 1 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 1]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 2 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 2 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 2]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 3 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 3 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 3]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 4 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 4 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 4]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 5 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 5 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 5]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 6 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 6 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 6]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 7 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 7 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 7]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 8 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 8 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 8]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 9 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 9 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 9]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+      <article class="review-card">
+        <div class="rc-stars"><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="#2DE2FF" stroke="#2DE2FF" stroke-width="1.6" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+        <p class="rc-title">[Rubrik 10 — en rad, vad testaren fastnade för]</p>
+        <p class="rc-body">[Recension 10 — skriv in vad testaren faktiskt sa och vilket resultat hen fick.]</p>
+        <footer class="rc-foot">
+          <strong>[Namn 10]</strong>
+          <span>[Land] · Free test copy, honest review</span>
+        </footer>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -1068,102 +1003,3 @@
     </p>
   </div>
 </footer>
-
-<script>
-(function () {
-  /* ------------------------------------------------------------------
-     Real reviews only. Each entry:
-       { name, location, rating, title, body, date, verified }
-     rating is a number 1–5; date is "YYYY-MM-DD"; verified marks a
-     review left by someone whose purchase was confirmed.
-     Paste rows here from your review app's export, or leave the array
-     empty and the section shows its empty state.
-     ------------------------------------------------------------------ */
-  const JAD_REVIEWS = [];
-
-  const PER_PAGE = 6;
-
-  const grid = document.getElementById("jad-review-grid");
-  const deck = document.getElementById("jad-review-deck");
-  const empty = document.getElementById("jad-review-empty");
-  const aggStars = document.getElementById("jad-agg-stars");
-  const aggCount = document.getElementById("jad-agg-count");
-  const posLabel = document.getElementById("jad-deck-pos");
-  const prevBtn = document.getElementById("jad-prev");
-  const nextBtn = document.getElementById("jad-next");
-
-  if (!grid) return;
-
-  const esc = (v) =>
-    String(v == null ? "" : v).replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
-    );
-
-  function stars(rating, size) {
-    const filled = Math.round(Number(rating) || 0);
-    let out = "";
-    for (let i = 1; i <= 5; i++) {
-      const on = i <= filled;
-      out +=
-        '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" ' +
-        'fill="' + (on ? "#2DE2FF" : "none") + '" ' +
-        'stroke="' + (on ? "#2DE2FF" : "#2A3A66") + '" stroke-width="1.6" aria-hidden="true">' +
-        '<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>';
-    }
-    return out;
-  }
-
-  function card(r) {
-    const loc = r.location ? '<span class="rc-loc">' + esc(r.location) + "</span>" : "";
-    const title = r.title ? '<p class="rc-title">' + esc(r.title) + "</p>" : "";
-    const foot = r.verified
-      ? '<span class="rc-foot">' +
-        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>' +
-        "Verified purchase</span>"
-      : "";
-    return (
-      '<article class="review-card">' +
-      '<div class="rc-top"><div><p class="rc-name">' + esc(r.name) + "</p>" + loc + "</div>" +
-      '<div class="rc-stars">' + stars(r.rating, 15) + "</div></div>" +
-      title +
-      '<p class="rc-body">' + esc(r.body) + "</p>" +
-      foot +
-      "</article>"
-    );
-  }
-
-  let page = 0;
-  const pages = Math.ceil(JAD_REVIEWS.length / PER_PAGE);
-
-  function render() {
-    const start = page * PER_PAGE;
-    const slice = JAD_REVIEWS.slice(start, start + PER_PAGE);
-    grid.innerHTML = slice.map(card).join("");
-    posLabel.textContent =
-      start + 1 + "–" + (start + slice.length) + " of " + JAD_REVIEWS.length;
-    prevBtn.disabled = page === 0;
-    nextBtn.disabled = page >= pages - 1;
-  }
-
-  if (!JAD_REVIEWS.length) {
-    aggStars.innerHTML = stars(0, 20);
-    return; /* empty state stays, deck stays hidden */
-  }
-
-  const avg =
-    JAD_REVIEWS.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / JAD_REVIEWS.length;
-
-  aggStars.innerHTML = stars(avg, 20);
-  aggCount.textContent =
-    avg.toFixed(1) + " out of 5 · " + JAD_REVIEWS.length +
-    (JAD_REVIEWS.length === 1 ? " review" : " reviews");
-
-  empty.hidden = true;
-  deck.hidden = false;
-
-  prevBtn.addEventListener("click", () => { if (page > 0) { page--; render(); } });
-  nextBtn.addEventListener("click", () => { if (page < pages - 1) { page++; render(); } });
-
-  render();
-})();
-</script>
