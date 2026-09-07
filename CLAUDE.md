@@ -83,9 +83,11 @@ Butiken kör Shopifys **Horizon** (`themeStoreId` 2481), inte Dawn. Horizon här
 sina färger från ett enda `color_palette`-objekt i `config/settings_data.json`, så en
 palettändring slår igenom i hela temat.
 
-Temat **`Ecom Jad — Cyber`** (`gid://shopify/OnlineStoreTheme/198272385408`) är en kopia av
-klädbutikstemat med landningssidans design pålagd. Det är **opublicerat** — Theo publicerar för
-hand under Butik → Teman. Ändrade filer finns i `ecom-jad/theme/` med förklaring i dess README.
+Temat är en kopia av klädbutikstemat med landningssidans design pålagd. Ändrade filer och en
+tabell över alla utbytta texter finns i `ecom-jad/theme/` med förklaring i dess README.
+Versioner: `Ecom Jad — Cyber` (`…/198272385408`, publicerat 2026-09-07) och
+`Ecom Jad — Cyber v2 (texter)` (`…/198272549248`), som byter startsidans Garderob No.2- och
+Nudie Jeans-texter mot Jad Method-texter.
 
 Admin-API:t tillåter **inte** `themePublish`, och skrivningar mot det live-temat (role `MAIN`)
 är blockerade. Arbetsgången är därför alltid: `themeDuplicate` → `themeFilesUpsert` mot kopian
