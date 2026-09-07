@@ -62,10 +62,14 @@ bloggen `News` och en integritetspolicy.
 Butikens enda produkt: en digital kurs i e-handel, **$9.90 USD**, engångsköp. Levereras som en
 fil (PDF eller presentation) automatiskt via mejl direkt efter köp. Positionering: *inte*
 dropshipping — helt digitalt, inget lager, ingen produkt, mycket lägre startkapital.
-Kursens faktiska innehåll är ännu inte skrivet.
+Kursens faktiska innehåll är ännu inte skrivet — Theo skriver det i Google Docs-dokumentet
+**The jad Method** (`1aprJW9BnyaabPZKGJH6jfc_FvM3bPwP_bC11ltamsZ4`, skapat 2026-09-07) och
+säger till när det är klart.
 
 - Produkt `gid://shopify/Product/15936421462400`, variant `…/ProductVariant/58879923749248`,
-  SKU `JAD-METHOD-01`. Status **DRAFT** tills mejlleveransen fungerar.
+  SKU `JAD-METHOD-01`, status **ACTIVE**, publicerad i Webbshop, Kassasystem, Shop och TikTok.
+  Butiken är fortfarande lösenordsskyddad, så inget säljs förrän Theo öppnar den — och
+  mejlleveransen måste fungera först.
 - Tre produktbilder (1600×2000) är inlagda, renderade ur `ecom-jad/product/product-images.html`
   på samma sätt som hero-bilden. Omslaget är huvudbild.
 - `requiresShipping: false` och `tracked: false` är satta — utan det kräver kassan
@@ -87,6 +91,25 @@ Kursens faktiska innehåll är ännu inte skrivet.
 - **Skriv aldrig påhittade omdömen.** Falska recensioner står på svarta listan i direktivet om
   otillbörliga affärsmetoder och är förbjudna i svensk marknadsföringslag. Riktiga omdömen från
   riktiga testare är däremot helt i sin ordning.
+
+#### Kursfilen
+
+`ecom-jad/course/` innehåller mallen som PDF:en byggs ur — `jad-method.html` plus
+`build.sh`, som renderar 11 sidor A4 med headless Chromium (`--print-to-pdf`).
+Kedjan är testad hela vägen: 11 sidor, rätt sidformat, alla tre typsnitten inbäddade.
+Allt inom `[hakparenteser]` är platshållare och lyser blått i renderingen.
+
+Mallens fyra kapitel är exakt de fyra löften produktsidan ger, i samma ordning. Ändras
+det ena måste det andra ändras med.
+
+Typsnitten ligger som base64 i `fonts-inline.css`: **Chromium når inte
+`fonts.gstatic.com`, men `curl` gör det.** Det är vägen att gå varje gång ett riktigt
+typsnitt behövs i en rendering härifrån — hämta CSS:en med webbläsar-User-Agent (annars
+kommer `.ttf` istället för `.woff2`) och baka in som `data:`-URI.
+
+Sista sidan bär en friskrivning om att guiden inte lovar något resultat. Den ska stå
+kvar, och inga intäktssiffror får in i kursen — varken Jads egna eller en läsares
+förväntade. Se `ecom-jad/course/README.md`.
 
 #### Temat
 
@@ -133,7 +156,7 @@ USD` med `localCurrencies: false`, så alla ser $9.90. Notera att `marketCurrenc
 - **Meta Ads** — kampanjer, katalog, pixel, insights.
 - **ElevenLabs** — bild-, video- och röstgenerering. Det är verktyget för Ecom Jad-materialet.
 - **Gmail** — läs och utkast.
-- **Google Drive** — installerad men avstängd i chattarna; be Theo slå på den om den behövs.
+- **Google Drive** — påslagen sedan 2026-09-07. Där ligger kursunderlaget.
 
 ## Minne
 
