@@ -77,16 +77,32 @@ Kursens faktiska innehåll är ännu inte skrivet.
   svarta listan i direktivet om otillbörliga affärsmetoder och är förbjudna i svensk
   marknadsföringslag. Riktiga omdömen kommer via en recensionsapp, t.ex. Judge.me.
 
+#### Temat
+
+Butiken kör Shopifys **Horizon** (`themeStoreId` 2481), inte Dawn. Horizon härleder nästan alla
+sina färger från ett enda `color_palette`-objekt i `config/settings_data.json`, så en
+palettändring slår igenom i hela temat.
+
+Temat **`Ecom Jad — Cyber`** (`gid://shopify/OnlineStoreTheme/198272385408`) är en kopia av
+klädbutikstemat med landningssidans design pålagd. Det är **opublicerat** — Theo publicerar för
+hand under Butik → Teman. Ändrade filer finns i `ecom-jad/theme/` med förklaring i dess README.
+
+Admin-API:t tillåter **inte** `themePublish`, och skrivningar mot det live-temat (role `MAIN`)
+är blockerade. Arbetsgången är därför alltid: `themeDuplicate` → `themeFilesUpsert` mot kopian
+→ Theo publicerar. Efter `themeDuplicate` är `processing: true` en stund; filer går inte att
+läsa eller skriva förrän det slagit om till `false`.
+
 Kvar att göra: mejlleveransen (appen Digital Downloads) är inte uppsatt; domänen är fortfarande
-`garderobno2.com` och kontakt-e-posten `info.garderobno2@gmail.com` (Theo fixar båda själv);
-temat är kvar i klädbutiksskick.
+`garderobno2.com` och kontakt-e-posten `info.garderobno2@gmail.com` (Theo fixar båda själv).
 
 Butiksnamnet och butiksvalutan går **inte** att ändra via Admin-API:t — det finns ingen
 `shopUpdate`-mutation, `Shop` är i praktiken skrivskyddat. Båda byts för hand i Inställningar.
 Valutan var SEK och är sedan 2026-09-07 **USD**; eftersom butiken redan hade 6 ordrar från
 Garderob No.2-tiden var fältet låst i admin och bytet fick gå via Shopify Support.
-Marknaden `Sweden` har fortfarande SEK som lokal valuta, så svenska besökare ser ett
-omräknat kronpris i stället för $9.90.
+Marknaden `Sweden` (`gid://shopify/Market/111880208768`) hade från början SEK som lokal valuta,
+så svenska besökare fick ett omräknat kronpris. Den är sedan 2026-09-07 satt till `baseCurrency:
+USD` med `localCurrencies: false`, så alla ser $9.90. Notera att `marketCurrencySettingsUpdate`
+är utfasad — använd `marketUpdate` med `currencySettings`.
 
 ## Anslutna tjänster
 
