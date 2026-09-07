@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Jad Method — design samples</title>
+<!--FONTS-->
+<style>
+  :root{
+    --void:#05070F; --deep:#0A1024; --panel:#0E1630;
+    --edge:#1C2748; --lit:#2A3A66;
+    --ice:#E6EDFB; --mute:#8497BF; --dim:#5B6C96;
+    --beam:#2DE2FF; --signal:#4B7BFF; --gain:#3DDC97; --warn:#FF6B6B;
+    --display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+    --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --cut:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#222;font-family:var(--body);color:var(--ice)}
+  @page{size:A4 portrait;margin:0}
+
+  .page{
+    position:relative; width:210mm; height:297mm; overflow:hidden;
+    background:var(--void); page-break-after:always; break-after:page;
+    padding:22mm 20mm 26mm; display:flex; flex-direction:column;
+  }
+  .page:last-child{page-break-after:auto;break-after:auto}
+  .page::before{
+    content:""; position:absolute; inset:0; z-index:0;
+    background-image:
+      linear-gradient(var(--edge) 1px,transparent 1px),
+      linear-gradient(90deg,var(--edge) 1px,transparent 1px);
+    background-size:14mm 14mm; opacity:.26;
+  }
+  .page > *{position:relative;z-index:1}
+  .halo{
+    position:absolute; z-index:0; left:50%; transform:translateX(-50%);
+    width:280mm; height:200mm; pointer-events:none;
+    background:radial-gradient(ellipse at center,
+      rgba(45,226,255,.17), rgba(75,123,255,.06) 44%, transparent 68%);
+  }
+  .halo.mid{top:40mm}
+
+  .runner{
+    position:absolute; z-index:1; left:20mm; right:20mm; bottom:11mm;
+    display:flex; align-items:center; gap:4mm;
+    font-family:var(--mono); font-size:7.5pt; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--dim);
+    border-top:1px solid var(--edge); padding-top:3mm;
+  }
+  .runner .mark{color:var(--mute)} .runner .mark b{color:var(--beam);font-weight:500}
+  .runner .pg{margin-left:auto;color:var(--mute)}
+
+  .eyebrow{font-family:var(--mono);font-size:9pt;letter-spacing:.30em;
+    text-transform:uppercase;color:var(--beam)}
+  .chap-tag{font-family:var(--mono);font-size:8pt;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:7mm}
+
+  h2{font-family:var(--display);font-weight:700;text-transform:uppercase;
+    font-size:40pt;line-height:1.02;letter-spacing:-.02em}
+  h3{font-family:var(--display);font-weight:600;font-size:16pt;line-height:1.2;
+    margin:8mm 0 3.5mm;letter-spacing:-.01em}
+  h3:first-of-type{margin-top:0}
+  h4{font-family:var(--display);font-weight:600;font-size:12pt;line-height:1.3;margin:6mm 0 2.5mm}
+  p{font-size:10.5pt;line-height:1.6;color:#C8D4EC;margin-bottom:3.5mm}
+  p strong{color:var(--ice);font-weight:600}
+  .lead{font-size:12.5pt;color:var(--mute);line-height:1.5}
+
+  ul{margin:0 0 4mm 0;padding:0;list-style:none}
+  li{font-size:10.5pt;line-height:1.55;color:#C8D4EC;
+    padding-left:7mm;margin-bottom:2.2mm;position:relative}
+  ul li::before{content:"";position:absolute;left:0;top:2.1mm;
+    width:2.4mm;height:2.4mm;background:var(--beam);
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+
+  /* ---- terminal / command block ---- */
+  .code{
+    background:#070C1C; border:1px solid var(--lit); margin:4mm 0 5mm;
+    font-family:var(--mono); font-size:9pt; line-height:1.75; color:#CFE6FF;
+  }
+  .code .bar{
+    display:flex;align-items:center;gap:3mm;padding:2.5mm 5mm;
+    border-bottom:1px solid var(--edge);background:rgba(28,39,72,.5);
+    font-size:7.5pt;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  }
+  .code .bar i{width:2mm;height:2mm;border-radius:50%;background:var(--beam);display:block}
+  .code pre{padding:4mm 5mm;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+  .code .cmt{color:var(--dim)}
+  .code .pmt{color:var(--beam)}
+
+  /* ---- callouts ---- */
+  .note{border:1px solid var(--lit);background:rgba(14,22,48,.85);
+    padding:5mm 6mm;margin:5mm 0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+  .note .lbl{font-family:var(--mono);font-size:7.5pt;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--beam);margin-bottom:2.5mm;display:block}
+  .note p{margin-bottom:0;font-size:10pt}
+  .note.warn{border-color:rgba(255,107,107,.55)} .note.warn .lbl{color:var(--warn)}
+  .note.win{border-color:rgba(61,220,151,.5)} .note.win .lbl{color:var(--gain)}
+
+  /* ---- tables ---- */
+  table{width:100%;border-collapse:collapse;margin:4mm 0 5mm;font-size:9.5pt}
+  th{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--beam);text-align:left;padding:3mm 3mm;border-bottom:1px solid var(--lit);
+    vertical-align:bottom;font-weight:400}
+  td{padding:3mm 3mm;border-bottom:1px solid var(--edge);color:#C8D4EC;
+    line-height:1.45;vertical-align:top}
+  td.num{font-family:var(--mono);color:var(--mute);white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+
+  /* ---- worksheet ---- */
+  .ws{border:1px solid var(--lit);background:rgba(14,22,48,.6);padding:6mm;margin:4mm 0 5mm}
+  .ws-row{display:grid;grid-template-columns:1fr auto;gap:5mm;align-items:center;
+    padding:2.8mm 0;border-bottom:1px solid var(--edge)}
+  .ws-row:last-child{border-bottom:none}
+  .ws-row span{font-size:10pt;color:#C8D4EC}
+  .boxes{display:flex;gap:1.6mm}
+  .boxes i{width:6mm;height:6mm;border:1px solid var(--lit);display:block;
+    font-family:var(--mono);font-size:7.5pt;color:var(--dim);
+    text-align:center;line-height:5.6mm;font-style:normal}
+  .ws-total{display:flex;justify-content:space-between;align-items:center;
+    margin-top:4mm;padding-top:4mm;border-top:1px solid var(--lit);
+    font-family:var(--display);font-weight:600;font-size:11pt}
+  .ws-total .slot{font-family:var(--mono);color:var(--beam);
+    border-bottom:1px solid var(--lit);padding:0 8mm}
+
+  /* ---- figures ---- */
+  .fig{margin:4mm 0 5mm}
+  .fig .frame{border:1px solid var(--edge);background:rgba(10,16,36,.7);padding:6mm}
+  .figcap{display:flex;gap:3mm;margin-top:2.5mm;font-size:8.5pt;
+    color:var(--dim);line-height:1.5}
+  .figcap b{font-family:var(--mono);font-size:7.5pt;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--beam);white-space:nowrap;font-weight:400}
+  .figcap .tag{font-family:var(--mono);font-size:7pt;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--warn);white-space:nowrap}
+
+  /* ---- source + verification stamps ---- */
+  .src{font-size:8.5pt;color:var(--dim);line-height:1.5;margin:3mm 0 0;
+    padding-left:6mm;position:relative}
+  .src::before{content:"";position:absolute;left:0;top:1.8mm;width:3mm;height:1px;background:var(--lit)}
+  .src a{color:var(--signal);text-decoration:none;word-break:break-all}
+  .stamp{display:inline-flex;align-items:center;gap:2mm;
+    font-family:var(--mono);font-size:7.5pt;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gain);border:1px solid rgba(61,220,151,.4);padding:1.5mm 3mm;margin-bottom:5mm;
+    align-self:flex-start}
+  .illus{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--warn);
+    border:1px solid rgba(255,107,107,.45);padding:1.5mm 3mm;display:inline-block;margin-bottom:3mm;
+    align-self:flex-start}
+
+  .spacer{flex:1}
+</style>
+</head>
+<body>
+
+<!-- ============ 1 · chapter opener ============ -->
+<section class="page" style="justify-content:center">
+  <div class="halo mid"></div>
+  <p class="eyebrow">Module 13</p>
+  <h2 style="margin-top:6mm">Claude Code,<br>installed safely</h2>
+  <p class="lead" style="margin-top:7mm;max-width:34ch">
+    Install the tool, prove it runs, and understand what your plan actually includes
+    before you connect it to anything.</p>
+  <div style="height:1px;background:var(--edge);margin-top:10mm"></div>
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg">41 / 112</span></div>
+</section>
+
+<!-- ============ 2 · steps + commands ============ -->
+<section class="page">
+  <p class="chap-tag">13 · Claude Code, installed safely</p>
+  <span class="stamp">Last verified 2026-09-07</span>
+
+  <h3>Before you install</h3>
+  <p>Claude Code is a terminal tool. It is not a website and not a chat window — you
+    run it from a folder on your own machine, and it can read and change the files in
+    that folder. That is exactly why the next module makes you take a backup first.</p>
+
+  <div class="note warn">
+    <span class="lbl">Check your plan first</span>
+    <p>Claude Code requires a Pro, Max, Team, Enterprise or Console account. <strong>The
+      free Claude.ai plan does not include it.</strong> Paying for a plan does not mean
+      unlimited use — every plan has usage limits.</p>
+  </div>
+
+  <h3>Install</h3>
+  <p>Pick the line for your system. If one command errors, you are probably in the
+    other Windows shell: PowerShell shows <strong>PS C:\</strong> at the prompt, CMD
+    shows <strong>C:\</strong> without the PS.</p>
+
+  <div class="code">
+    <div class="bar"><i></i>macOS · Linux · WSL</div>
+<pre><span class="pmt">$</span> curl -fsSL https://claude.ai/install.sh | bash</pre>
+  </div>
+
+  <div class="code">
+    <div class="bar"><i></i>Windows PowerShell</div>
+<pre><span class="pmt">PS&gt;</span> irm https://claude.ai/install.ps1 | iex</pre>
+  </div>
+
+  <div class="code">
+    <div class="bar"><i></i>Windows CMD</div>
+<pre><span class="pmt">C:\&gt;</span> curl -fsSL https://claude.ai/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</pre>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg">42 / 112</span></div>
+</section>
+
+<!-- ============ 2b · kontroll och felsökning ============ -->
+<section class="page">
+  <p class="chap-tag">13 · Claude Code, installed safely</p>
+
+  <h3>Prove it worked</h3>
+  <div class="code">
+    <div class="bar"><i></i>Any terminal</div>
+<pre><span class="pmt">$</span> claude --version
+<span class="cmt">→ prints a version number, for example 2.1.211 (Claude Code)</span>
+
+<span class="pmt">$</span> claude doctor
+<span class="cmt">→ read-only diagnostics: install health, settings errors, suggested fixes</span></pre>
+  </div>
+
+  <div class="note">
+    <span class="lbl">If the command is not found</span>
+    <p>Close the terminal and open a new one — a fresh shell picks up the changed path.
+      If it still fails, you most likely have a second installation or an old alias
+      left over. Run <strong>claude doctor</strong> and read what it reports before
+      installing anything again.</p>
+  </div>
+
+  <h4>What you should have now</h4>
+  <ul>
+    <li>A terminal that prints a version number.</li>
+    <li>A plan that actually includes Claude Code.</li>
+    <li>No secret keys pasted anywhere.</li>
+  </ul>
+
+  <p class="src">Source: Claude Code documentation, Advanced setup —
+    <a>code.claude.com/docs/en/setup</a></p>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg">43 / 112</span></div>
+</section>
+
+<!-- ============ 3 · worksheet ============ -->
+<section class="page">
+  <p class="chap-tag">05 · Validation &amp; scorecard</p>
+
+  <h3>Worksheet 5.1 — Idea scorecard</h3>
+  <p>Score one idea at a time, 1 to 5. Score what you can actually evidence today,
+    not what you hope is true. Fill this in for three ideas before you choose one.</p>
+
+  <div class="ws">
+    <div class="ws-row"><span>Strength and urgency of the problem</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>How clearly the audience can be identified</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Visible search or content demand</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Signs that people already pay for a solution</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Your own competence to deliver real quality</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Can the benefit be shown visually in an ad?</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Differentiation from free alternatives</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Production effort and support load <em style="color:var(--dim);font-style:normal">(5 = light)</em></span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Policy, health, body, finance and legal risk <em style="color:var(--dim);font-style:normal">(5 = low)</em></span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-row"><span>Expected margin after tax, fees, tools, refunds and ads</span>
+      <div class="boxes"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div></div>
+    <div class="ws-total"><span>Total out of 50</span><span class="slot">&nbsp;</span></div>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Stop rule</span>
+    <p>An idea scoring 2 or lower on <strong>policy risk</strong> or on <strong>your own
+      competence</strong> is out — regardless of total. High demand does not rescue a
+      product you cannot deliver honestly or advertise legally.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Validation &amp; scorecard</span><span class="pg">19 / 112</span></div>
+</section>
+
+<!-- ============ 4 · diagram ============ -->
+<section class="page">
+  <p class="chap-tag">14 · Shopify CLI, AI Toolkit and the theme workflow</p>
+
+  <h3>Two different connections, often confused</h3>
+  <p>These are not the same thing, and mixing them up is the single most common reason
+    a beginner believes an AI tool can edit a live store when it cannot.</p>
+
+  <div class="fig">
+    <div class="frame">
+      <svg viewBox="0 0 700 300" width="100%" height="auto" font-family="IBM Plex Sans">
+        <defs>
+          <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 Z" fill="#2A3A66"/>
+          </marker>
+        </defs>
+        <!-- layer 1 -->
+        <rect x="8" y="14" width="330" height="136" fill="#0E1630" stroke="#1C2748"/>
+        <text x="26" y="42" fill="#2DE2FF" font-size="12" font-family="IBM Plex Mono" letter-spacing="2">LAYER 1 — KNOWLEDGE</text>
+        <text x="26" y="68" fill="#E6EDFB" font-size="17" font-weight="600">AI Toolkit / Dev MCP</text>
+        <text x="26" y="92" fill="#8497BF" font-size="12.5">Gives the assistant current Shopify</text>
+        <text x="26" y="110" fill="#8497BF" font-size="12.5">documentation and code validation.</text>
+        <text x="26" y="130" fill="#FF6B6B" font-size="12.5">No access to your store.</text>
+        <!-- layer 2 -->
+        <rect x="362" y="14" width="330" height="136" fill="#0E1630" stroke="#2A3A66"/>
+        <text x="380" y="42" fill="#2DE2FF" font-size="12" font-family="IBM Plex Mono" letter-spacing="2">LAYER 2 — ACCESS</text>
+        <text x="380" y="68" fill="#E6EDFB" font-size="17" font-weight="600">Shopify CLI, authenticated</text>
+        <text x="380" y="92" fill="#8497BF" font-size="12.5">Connects one local theme folder to</text>
+        <text x="380" y="110" fill="#8497BF" font-size="12.5">one named store you log in to.</text>
+        <text x="380" y="130" fill="#3DDC97" font-size="12.5">Pulls and pushes theme files.</text>
+        <!-- arrows down -->
+        <line x1="173" y1="150" x2="173" y2="190" stroke="#2A3A66" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="527" y1="150" x2="527" y2="190" stroke="#2A3A66" stroke-width="1.5" marker-end="url(#ar)"/>
+        <!-- outcomes -->
+        <rect x="8" y="196" width="330" height="58" fill="none" stroke="#1C2748" stroke-dasharray="4 3"/>
+        <text x="26" y="222" fill="#C8D4EC" font-size="13">Correct Liquid, current schema,</text>
+        <text x="26" y="240" fill="#C8D4EC" font-size="13">fewer invented commands.</text>
+        <rect x="362" y="196" width="330" height="58" fill="none" stroke="#1C2748" stroke-dasharray="4 3"/>
+        <text x="380" y="222" fill="#C8D4EC" font-size="13">Files actually move between your</text>
+        <text x="380" y="240" fill="#C8D4EC" font-size="13">machine and the store you chose.</text>
+        <!-- footer bar -->
+        <rect x="8" y="266" width="684" height="30" fill="#070C1C" stroke="#1C2748"/>
+        <text x="350" y="286" fill="#8497BF" font-size="12.5" text-anchor="middle">Neither layer publishes a theme. Publishing stays a manual, human decision.</text>
+      </svg>
+    </div>
+    <p class="figcap"><b>Fig 14.1</b><span class="tag">Simplified illustration</span>
+      <span>The knowledge layer and the access layer are installed separately and do
+      different jobs. Admin settings — products, payments, domain, taxes, apps — sit
+      outside both and need Shopify Admin.</span></p>
+  </div>
+
+  <div class="note">
+    <span class="lbl">Check yourself</span>
+    <p>If you cannot name which store your terminal is authenticated against, stop and
+      run the store check before any push. Pushing to the wrong store is recoverable
+      only if you took the backup.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Shopify CLI, AI Toolkit and the theme workflow</span><span class="pg">55 / 112</span></div>
+</section>
+
+<!-- ============ 5 · metrics + troubleshooting ============ -->
+<section class="page">
+  <p class="chap-tag">20 · Channel choice, testing, KPIs and scaling</p>
+
+  <h3>Reading the funnel, not the headline number</h3>
+  <p>A platform reports what it can attribute. Your store reports what actually
+    happened. When they disagree, write down the difference — do not pick the nicer
+    number.</p>
+
+  <table>
+    <tr><th>Symptom</th><th>Where to look first</th></tr>
+    <tr><td>No delivery at all</td><td>Payment, policy review, audience size, budget, bid</td></tr>
+    <tr><td>Impressions but few clicks</td><td>Hook, first frame, relevance — not the CTA</td></tr>
+    <tr><td>Clicks but no landing page views</td><td>Load speed, broken link, or a measurement fault</td></tr>
+    <tr><td>Visits but no product interaction</td><td>Message match, price, trust, clarity of the offer</td></tr>
+    <tr><td>Carts but few checkouts</td><td>CTA, mobile bug, an unexpected extra step</td></tr>
+    <tr><td>Checkouts but few purchases</td><td>Payment method, currency, terms, checkout friction</td></tr>
+    <tr><td>Purchases in the store, none in the platform</td><td>Pixel, consent, event deduplication, domain, attribution</td></tr>
+  </table>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Channel choice, testing, KPIs and scaling</span><span class="pg">88 / 112</span></div>
+</section>
+
+<!-- ============ 5b · nollpunkt ============ -->
+<section class="page">
+  <p class="chap-tag">20 · Channel choice, testing, KPIs and scaling</p>
+
+  <h3>Break-even, before you judge anything</h3>
+  <span class="illus">Illustrative example — not a projection</span>
+  <p>Fill in your own figures. The point is the shape of the calculation, not these
+    numbers, and none of them predict what you will earn.</p>
+
+  <table>
+    <tr><th>Line</th><th>Your figure</th></tr>
+    <tr><td>Price the customer pays</td><td class="num">_______</td></tr>
+    <tr><td>Less tax collected on the sale</td><td class="num">_______</td></tr>
+    <tr><td>Less payment processing fee</td><td class="num">_______</td></tr>
+    <tr><td>Less refund reserve</td><td class="num">_______</td></tr>
+    <tr><td><strong>Net per order</strong></td><td class="num">_______</td></tr>
+    <tr><td><strong>Break-even CPA</strong> — the most an order can cost in ads before it loses money</td><td class="num">_______</td></tr>
+  </table>
+
+  <div class="note win">
+    <span class="lbl">Scale only when</span>
+    <p>Several verified purchases, cost per purchase below break-even with room to
+      spare, refunds under control, and your store's own data agrees with the
+      platform's. One lucky sale is not a signal.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Channel choice, testing, KPIs and scaling</span><span class="pg">89 / 112</span></div>
+</section>
+
+</body>
+</html>

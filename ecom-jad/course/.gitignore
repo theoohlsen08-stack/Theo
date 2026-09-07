@@ -1,4 +1,5 @@
 # Byggd fil, inte källa — kör ./build.sh för att få den.
 # Den färdiga kursen läggs in med `git add -f` när innehållet är skrivet.
 jad-method.pdf
+design-samples.pdf
 utkast*.pdf

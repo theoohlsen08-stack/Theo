@@ -62,9 +62,10 @@ bloggen `News` och en integritetspolicy.
 Butikens enda produkt: en digital kurs i e-handel, **$9.90 USD**, engångsköp. Levereras som en
 fil (PDF eller presentation) automatiskt via mejl direkt efter köp. Positionering: *inte*
 dropshipping — helt digitalt, inget lager, ingen produkt, mycket lägre startkapital.
-Kursens faktiska innehåll är ännu inte skrivet — Theo skriver det i Google Docs-dokumentet
-**The jad Method** (`1aprJW9BnyaabPZKGJH6jfc_FvM3bPwP_bC11ltamsZ4`, skapat 2026-09-07) och
-säger till när det är klart.
+Kursens innehåll styrs av Google Docs-dokumentet **The Jad Method – masterinstruktioner
+för Claude Code** (`1SqK2GTXQT1B3yCl58Ihqkohq8lUf6hwwNVEpNKl2DoY`, klart 2026-09-07).
+Det är **den enda källan** — det tidigare dokumentet `The jad Method`
+(`1aprJW…`) är övergivet och ska inte användas.
 
 - Produkt `gid://shopify/Product/15936421462400`, variant `…/ProductVariant/58879923749248`,
   SKU `JAD-METHOD-01`, status **ACTIVE**, publicerad i Webbshop, Kassasystem, Shop och TikTok.
@@ -94,13 +95,39 @@ säger till när det är klart.
 
 #### Kursfilen
 
-`ecom-jad/course/` innehåller mallen som PDF:en byggs ur — `jad-method.html` plus
-`build.sh`, som renderar 11 sidor A4 med headless Chromium (`--print-to-pdf`).
-Kedjan är testad hela vägen: 11 sidor, rätt sidformat, alla tre typsnitten inbäddade.
-Allt inom `[hakparenteser]` är platshållare och lyser blått i renderingen.
+`ecom-jad/course/` innehåller kursens källor. `build.sh` renderar valfri HTML-fil där
+till PDF med headless Chromium (`--print-to-pdf`) och skriver ut sidantal och storlek.
+Kedjan är verifierad: rätt A4-format, alla tre typsnitten inbäddade, ingen nätåtkomst
+behövs vid rendering. **`ecom-jad/course/PLAN.md` bär alla beslut som styr kursen —
+läs den först.**
 
-Mallens fyra kapitel är exakt de fyra löften produktsidan ger, i samma ordning. Ändras
-det ena måste det andra ändras med.
+Masterbriefen kräver **80–120 sidor** i 21 moduler. Planen landar på 112.
+`design-samples.html` är sju sidor som visar varje komponenttyp kursen behöver
+(terminalrutor, tabeller, arbetsblad, figurer, callouts, käll- och verifieringsmärkning).
+
+**Kursen ska vara helt på engelska och får inte innehålla något exklusivt svenskt** —
+vem som helst i världen ska kunna använda den. Briefen säger på flera ställen "på
+svenska" och pekar ut Konsumentverket, Skatteverket och svenska sökord; Theos
+chattinstruktion 2026-09-07 upphäver det. Där regler faktiskt skiljer sig åt (moms,
+ångerrätt, dataskydd) säger kursen vad frågan är och att eleven måste kontrollera den
+för sin marknad — aldrig ett svar som bara stämmer i ett land.
+
+**Skärmbilder går inte att ta härifrån.** Briefen vill ha aktuella vyer ur Shopify
+Admin, Meta/TikTok/Google Ads och Google AI Studio; det finns ingen inloggad
+webbläsarsession mot dem. Briefen § 14.2 punkt 6 ger svaret: tydligt märkt
+"Simplified illustration", aldrig en falsk skärmbild. Alla figurer bär den märkningen
+plus menyvägen i text.
+
+Nätläget för faktagranskning: `code.claude.com/docs` och `cloud.google.com/free` är
+fullt nåbara med WebFetch. `shopify.com`, `help.shopify.com`, `claude.com/pricing`,
+`ai.google.dev`, `support.google.com`, `ads.tiktok.com`, `facebook.com/business` och
+`developers.openai.com` är blockerade direkt — men **WebSearch fungerar** och når dem.
+Shopify-kopplingens `search_docs_chunks` når shopify.dev. Allt som bara kunnat
+bekräftas via sökning märks som sekundärt verifierat.
+
+Den korta produktmallen `jad-method.html` (11 sidor) finns kvar. Dess fyra kapitel är
+exakt de fyra löften produktsidan ger, i samma ordning. Ändras det ena måste det andra
+ändras med.
 
 Typsnitten ligger som base64 i `fonts-inline.css`: **Chromium når inte
 `fonts.gstatic.com`, men `curl` gör det.** Det är vägen att gå varje gång ett riktigt

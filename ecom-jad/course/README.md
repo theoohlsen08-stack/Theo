@@ -1,18 +1,30 @@
 # The Jad Method — kursfilen
 
-Mallen som kursens PDF byggs ur. Innehållet är **inte skrivet ännu** — allt inom
-`[hakparenteser]` är platshållare, markerade i blått i renderingen så att inget
-kan glömmas kvar av misstag.
+## Filerna
+
+| Fil | Vad det är |
+| --- | --- |
+| `PLAN.md` | Innehållskarta, sidbudget, faktaregister och avsteg från briefen |
+| `design-samples.html` | Sju sidor som visar varje komponenttyp den färdiga kursen behöver |
+| `jad-method.html` | Den korta produktmallen, elva sidor med platshållare |
+| `fonts-inline.css` | Chakra Petch, IBM Plex Sans och IBM Plex Mono som base64 |
+| `build.sh` | Renderar valfri av HTML-filerna till PDF |
+
+Källbriefen ligger i Google Docs: **The Jad Method – masterinstruktioner för
+Claude Code** (`1SqK2GTXQT1B3yCl58Ihqkohq8lUf6hwwNVEpNKl2DoY`). Läs `PLAN.md`
+innan något produceras — den bär de beslut som styr hela kursen.
 
 ## Bygga
 
 ```sh
-./build.sh              # -> jad-method.pdf
-./build.sh utkast.pdf   # -> utkast.pdf
+./build.sh                              # -> jad-method.pdf
+./build.sh design-samples.html          # -> design-samples.pdf
+./build.sh jad-method.html utkast.pdf   # -> utkast.pdf
 ```
 
-Skriptet splitsar in `fonts-inline.css` där `<!--FONTS-->` står i
-`jad-method.html` och renderar med headless Chromium (`--print-to-pdf`).
+Skriptet splitsar in `fonts-inline.css` där `<!--FONTS-->` står i källfilen och
+renderar med headless Chromium (`--print-to-pdf`). Det skriver ut sidantal och
+filstorlek så att en trasig rendering syns direkt.
 
 ## Varför typsnitten ligger som base64
 
@@ -25,7 +37,7 @@ Ska en skärning till läggas in: hämta CSS:en från `fonts.googleapis.com` med
 webbläsar-User-Agent (annars får man `.ttf` istället för `.woff2`), behåll bara
 `latin`- och `latin-ext`-blocken och byt `src: url(...)` mot en `data:`-URI.
 
-## Sidorna
+## Produktmallens sidor
 
 | # | Sida |
 | --- | --- |
@@ -67,3 +79,33 @@ intäktssiffror i kursen heller — varken Jads egna eller en läsares förvänt
 
 Kvar att fylla i på den sidan: årtal och kontakt-e-post (e-posten är fortfarande
 `info.garderobno2@gmail.com` och ska bytas först).
+
+## Komponenter i `design-samples.html`
+
+Kursen behöver mer än brödtext. De här är byggda och verifierade:
+
+| Klass | Vad den gör |
+| --- | --- |
+| `.code` | Terminalruta med radbrytning som inte kapar långa kommandon |
+| `table` | Fåkolumnstabell för felsökning och kalkyler |
+| `.ws` | Arbetsblad med poängrutor 1–5 och totalrad |
+| `.fig` + `.figcap` | Figur med bildnummer, förklaring och märkning |
+| `.note` / `.win` / `.warn` | Utmärkta rutor i cyan, grönt och rött |
+| `.stamp` | "Last verified"-datum, krävs av briefen § 28.1 |
+| `.illus` | "Illustrative example", krävs för varje räkneexempel |
+| `.src` | Klickbar källhänvisning nära påståendet |
+
+### Varför figurerna säger "Simplified illustration"
+
+Briefen vill ha riktiga skärmbilder ur Shopify Admin, Meta Ads Manager, TikTok
+Ads Manager, Google Ads och Google AI Studio. Härifrån går det inte — det finns
+ingen inloggad webbläsarsession mot de gränssnitten. Briefen § 14.2 punkt 6 säger
+vad som gäller då: en tydligt märkt förenklad illustration, aldrig en falsk
+skärmbild. Varje figur bär därför märkningen och menyvägen i text.
+
+## Kontrollera att en sida inte spiller över
+
+A4 minus marginaler ger cirka 249 mm text. Sidfoten ligger absolut, så innehåll
+som växer förbi den försvinner tyst under den. Rendera och mät istället för att
+lita på ögonmått — två av designprovets sidor spillde över första gången och
+fick delas.
