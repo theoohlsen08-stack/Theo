@@ -94,6 +94,12 @@ Admin-API:t tillåter **inte** `themePublish`, och skrivningar mot det live-tema
 → Theo publicerar. Efter `themeDuplicate` är `processing: true` en stund; filer går inte att
 läsa eller skriva förrän det slagit om till `false`.
 
+Huvudbildens bild är egenbyggd, inte genererad: `ecom-jad/hero/hero.html` renderas med headless
+Chromium (`/opt/pw-browsers/chromium-1194/chrome-linux/chrome --headless --screenshot`). Det är
+vägen att gå när en bild behövs — ElevenLabs-kontot är på gratisplanen och tog slut på krediter,
+och Unsplash/Pexels är blockerade av nätverkspolicyn, så stockbilder går varken att hämta eller
+granska härifrån.
+
 Kvar att göra: mejlleveransen (appen Digital Downloads) är inte uppsatt; domänen är fortfarande
 `garderobno2.com` och kontakt-e-posten `info.garderobno2@gmail.com` (Theo fixar båda själv).
 
