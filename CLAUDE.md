@@ -21,7 +21,8 @@ du antar att något saknas.
 | Shopify Admin-klon med redigerbar mockdata | `shopify-admin/` | `main` |
 | Landningssida + produktbeskrivning för nack- & axelmassage | `shopify-pages/` | `claude/kneadwell-futarax-website-scxjzl` |
 | Webbplats för kafé/rosteri i Sollefteå | `kaffe-rosteri-solleftea/` | `claude/kaffe-rosteri-webbplats-ared26` |
-| Ecom Jad | — (inget material i repot ännu) | `claude/ecom-jad-project-guwknl` |
+| Ecom Jad (persona + Shopify-butik) | — (inget material i repot ännu) | `claude/ecom-jad-project-guwknl` |
+| Garderob No.2 (andrahandskläder) | — | **nedlagt 2026-09-07**, butiken återanvänd till Ecom Jad |
 
 ## Ecom Jad
 
@@ -45,11 +46,33 @@ Flera videor och bilder är levererade, tekniska fel rättade, resultatet godkä
 
 Personan är fiktiv och ska framställas som en persona — inte som en verklig person eller
 ett verkligt företag, och inte med påhittade intäktssiffror som utges för att vara äkta.
+Det gäller särskilt butiken: så fort riktiga kunder betalar blir bakgrundshistorien och
+livsstilsbilderna säljargument, och då måste de hållas som varumärke snarare än som bevis.
+
+### Butiken
+
+Shopify-butiken **Ecom Jad** (`xjqe0v-kr.myshopify.com`) är den tidigare andrahandsklädbutiken
+Garderob No.2, återanvänd. Nudie Jeans-projektet är nedlagt: den 2026-09-07 raderades samtliga
+17 produkter och kollektionerna `Jeans` och `Tröjor & Huvtröjor` permanent. Kvar finns Shopifys
+tomma standardobjekt — kollektionen `Home page` (`frontpage`, som temat kräver), sidan `Contact`,
+bloggen `News` och en integritetspolicy.
+
+Butiken ska sälja **The Jad Method**, en kurs om att tjäna pengar. Innehåll, omfattning och pris
+är ännu inte bestämda.
+
+Kvar att göra: domänen är fortfarande `garderobno2.com` och kontakt-e-posten
+`info.garderobno2@gmail.com` (Theo fixar båda själv); temat är kvar i klädbutiksskick.
+
+Butiksnamnet går **inte** att ändra via Admin-API:t — det finns ingen `shopUpdate`-mutation,
+`Shop` är i praktiken skrivskyddat. Namnet byts för hand i Inställningar → Butiksuppgifter.
 
 ## Anslutna tjänster
 
-- **Shopify** — butiken **Kneadwell** (kneadwell.se), Basic-plan, SEK, Sverige.
-  Produkter, ordrar, kunder, kollektioner, analys och rabattkoder går att läsa och ändra.
+- **Shopify** — kopplingen hanterar **en butik i taget**. `switch-shop` byter, men återkallar
+  samtidigt åtkomsten till den föregående, så fråga Theo innan du byter. Två butiker finns:
+  **Ecom Jad** (garderobno2.com, f.d. Garderob No.2) och **Kneadwell** (kneadwell.se).
+  Båda Basic-plan, SEK, Sverige. Produkter, ordrar, kunder, kollektioner, analys och
+  rabattkoder går att läsa och ändra.
 - **Meta Ads** — kampanjer, katalog, pixel, insights.
 - **ElevenLabs** — bild-, video- och röstgenerering. Det är verktyget för Ecom Jad-materialet.
 - **Gmail** — läs och utkast.
