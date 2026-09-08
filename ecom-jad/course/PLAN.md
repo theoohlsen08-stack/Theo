@@ -133,7 +133,7 @@ och policy kontrolleras mot officiell källa, och att kursen bär ett synligt
 
 | ID | Påstående som måste kontrolleras | Modul | Status |
 | --- | --- | --- | --- |
-| F01 | Shopifys planer, priser, provperiod, introduktionserbjudande | 9 | Att göra |
+| F01 | Shopifys planer, priser, provperiod, introduktionserbjudande | 9 | **Delvis: plannamnen Basic, Grow, Advanced, Plus verifierade. Priset skrivs medvetet inte ut** |
 | F02 | Namnet på Shopifys officiella app för digitala produkter | 10 | **Verifierat: heter "Shopify Digital Products", inte "Digital Downloads"** |
 | F03 | Filstorleksgränser och länkstöd i leveransappen | 10 | **Verifierat: 5 GB per fil, ingen bandbreddsgräns** (sekundärt, via sökning) |
 | F04 | Claude-planer och vad som ingår | 13 | **Verifierat: Claude Code kräver Pro, Max, Team, Enterprise eller Console — gratisplanen ingår inte** |
@@ -151,7 +151,7 @@ och policy kontrolleras mot officiell källa, och att kursen bär ett synligt
 | F16 | TikTok: Smart+ mot Manual, Complete Payment-eventets namn | 18 | Att göra |
 | F17 | Google Ads: Search-kampanjflöde, matchningstyper | 19 | Att göra |
 | F18 | Merchant Center-policy för digitala produkter | 19 | Att göra — avgör om Shopping alls nämns |
-| F19 | Ångerrätt vid omedelbar digital leverans | 12 | Att göra — måste skrivas landsneutralt |
+| F19 | Ångerrätt vid omedelbar digital leverans | 12 | **Löst genom att inte besvaras: modulen ställer frågan och pekar på nationell konsumentmyndighet** |
 
 Allt som inte går att verifiera skrivs **inte** som fakta. Det blir antingen en
 uppmaning att kontrollera i elevens eget konto, eller utelämnas.
@@ -191,8 +191,8 @@ länkar i PDF:en i en version 1.1 — en inspelningslista tas fram när kursens 
 1. Innehållskarta och faktaregister — **klar**
 2. Designprov, sju sidor — `design-samples.html`, **klar**
 3. Butikstexterna omskrivna så att de matchar kursens verkliga innehåll — **klar**
-4. Modul 1–8 producerade — `jad-method-full.html`, **klar** (38 sidor).
-   Hela delen strategi och produkt är skriven.
-5. Modul 9–21, i ordning, med bild- och käll-logg — pågår
+4. Modul 1–12 producerade — `jad-method-full.html`, **klar** (61 sidor).
+   Strategi och produkt, samt hela butiksdelen, är skrivna.
+5. Modul 13–21, i ordning, med bild- och käll-logg — pågår
 6. QC enligt § 28: faktakontroll, täckning, visuell QA, platshållarsökning
 7. Exportera slutlig PDF
