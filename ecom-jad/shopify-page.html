@@ -1,17 +1,15 @@
-<title>The Jad Method</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-
 <style>
-  /* ============================================================
+  @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+/* ============================================================
      The Jad Method — landing page
      Single committed dark theme: this is brand surface, so every
      viewer sees the identical page regardless of host theme.
      Every colour is painted explicitly for that reason.
      ============================================================ */
-
-  :root {
+  #jad-lp {
+    position: relative;
+    overflow: hidden;
     /* ground + surfaces */
     --void:    #05070F;
     --deep:    #0A1024;
@@ -37,10 +35,8 @@
     --shell:   1080px;
     --cut:     14px; /* corner bevel, echoes the display face */
   }
-
-  * { box-sizing: border-box; }
-
-  body {
+  #jad-lp, #jad-lp * { box-sizing: border-box; }
+  #jad-lp {
     margin: 0;
     background: var(--void);
     color: var(--ice);
@@ -51,9 +47,9 @@
   }
 
   /* blueprint grid — ambient, never loud */
-  body::before {
+  #jad-lp::before {
     content: "";
-    position: fixed;
+    position: absolute;
     inset: 0;
     background-image:
       linear-gradient(var(--edge) 1px, transparent 1px),
@@ -63,29 +59,23 @@
     pointer-events: none;
     z-index: 0;
   }
-
-  .shell {
+  #jad-lp .shell {
     position: relative;
     z-index: 1;
     width: min(100% - 44px, var(--shell));
     margin-inline: auto;
   }
-
-  section { position: relative; z-index: 1; }
-
-  h1, h2, h3 {
+  #jad-lp section { position: relative; z-index: 1; }
+  #jad-lp h1, #jad-lp h2, #jad-lp h3 {
     font-family: var(--display);
     font-weight: 700;
     letter-spacing: -0.015em;
     text-wrap: balance;
     margin: 0;
   }
-
-  p { margin: 0; max-width: 66ch; }
-
-  a { color: var(--beam); }
-
-  .eyebrow {
+  #jad-lp p { margin: 0; max-width: 66ch; }
+  #jad-lp a { color: var(--beam); }
+  #jad-lp .eyebrow {
     font-family: var(--mono);
     font-size: 12px;
     letter-spacing: .18em;
@@ -93,35 +83,28 @@
     color: var(--beam);
     margin: 0;
   }
-
-  .eyebrow.quiet { color: var(--dim); }
-
-  :focus-visible {
+  #jad-lp .eyebrow.quiet { color: var(--dim); }
+  #jad-lp :focus-visible {
     outline: 2px solid var(--beam);
     outline-offset: 3px;
   }
 
   /* ---------- masthead ---------- */
-
-  .masthead {
+  #jad-lp .masthead {
     position: relative;
     z-index: 3;
     border-bottom: 1px solid var(--edge);
     background: rgba(5, 7, 15, .82);
     backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
   }
-
-  .masthead .shell {
+  #jad-lp .masthead .shell {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
     padding-block: 15px;
   }
-
-  .wordmark {
+  #jad-lp .wordmark {
     font-family: var(--display);
     font-weight: 700;
     font-size: 19px;
@@ -130,19 +113,16 @@
     align-items: center;
     gap: 10px;
   }
-
-  .wordmark .dot {
+  #jad-lp .wordmark .dot {
     width: 9px; height: 9px;
     background: var(--beam);
     box-shadow: 0 0 12px var(--beam);
     clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
   }
-
-  .wordmark span { color: var(--beam); }
+  #jad-lp .wordmark span { color: var(--beam); }
 
   /* ---------- buttons ---------- */
-
-  .btn {
+  #jad-lp .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -158,36 +138,29 @@
     transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
     clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
   }
-
-  .btn-primary {
+  #jad-lp .btn-primary {
     background: linear-gradient(135deg, var(--beam), var(--signal));
     color: #04101C;
     box-shadow: 0 0 0 rgba(45, 226, 255, 0);
   }
-
-  .btn-primary:hover {
+  #jad-lp .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 34px rgba(45, 226, 255, .28);
   }
-
-  .btn-ghost {
+  #jad-lp .btn-ghost {
     background: transparent;
     border-color: var(--edge-lit);
     color: var(--ice);
   }
-
-  .btn-ghost:hover { border-color: var(--beam); color: var(--beam); }
-
-  .btn-sm { padding: 10px 18px; font-size: 14px; --cut: 10px; }
+  #jad-lp .btn-ghost:hover { border-color: var(--beam); color: var(--beam); }
+  #jad-lp .btn-sm { padding: 10px 18px; font-size: 14px; --cut: 10px; }
 
   /* ---------- hero ---------- */
-
-  .hero {
+  #jad-lp .hero {
     padding-block: 84px 76px;
     overflow: hidden;
   }
-
-  .hero::after {
+  #jad-lp .hero::after {
     content: "";
     position: absolute;
     top: -280px; left: 50%;
@@ -197,62 +170,53 @@
     pointer-events: none;
     z-index: 0;
   }
-
-  .hero .shell { position: relative; z-index: 1; }
-
-  .hero h1 {
+  #jad-lp .hero .shell { position: relative; z-index: 1; }
+  #jad-lp .hero h1 {
     font-size: clamp(40px, 6.4vw, 70px);
     line-height: 1.04;
     margin-block: 20px 0;
     max-width: 15ch;
   }
-
-  .hero h1 em {
+  #jad-lp .hero h1 em {
     font-style: normal;
     background: linear-gradient(120deg, var(--beam), var(--signal));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-
-  .hero .lede {
+  #jad-lp .hero .lede {
     font-size: 19px;
     color: var(--mute);
     margin-top: 22px;
     max-width: 56ch;
   }
-
-  .buy-row {
+  #jad-lp .buy-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 22px;
     margin-top: 38px;
   }
-
-  .price-tag {
+  #jad-lp .price-tag {
     display: flex;
     align-items: baseline;
     gap: 9px;
     font-family: var(--mono);
   }
-
-  .price-tag .amount {
+  #jad-lp .price-tag .amount {
     font-family: var(--display);
     font-size: 40px;
     font-weight: 700;
     color: var(--ice);
     font-variant-numeric: tabular-nums;
   }
-
-  .price-tag .meta {
+  #jad-lp .price-tag .meta {
     font-size: 13px;
     color: var(--dim);
     letter-spacing: .06em;
     text-transform: uppercase;
   }
-
-  .assurances {
+  #jad-lp .assurances {
     display: flex;
     flex-wrap: wrap;
     gap: 10px 26px;
@@ -265,73 +229,59 @@
     list-style: none;
     padding-inline: 0;
   }
-
-  .assurances li {
+  #jad-lp .assurances li {
     display: flex;
     align-items: center;
     gap: 9px;
   }
-
-  .assurances svg { flex: none; color: var(--gain); }
+  #jad-lp .assurances svg { flex: none; color: var(--gain); }
 
   /* ---------- section frame ---------- */
-
-  .band { padding-block: 76px; }
-
-  .band-deep {
+  #jad-lp .band { padding-block: 76px; }
+  #jad-lp .band-deep {
     background: var(--deep);
     border-block: 1px solid var(--edge);
   }
-
-  .band-head { max-width: 62ch; }
-
-  .band-head h2 {
+  #jad-lp .band-head { max-width: 62ch; }
+  #jad-lp .band-head h2 {
     font-size: clamp(28px, 3.6vw, 40px);
     line-height: 1.14;
     margin-block: 14px 0;
   }
-
-  .band-head p { color: var(--mute); margin-top: 16px; }
+  #jad-lp .band-head p { color: var(--mute); margin-top: 16px; }
 
   /* ---------- ledger: dropshipping vs the method ---------- */
-
-  .ledger {
+  #jad-lp .ledger {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 22px;
     margin-top: 44px;
   }
-
-  .col {
+  #jad-lp .col {
     border: 1px solid var(--edge);
     background: var(--panel);
     padding: 30px 28px 32px;
     clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
   }
-
-  .col.is-method {
+  #jad-lp .col.is-method {
     border-color: var(--edge-lit);
     background:
       linear-gradient(180deg, rgba(45,226,255,.07), transparent 180px),
       var(--panel);
   }
-
-  .col h3 {
+  #jad-lp .col h3 {
     font-size: 21px;
     margin-bottom: 4px;
   }
-
-  .col .col-tag {
+  #jad-lp .col .col-tag {
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: .16em;
     text-transform: uppercase;
     color: var(--dim);
   }
-
-  .col.is-method .col-tag { color: var(--beam); }
-
-  .col ul {
+  #jad-lp .col.is-method .col-tag { color: var(--beam); }
+  #jad-lp .col ul {
     list-style: none;
     margin: 24px 0 0;
     padding: 0;
@@ -339,8 +289,7 @@
     flex-direction: column;
     gap: 14px;
   }
-
-  .col li {
+  #jad-lp .col li {
     display: grid;
     grid-template-columns: 20px 1fr;
     gap: 12px;
@@ -349,25 +298,20 @@
     color: var(--mute);
     line-height: 1.5;
   }
-
-  .col.is-method li { color: var(--ice); }
-
-  .col li svg { margin-top: 4px; }
-
-  .mark-no { color: var(--warn); }
-  .mark-yes { color: var(--gain); }
+  #jad-lp .col.is-method li { color: var(--ice); }
+  #jad-lp .col li svg { margin-top: 4px; }
+  #jad-lp .mark-no { color: var(--warn); }
+  #jad-lp .mark-yes { color: var(--gain); }
 
   /* ---------- what's inside ---------- */
-
-  .cards {
+  #jad-lp .cards {
     display: grid;
     /* 300px istället för 250: sex kort ska falla 3+3, inte 4+2 */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     margin-top: 44px;
   }
-
-  .card {
+  #jad-lp .card {
     border: 1px solid var(--edge);
     background: var(--panel);
     padding: 26px 24px 28px;
@@ -376,23 +320,18 @@
     gap: 11px;
     transition: border-color .2s ease;
   }
-
-  .card:hover { border-color: var(--edge-lit); }
-
-  .card .idx {
+  #jad-lp .card:hover { border-color: var(--edge-lit); }
+  #jad-lp .card .idx {
     font-family: var(--mono);
     font-size: 12px;
     color: var(--beam);
     letter-spacing: .12em;
   }
-
-  .card h3 { font-size: 18px; line-height: 1.3; }
-
-  .card p { font-size: 15px; color: var(--mute); }
+  #jad-lp .card h3 { font-size: 18px; line-height: 1.3; }
+  #jad-lp .card p { font-size: 15px; color: var(--mute); }
 
   /* ---------- delivery steps (a real sequence) ---------- */
-
-  .steps {
+  #jad-lp .steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 0;
@@ -400,38 +339,31 @@
     border: 1px solid var(--edge);
     background: var(--panel);
   }
-
-  .step {
+  #jad-lp .step {
     padding: 30px 26px 34px;
     border-right: 1px solid var(--edge);
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
-
-  .step:last-child { border-right: none; }
-
-  .step .num {
+  #jad-lp .step:last-child { border-right: none; }
+  #jad-lp .step .num {
     font-family: var(--mono);
     font-size: 12px;
     letter-spacing: .16em;
     color: var(--dim);
   }
-
-  .step h3 { font-size: 18px; }
-
-  .step p { font-size: 15px; color: var(--mute); }
+  #jad-lp .step h3 { font-size: 18px; }
+  #jad-lp .step p { font-size: 15px; color: var(--mute); }
 
   /* ---------- audience split ---------- */
-
-  .split {
+  #jad-lp .split {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 22px;
     margin-top: 44px;
   }
-
-  .split ul {
+  #jad-lp .split ul {
     list-style: none;
     margin: 20px 0 0;
     padding: 0;
@@ -439,8 +371,7 @@
     flex-direction: column;
     gap: 13px;
   }
-
-  .split li {
+  #jad-lp .split li {
     display: grid;
     grid-template-columns: 18px 1fr;
     gap: 12px;
@@ -450,8 +381,7 @@
   }
 
   /* ---------- reviews ---------- */
-
-  .reviews-head {
+  #jad-lp .reviews-head {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -461,29 +391,24 @@
     padding-bottom: 22px;
     border-bottom: 1px solid var(--edge);
   }
-
-  .score {
+  #jad-lp .score {
     display: flex;
     align-items: center;
     gap: 16px;
   }
-
-  .score .stars { display: flex; gap: 4px; }
-
-  .score .count {
+  #jad-lp .score .stars { display: flex; gap: 4px; }
+  #jad-lp .score .count {
     font-family: var(--mono);
     font-size: 13px;
     color: var(--dim);
   }
-
-  .review-grid {
+  #jad-lp .review-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 18px;
     margin-top: 34px;
   }
-
-  .review-card {
+  #jad-lp .review-card {
     border: 1px solid var(--edge);
     background: var(--panel);
     padding: 22px 22px 24px;
@@ -491,12 +416,10 @@
     flex-direction: column;
     gap: 11px;
   }
-
-  .review-card .rc-stars { display: flex; gap: 3px; flex: none; }
-  .review-card .rc-title { font-family: var(--display); font-weight: 600; font-size: 16px; }
-  .review-card .rc-body { font-size: 15px; color: var(--mute); line-height: 1.55; }
-
-  .review-card .rc-foot {
+  #jad-lp .review-card .rc-stars { display: flex; gap: 3px; flex: none; }
+  #jad-lp .review-card .rc-title { font-family: var(--display); font-weight: 600; font-size: 16px; }
+  #jad-lp .review-card .rc-body { font-size: 15px; color: var(--mute); line-height: 1.55; }
+  #jad-lp .review-card .rc-foot {
     margin-top: auto;
     padding-top: 16px;
     border-top: 1px solid var(--edge);
@@ -504,15 +427,13 @@
     flex-direction: column;
     gap: 3px;
   }
-
-  .review-card .rc-foot strong {
+  #jad-lp .review-card .rc-foot strong {
     font-family: var(--display);
     font-weight: 600;
     font-size: 15px;
     color: var(--ice);
   }
-
-  .review-card .rc-foot span {
+  #jad-lp .review-card .rc-foot span {
     font-family: var(--mono);
     font-size: 11.5px;
     color: var(--dim);
@@ -520,14 +441,11 @@
   }
 
   /* ---------- faq ---------- */
-
-  .faq { margin-top: 40px; border-top: 1px solid var(--edge); }
-
-  details {
+  #jad-lp .faq { margin-top: 40px; border-top: 1px solid var(--edge); }
+  #jad-lp details {
     border-bottom: 1px solid var(--edge);
   }
-
-  summary {
+  #jad-lp summary {
     cursor: pointer;
     list-style: none;
     padding: 22px 40px 22px 0;
@@ -537,10 +455,8 @@
     position: relative;
     color: var(--ice);
   }
-
-  summary::-webkit-details-marker { display: none; }
-
-  summary::after {
+  #jad-lp summary::-webkit-details-marker { display: none; }
+  #jad-lp summary::after {
     content: "+";
     position: absolute;
     right: 6px; top: 50%;
@@ -549,10 +465,8 @@
     font-size: 20px;
     color: var(--beam);
   }
-
-  details[open] summary::after { content: "–"; }
-
-  details p {
+  #jad-lp details[open] summary::after { content: "–"; }
+  #jad-lp details p {
     color: var(--mute);
     font-size: 15.5px;
     padding-bottom: 24px;
@@ -560,16 +474,14 @@
   }
 
   /* ---------- closer ---------- */
-
-  .closer {
+  #jad-lp .closer {
     text-align: center;
     padding-block: 88px;
     position: relative;
     overflow: hidden;
     border-top: 1px solid var(--edge);
   }
-
-  .closer::after {
+  #jad-lp .closer::after {
     content: "";
     position: absolute;
     inset: auto 50% -220px;
@@ -578,33 +490,24 @@
     background: radial-gradient(ellipse at center, rgba(45,226,255,.15), transparent 68%);
     pointer-events: none;
   }
-
-  .closer .shell { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-
-  .closer h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; }
-
-  .closer p { color: var(--mute); text-align: center; }
+  #jad-lp .closer .shell { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  #jad-lp .closer h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; }
+  #jad-lp .closer p { color: var(--mute); text-align: center; }
 
   /* ---------- footer ---------- */
-
-  footer {
+  #jad-lp footer {
     border-top: 1px solid var(--edge);
     background: var(--deep);
     padding-block: 34px 40px;
     font-size: 14px;
     color: var(--dim);
   }
-
-  footer .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
-
-  footer p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
-
-  footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
-
-  footer a { color: var(--mute); text-decoration: none; }
-  footer a:hover { color: var(--beam); }
-
-  .legal {
+  #jad-lp footer .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
+  #jad-lp footer p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
+  #jad-lp footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  #jad-lp footer a { color: var(--mute); text-decoration: none; }
+  #jad-lp footer a:hover { color: var(--beam); }
+  #jad-lp .legal {
     margin-top: 22px;
     padding-top: 20px;
     border-top: 1px solid var(--edge);
@@ -614,18 +517,18 @@
   }
 
   @media (max-width: 720px) {
-    .step { border-right: none; border-bottom: 1px solid var(--edge); }
-    .step:last-child { border-bottom: none; }
-    .hero { padding-block: 56px 60px; }
-    .band { padding-block: 58px; }
+  #jad-lp .step { border-right: none; border-bottom: 1px solid var(--edge); }
+  #jad-lp .step:last-child { border-bottom: none; }
+  #jad-lp .hero { padding-block: 56px 60px; }
+  #jad-lp .band { padding-block: 58px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
-    .btn-primary:hover { transform: none; }
+  #jad-lp, #jad-lp * { animation: none !important; transition: none !important; }
+  #jad-lp .btn-primary:hover { transform: none; }
   }
 </style>
-
+<div id="jad-lp">
 <header class="masthead">
   <div class="shell">
     <div class="wordmark"><span class="dot"></span>ECOM <span>JAD</span></div>
@@ -1017,3 +920,4 @@
     </p>
   </div>
 </footer>
+</div>
