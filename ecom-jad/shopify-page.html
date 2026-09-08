@@ -507,18 +507,21 @@
   #jad-lp .closer p { color: var(--mute); text-align: center; }
 
   /* ---------- footer ---------- */
-  #jad-lp footer {
+
+  /* .lp-foot, inte footer: recensionskorten har egna <footer>-element
+     och ska inte ärva sidfotens bakgrund och ram. */
+  #jad-lp .lp-foot {
     border-top: 1px solid var(--edge);
     background: var(--deep);
     padding-block: 34px 40px;
     font-size: 14px;
     color: var(--dim);
   }
-  #jad-lp footer .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
-  #jad-lp footer p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
-  #jad-lp footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
-  #jad-lp footer a { color: var(--mute); text-decoration: none; }
-  #jad-lp footer a:hover { color: var(--beam); }
+  #jad-lp .lp-foot .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
+  #jad-lp .lp-foot p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
+  #jad-lp .lp-foot nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  #jad-lp .lp-foot a { color: var(--mute); text-decoration: none; }
+  #jad-lp .lp-foot a:hover { color: var(--beam); }
   #jad-lp .legal {
     margin-top: 22px;
     padding-top: 20px;
@@ -914,7 +917,7 @@
   </div>
 </section>
 
-<footer>
+<footer class="lp-foot">
   <div class="shell">
     <div class="wordmark" style="font-size:16px"><span class="dot"></span>ECOM <span>JAD</span></div>
     <nav>

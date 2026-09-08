@@ -600,7 +600,9 @@
 
   /* ---------- footer ---------- */
 
-  footer {
+  /* .lp-foot, inte footer: recensionskorten har egna <footer>-element
+     och ska inte ärva sidfotens bakgrund och ram. */
+  .lp-foot {
     border-top: 1px solid var(--edge);
     background: var(--deep);
     padding-block: 34px 40px;
@@ -608,14 +610,14 @@
     color: var(--dim);
   }
 
-  footer .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
+  .lp-foot .shell { display: flex; flex-wrap: wrap; gap: 18px 32px; justify-content: space-between; align-items: center; }
 
-  footer p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
+  .lp-foot p { font-size: 13.5px; color: var(--dim); max-width: 70ch; }
 
-  footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  .lp-foot nav { display: flex; gap: 20px; flex-wrap: wrap; }
 
-  footer a { color: var(--mute); text-decoration: none; }
-  footer a:hover { color: var(--beam); }
+  .lp-foot a { color: var(--mute); text-decoration: none; }
+  .lp-foot a:hover { color: var(--beam); }
 
   .legal {
     margin-top: 22px;
@@ -1012,7 +1014,7 @@
   </div>
 </section>
 
-<footer>
+<footer class="lp-foot">
   <div class="shell">
     <div class="wordmark" style="font-size:16px"><span class="dot"></span>ECOM <span>JAD</span></div>
     <nav>
