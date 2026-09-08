@@ -93,7 +93,10 @@
   .note.win{border-color:rgba(61,220,151,.5)} .note.win .lbl{color:var(--gain)}
 
   /* ---- tables ---- */
-  table{width:100%;border-collapse:collapse;margin:4mm 0 5mm;font-size:9.5pt}
+  /* fast layout: annars får två tabeller på samma sida olika kolumnbredder */
+  table{width:100%;border-collapse:collapse;margin:4mm 0 5mm;font-size:9.5pt;
+    table-layout:fixed}
+  th:first-child,td:first-child{width:38%}
   th{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;text-transform:uppercase;
     color:var(--beam);text-align:left;padding:3mm 3mm;border-bottom:1px solid var(--lit);
     vertical-align:bottom;font-weight:400}
@@ -177,3 +180,11 @@
     font-family:var(--mono);font-size:9.5pt;color:var(--beam);letter-spacing:.06em;padding-top:.4mm;
   }
   .flow-step div{font-size:10.5pt;line-height:1.55;color:#C8D4EC}
+
+  /* ---- ifyllnadsfält ---- */
+  .ws-field{margin-bottom:4.5mm}
+  .ws-field .lbl{
+    display:block;font-size:10pt;line-height:1.4;color:#C8D4EC;margin-bottom:1.5mm;
+  }
+  .ws-field .rule{height:8mm;border-bottom:1px solid var(--lit)}
+  .ws-field.short .rule{height:6mm}
