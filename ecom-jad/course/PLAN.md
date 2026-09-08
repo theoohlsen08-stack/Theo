@@ -67,6 +67,18 @@ gränssnittet. Ingen bild låtsas vara en skärmdump.
 Theo kan byta ut vilken som helst av dem mot en riktig skärmbild senare — figurerna
 ligger som egna filer och är numrerade.
 
+## Kontrollskript
+
+`check.sh` körs efter varje modul och letar två saker: sidor vars innehåll
+växer förbi den absolut placerade sidfoten och därmed försvinner tyst, och
+platshållare som glömts kvar — briefen § 30 förbjuder dem i slutfilen. Den
+hoppar över `<pre>`-block, eftersom mallar som läsaren själv fyller i
+avsiktligt innehåller hakparenteser.
+
+`preview.sh 12 18` renderar enskilda sidor som PNG för visuell granskning.
+Skärmdumpar av hela dokumentet duger inte: viewporten är kortare än A4:s
+1123 px, så sidfoten hamnar utanför bilden om man inte ger marginal.
+
 ## Sidbudget
 
 Briefen § 23.2 fördelar 80–120 sidor. Kartan nedan landar på **112 sidor**.
@@ -179,7 +191,8 @@ länkar i PDF:en i en version 1.1 — en inspelningslista tas fram när kursens 
 1. Innehållskarta och faktaregister — **klar**
 2. Designprov, sju sidor — `design-samples.html`, **klar**
 3. Butikstexterna omskrivna så att de matchar kursens verkliga innehåll — **klar**
-4. Modul 1–2 producerade — `jad-method-full.html`, **klar** (9 sidor)
-5. Modul 3–21, i ordning, med bild- och käll-logg — pågår
+4. Modul 1–8 producerade — `jad-method-full.html`, **klar** (38 sidor).
+   Hela delen strategi och produkt är skriven.
+5. Modul 9–21, i ordning, med bild- och käll-logg — pågår
 6. QC enligt § 28: faktakontroll, täckning, visuell QA, platshållarsökning
 7. Exportera slutlig PDF

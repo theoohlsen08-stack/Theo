@@ -42,6 +42,9 @@ import re, sys
 src = open(sys.argv[1], encoding='utf-8').read()
 body = src[src.index('<body>'):]
 body = re.sub(r'(?s)<!--.*?-->', '', body)          # kommentarer räknas inte
+# <pre> innehåller mallar som läsaren själv fyller i — [målgrupp] där är
+# avsiktligt, inte en glömd platshållare. Allt utanför <pre> är på riktigt.
+body = re.sub(r'(?s)<pre.*?</pre>', '', body)
 ph = re.findall(r'\[[^\]\n]{2,60}\]', body)
 ph = [p for p in ph if not re.match(r'^\[\d+\]$', p)]
 todo = re.findall(r'\b(TODO|FIXME|lorem ipsum|BEHÖVER VERIFIERAS)\b', body, re.I)
