@@ -1925,6 +1925,462 @@ Button       "See what's included"   — higher on the page
   <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Law, tax, rights and policy</span><span class="pg"></span></div>
 </section>
 
+<!-- ================= MODUL 13 ================= -->
+<section class="page opener" data-module="13">
+  <div class="halo mid"></div>
+  <p class="n">Module 13</p>
+  <h2>Claude Code,<br>installed<br>safely</h2>
+  <p class="lead">Install the tool, prove it runs, and understand what your plan
+    actually includes — before you connect it to anything.</p>
+  <div class="hr"></div>
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">13 · Claude Code, installed safely</p>
+  <span class="stamp">Last verified 2026-09-08</span>
+
+  <h3>What this actually is</h3>
+  <p>Claude Code is a terminal tool. It is not a website and not a chat window: you run
+    it from a folder on your own machine, and it can read and change the files in that
+    folder. That is the whole reason it is useful for theme work, and the whole reason
+    the next module makes you take a backup first.</p>
+
+  <div class="note warn">
+    <span class="lbl">Check your plan before you install</span>
+    <p>Claude Code requires a Pro, Max, Team, Enterprise or Console account. <strong>The
+      free Claude.ai plan does not include it.</strong> A paid plan is also not unlimited
+      — every plan has usage limits, and running out mid-task is normal rather than a
+      fault. Module 14 shows how to save your place when it happens.</p>
+  </div>
+
+  <h3>Before you install</h3>
+  <table>
+    <tr><th>Requirement</th><th>What is supported</th></tr>
+    <tr><td>Operating system</td><td>macOS 13+, Windows 10 (1809) or later, Ubuntu 20.04+, Debian 10+, Alpine 3.19+</td></tr>
+    <tr><td>Hardware</td><td>4 GB RAM or more, on x64 or ARM64</td></tr>
+    <tr><td>Network</td><td>An internet connection is required</td></tr>
+    <tr><td>Shell</td><td>Bash, Zsh, PowerShell or CMD</td></tr>
+  </table>
+
+  <p class="src">Source: Claude Code documentation, Advanced setup —
+    <a>code.claude.com/docs/en/setup</a></p>
+
+  <div class="note">
+    <span class="lbl">On Windows, one thing is worth doing first</span>
+    <p>Installing Git for Windows is optional but recommended: it gives Claude Code a
+      Bash shell to work with. Without it the tool uses PowerShell instead, which works
+      but behaves differently from most instructions you will find online.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">13 · Claude Code, installed safely</p>
+
+  <h3>Install</h3>
+  <p>Pick the line for your system. If a command errors immediately, you are probably in
+    the other Windows shell: PowerShell shows <strong>PS C:\</strong> at the prompt, CMD
+    shows <strong>C:\</strong> without the PS.</p>
+
+  <div class="code">
+    <div class="bar"><i></i>macOS · Linux · WSL</div>
+<pre><span class="pmt">$</span> curl -fsSL https://claude.ai/install.sh | bash</pre>
+  </div>
+
+  <div class="code">
+    <div class="bar"><i></i>Windows PowerShell</div>
+<pre><span class="pmt">PS&gt;</span> irm https://claude.ai/install.ps1 | iex</pre>
+  </div>
+
+  <div class="code">
+    <div class="bar"><i></i>Windows CMD</div>
+<pre><span class="pmt">C:\&gt;</span> curl -fsSL https://claude.ai/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</pre>
+  </div>
+
+  <p>There are package-manager alternatives — Homebrew on macOS, WinGet on Windows, and
+    apt, dnf or apk on Linux. They work, but they do not update themselves, so you have
+    to remember to upgrade. The commands above do update in the background.</p>
+
+  <div class="note warn">
+    <span class="lbl">Two things never to do</span>
+    <p>Never sign in through a link someone sent you — start the login yourself from the
+      terminal. And never paste an API key, a token or a password into a conversation,
+      including this tool's. Nothing in this course requires you to.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">13 · Claude Code, installed safely</p>
+
+  <h3>Prove it worked</h3>
+  <div class="code">
+    <div class="bar"><i></i>Any terminal</div>
+<pre><span class="pmt">$</span> claude --version
+<span class="cmt">→ prints a version number, for example 2.1.211 (Claude Code)</span>
+
+<span class="pmt">$</span> claude doctor
+<span class="cmt">→ read-only diagnostics: install health, settings errors, suggested fixes</span></pre>
+  </div>
+
+  <div class="note">
+    <span class="lbl">If the command is not found</span>
+    <p>Close the terminal and open a new one — a fresh shell picks up the changed path.
+      If it still fails, you most likely have a second installation or an old alias left
+      over. Run <strong>claude doctor</strong> and read what it reports before installing
+      anything again.</p>
+  </div>
+
+  <h3>Your first session</h3>
+  <div class="flow">
+    <div class="flow-step"><div>Make a folder for the theme project, and open a terminal <em>in that folder</em>. What Claude Code can see is decided by where you start it.</div></div>
+    <div class="flow-step"><div>Run <strong>claude</strong>. Follow the official login the first time.</div></div>
+    <div class="flow-step"><div>Ask it to summarise what files exist, before it changes anything. This is a habit worth keeping: understanding first, edits second.</div></div>
+    <div class="flow-step"><div>When you approach a usage limit, commit your work and write down the next step. Module 14 sets up version control so this costs you nothing.</div></div>
+  </div>
+
+  <h4>What you should have now</h4>
+  <ul>
+    <li>A terminal that prints a version number.</li>
+    <li>A plan that actually includes Claude Code.</li>
+    <li>No secret keys pasted anywhere.</li>
+  </ul>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>Claude Code, installed safely</span><span class="pg"></span></div>
+</section>
+
+<!-- ================= MODUL 14 ================= -->
+<section class="page opener" data-module="14">
+  <div class="halo mid"></div>
+  <p class="n">Module 14</p>
+  <h2>The theme<br>workflow</h2>
+  <p class="lead">Connecting the tools to the right store, changing a theme without
+    breaking the live shop, and knowing which of those two things each tool actually
+    does.</p>
+  <div class="hr"></div>
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Two different connections, often confused</h3>
+  <p>These are not the same thing, and mixing them up is the single most common reason a
+    beginner believes an AI tool can edit a live store when it cannot.</p>
+
+  <div class="fig">
+    <div class="frame">
+      <svg viewBox="0 0 700 300" width="100%" height="auto" font-family="IBM Plex Sans">
+        <defs>
+          <marker id="ar14" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 Z" fill="#2A3A66"/>
+          </marker>
+        </defs>
+        <rect x="8" y="14" width="330" height="136" fill="#0E1630" stroke="#1C2748"/>
+        <text x="26" y="42" fill="#2DE2FF" font-size="12" font-family="IBM Plex Mono" letter-spacing="2">LAYER 1 — KNOWLEDGE</text>
+        <text x="26" y="68" fill="#E6EDFB" font-size="17" font-weight="600">AI Toolkit / Dev MCP</text>
+        <text x="26" y="92" fill="#8497BF" font-size="12.5">Gives the assistant current Shopify</text>
+        <text x="26" y="110" fill="#8497BF" font-size="12.5">documentation and code validation.</text>
+        <text x="26" y="130" fill="#FF6B6B" font-size="12.5">No access to your store.</text>
+
+        <rect x="362" y="14" width="330" height="136" fill="#0E1630" stroke="#2A3A66"/>
+        <text x="380" y="42" fill="#2DE2FF" font-size="12" font-family="IBM Plex Mono" letter-spacing="2">LAYER 2 — ACCESS</text>
+        <text x="380" y="68" fill="#E6EDFB" font-size="17" font-weight="600">Shopify CLI, authenticated</text>
+        <text x="380" y="92" fill="#8497BF" font-size="12.5">Connects one local theme folder to</text>
+        <text x="380" y="110" fill="#8497BF" font-size="12.5">one named store you log in to.</text>
+        <text x="380" y="130" fill="#3DDC97" font-size="12.5">Pulls and pushes theme files.</text>
+
+        <line x1="173" y1="150" x2="173" y2="190" stroke="#2A3A66" stroke-width="1.5" marker-end="url(#ar14)"/>
+        <line x1="527" y1="150" x2="527" y2="190" stroke="#2A3A66" stroke-width="1.5" marker-end="url(#ar14)"/>
+
+        <rect x="8" y="196" width="330" height="58" fill="none" stroke="#1C2748" stroke-dasharray="4 3"/>
+        <text x="26" y="222" fill="#C8D4EC" font-size="13">Correct Liquid, current schema,</text>
+        <text x="26" y="240" fill="#C8D4EC" font-size="13">fewer invented commands.</text>
+        <rect x="362" y="196" width="330" height="58" fill="none" stroke="#1C2748" stroke-dasharray="4 3"/>
+        <text x="380" y="222" fill="#C8D4EC" font-size="13">Files actually move between your</text>
+        <text x="380" y="240" fill="#C8D4EC" font-size="13">machine and the store you chose.</text>
+
+        <rect x="8" y="266" width="684" height="30" fill="#070C1C" stroke="#1C2748"/>
+        <text x="350" y="286" fill="#8497BF" font-size="12.5" text-anchor="middle">Neither layer publishes a theme. Publishing stays a manual, human decision.</text>
+      </svg>
+    </div>
+    <p class="figcap"><b>Fig 14.1</b><span class="tag">Simplified illustration</span>
+      <span>The two layers are installed separately and do different jobs. Store settings
+      — products, payments, domain, taxes, apps — sit outside both and need the admin.</span></p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Before you connect anything</h3>
+  <ul>
+    <li>A store you own, or have explicit permission to work in.</li>
+    <li>Claude Code installed and logged in, from Module 13.</li>
+    <li>A current version of Node.js, and its package manager.</li>
+    <li>A duplicated theme in the admin, so the live one is never the one you edit.</li>
+    <li>Git, even if you are working alone. It is what makes a mistake reversible.</li>
+  </ul>
+
+  <h3>Install the Shopify CLI</h3>
+  <div class="code">
+    <div class="bar"><i></i>Terminal</div>
+<pre><span class="pmt">$</span> npm install -g @shopify/cli@latest
+
+<span class="pmt">$</span> shopify version
+<span class="cmt">→ prints a version number if the install worked</span></pre>
+  </div>
+
+  <p>If the install fails, check your Node version, your terminal's permissions and your
+    PATH, and read Shopify's current installation guide. Do not reach for administrator
+    rights or broad permission changes as a quick fix — that solves the symptom and
+    creates a worse problem.</p>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Give the assistant current documentation</h3>
+  <p>The knowledge layer is what stops an assistant inventing a Liquid tag that was
+    removed two years ago. Shopify offers this as a plugin and as an MCP server; check
+    Shopify's current developer documentation for which is recommended today, as the
+    packaging has changed before.</p>
+
+  <div class="code">
+    <div class="bar"><i></i>The MCP route</div>
+<pre><span class="pmt">$</span> claude mcp add --transport stdio shopify-dev-mcp \
+      -- npx -y @shopify/dev-mcp@latest
+
+<span class="cmt">restart Claude Code, then confirm it registered:</span>
+
+<span class="pmt">$</span> claude mcp list
+<span class="pmt">$</span> claude mcp get shopify-dev-mcp</pre>
+  </div>
+
+  <p>Inside a running session, <strong>/mcp</strong> shows the connection status. A server
+    that is listed but shows a connection error is not helping you, and the assistant
+    will quietly fall back on memory — which is exactly what you installed it to prevent.</p>
+  <span class="stamp">Command syntax verified 2026-09-08</span>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Get the theme onto your machine</h3>
+  <div class="flow">
+    <div class="flow-step"><div><strong>In the admin, duplicate the theme you want to work on.</strong> Name the copy so its purpose is obvious — "development", plus a date. Never work on the published one.</div></div>
+    <div class="flow-step"><div><strong>Make an empty local folder</strong> and open a terminal in it.</div></div>
+    <div class="flow-step"><div><strong>Pull the unpublished copy</strong> with the command below, giving your exact myshopify.com address. Follow the browser login, and <em>read the store name on the confirmation screen before you approve it</em>.</div></div>
+    <div class="flow-step"><div><strong>Check the folders arrived:</strong> assets, config, layout, locales, sections, snippets, templates.</div></div>
+    <div class="flow-step"><div><strong>Make the first commit before any change.</strong> This is your restore point, and it costs ten seconds.</div></div>
+  </div>
+
+  <div class="code">
+    <div class="bar"><i></i>Pull, then back up</div>
+<pre><span class="pmt">$</span> shopify theme pull --store your-store.myshopify.com
+
+<span class="pmt">$</span> git init
+<span class="pmt">$</span> git add .
+<span class="pmt">$</span> git commit -m "Backup before any changes"</pre>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">The mistake that is expensive</span>
+    <p>Authenticating against the wrong store. The login screen names the store — read
+      it. If you cannot say which store your terminal is connected to, stop and check
+      before any push. This is recoverable only if you took the backup.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Write the project's rules down first</h3>
+  <p>Put a file called <strong>CLAUDE.md</strong> in the project folder. Claude Code
+    reads it at the start of every session, so anything in it applies to every task
+    without you repeating yourself. It is the difference between an assistant that
+    guesses your standards and one that follows them.</p>
+
+  <div class="code">
+    <div class="bar"><i></i>CLAUDE.md — what belongs in it</div>
+<pre># This store
+
+Audience, product, and the one action every page is for.
+
+## Design system
+Colours, typography, spacing, button style, image proportions.
+
+## Rules
+- Mobile first. Keep contrast and focus states accessible.
+- Use the existing theme and Shopify conventions. Add no dependencies.
+- All copy must stay editable in the theme editor where reasonable.
+- Never hardcode secrets, prices, product IDs or personal data.
+- Never publish, and never touch files outside this folder.
+- Run Theme Check and list every changed file after each task.
+- Preserve my edits. Make small, reviewable changes.</pre>
+  </div>
+
+  <div class="note win">
+    <span class="lbl">Why this is worth ten minutes</span>
+    <p>Most frustration with an AI coding tool comes from unstated expectations. Writing
+      them once, in a file the tool always reads, removes an entire category of
+      back-and-forth — and gives you something to point at when a change is wrong.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Work in phases, not in one long request</h3>
+
+  <div class="flow">
+    <div class="flow-step"><div><strong>Understand, change nothing.</strong> Ask for a summary of the theme's architecture, its existing sections, the design settings, the risks, and which files a focused digital-product store would need to touch. Explicitly forbid edits in this step.</div></div>
+    <div class="flow-step"><div><strong>Get a written plan.</strong> Home page, product page, FAQ, contact, footer, policy links, mobile navigation. For each step: the goal, the files, what it depends on, how it will be tested, and how to undo it. Still no edits.</div></div>
+    <div class="flow-step"><div><strong>Approve the plan, and delete from it.</strong> This is your job, not the tool's. Every feature you cut is a feature that cannot break.</div></div>
+    <div class="flow-step"><div><strong>One small task at a time.</strong> One section per request. Ask which files changed after each one, and read the answer.</div></div>
+    <div class="flow-step"><div><strong>Commit after every task that works.</strong> A commit per working step means a broken step costs you one step, not a day.</div></div>
+  </div>
+
+  <h3>A prompt shape that works</h3>
+  <div class="code">
+    <div class="bar"><i></i>Context + limits + proof</div>
+<pre>Context      <span class="pmt">[which theme, which store]</span>
+Goal         <span class="pmt">[one bounded feature]</span>
+May change   <span class="pmt">[these files or this section]</span>
+Must not     <span class="pmt">[the live theme, checkout, other sections]</span>
+Requirements <span class="pmt">[mobile, accessibility, editable text]</span>
+Verified     <span class="pmt">[the copy and product data I am giving you]</span>
+Test with    theme check, then a local preview
+Answer with  plan, files changed, test results, remaining risks
+Stop and ask if any of these conflict.</pre>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Preview and check before anything leaves your machine</h3>
+  <div class="code">
+    <div class="bar"><i></i>Local preview and code check</div>
+<pre><span class="pmt">$</span> shopify theme dev --store your-store.myshopify.com
+<span class="cmt">→ a preview link with live reload, running against that store</span>
+
+<span class="pmt">$</span> shopify theme check
+<span class="cmt">→ analyses the theme for errors and Liquid problems</span></pre>
+  </div>
+
+  <p>Confirm the preview is pointing at the store you intended, and do not share the
+    preview link publicly — it is a view of a store that is not finished.</p>
+
+  <h4>What to look at, every time</h4>
+  <ul>
+    <li>Phone width, tablet and desktop.</li>
+    <li>Headline and main button visible without important content cut off.</li>
+    <li>Buttons reachable by keyboard, with a visible focus state.</li>
+    <li>Text contrast and size readable in daylight.</li>
+    <li>Product images in the right proportion and a sensible file size.</li>
+    <li>The cart and buy button leading to the right product.</li>
+    <li>FAQ opens, links work, footer contains the policies.</li>
+    <li>Long words, accents and different price formats do not break the layout.</li>
+    <li>No console errors and no blocked resources.</li>
+  </ul>
+
+  <div class="note">
+    <span class="lbl">Then have the change reviewed</span>
+    <p>Ask for a review of the diff as a senior theme developer would give it: Liquid
+      errors, broken schema JSON, inaccessible components, hardcoded values, performance
+      problems, mobile faults and regression risk. Require that only justified changes
+      are made, and that the checks are run again afterwards.</p>
+  </div>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>Upload as unpublished, publish by hand</h3>
+  <div class="code">
+    <div class="bar"><i></i>Safe upload</div>
+<pre><span class="pmt">$</span> shopify theme push --unpublished
+<span class="cmt">→ uploads as a new, unpublished theme and asks you to name it</span></pre>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step"><div>Open the uploaded theme's preview from the admin.</div></div>
+    <div class="flow-step"><div>Test the home page, product page, cart, checkout link, policies and the digital delivery.</div></div>
+    <div class="flow-step"><div>Compare it against your local version, and confirm the right theme was uploaded.</div></div>
+    <div class="flow-step"><div>Have another person, or a private browser window, repeat the test.</div></div>
+    <div class="flow-step"><div>Only then publish — manually, from the admin, with the previous theme still there to roll back to.</div></div>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">What the theme tools cannot do</span>
+    <p>The CLI builds the storefront. <strong>Products, payments, domains, taxes,
+      markets, apps and policies live in the admin</strong> and are not touched by any of
+      this. Do not let anyone tell you an AI toolkit gives automatic access to a live
+      store's settings — it does not, and a course that says otherwise is describing
+      something else.</p>
+  </div>
+
+  <p>If you later use the Admin API for automation, treat it as a separate and more
+    advanced step: request the narrowest permissions, authenticate through the official
+    flow, start with reading only, show a dry run before any change, log everything, and
+    require explicit approval per write. Payment, customer and privacy data are not
+    something to bulk-edit while learning.</p>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
+<section class="page">
+  <p class="chap-tag">14 · The theme workflow</p>
+
+  <h3>When it goes wrong</h3>
+  <table>
+    <tr><th>Symptom</th><th>What to do</th></tr>
+    <tr><td>The assistant does not see Shopify docs</td><td>Check the connection with <strong>claude mcp list</strong>, then restart the session</td></tr>
+    <tr><td>The wrong store opens</td><td>Cancel, check the myshopify address, authenticate again</td></tr>
+    <tr><td>Too much was changed</td><td>Restore with Git, then give a narrower file or section limit</td></tr>
+    <tr><td>Preview works, product data missing</td><td>Check the preview is running against the store that has the product</td></tr>
+    <tr><td>Theme Check fails</td><td>Fix one error at a time, and never ignore them in bulk</td></tr>
+    <tr><td>Schema JSON will not save</td><td>Check commas, unique setting IDs and valid types</td></tr>
+    <tr><td>Fine on desktop, broken on mobile</td><td>Give the exact viewport and the exact fault, with a screenshot free of private data</td></tr>
+    <tr><td>A command no longer exists</td><td>Read Shopify's current CLI documentation; do not guess an older flag</td></tr>
+    <tr><td>You hit a usage limit</td><td>Commit, write down the next step, resume later — do not restart the project</td></tr>
+  </table>
+
+  <div class="note win">
+    <span class="lbl">The habit that prevents most of these</span>
+    <p>Small changes, committed often, tested before upload. Every entry above is
+      survivable if the last known-good state is one command away, and expensive if it
+      is not.</p>
+  </div>
+
+  <h4>What you do next</h4>
+  <ul>
+    <li>Duplicate the theme, pull it locally, and commit before anything else.</li>
+    <li>Write CLAUDE.md before the first task, not after the first surprise.</li>
+    <li>Build one section, check it, commit it. Then the next.</li>
+  </ul>
+
+  <div class="runner"><span class="mark">ECOM <b>JAD</b></span><span>The theme workflow</span><span class="pg"></span></div>
+</section>
+
 <script>
   (function () {
     var pages = document.querySelectorAll('.page');

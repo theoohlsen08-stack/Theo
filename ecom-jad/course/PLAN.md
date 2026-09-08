@@ -137,11 +137,11 @@ och policy kontrolleras mot officiell källa, och att kursen bär ett synligt
 | F02 | Namnet på Shopifys officiella app för digitala produkter | 10 | **Verifierat: heter "Shopify Digital Products", inte "Digital Downloads"** |
 | F03 | Filstorleksgränser och länkstöd i leveransappen | 10 | **Verifierat: 5 GB per fil, ingen bandbreddsgräns** (sekundärt, via sökning) |
 | F04 | Claude-planer och vad som ingår | 13 | **Verifierat: Claude Code kräver Pro, Max, Team, Enterprise eller Console — gratisplanen ingår inte** |
-| F05 | Installationskommandon för Claude Code, alla plattformar | 13 | **Verifierat mot code.claude.com/docs/en/setup** |
+| F05 | Installationskommandon för Claude Code, alla plattformar | 13 | **Verifierat mot code.claude.com/docs/en/setup**, plus systemkrav |
 | F06 | `claude --version` och `claude doctor` som kontroll | 13 | **Verifierat** |
-| F07 | Shopify CLI-installation och dagens `theme`-kommandon | 14 | Att göra |
-| F08 | Shopify AI Toolkit: pluginkommando och Node-krav | 14 | Att göra |
-| F09 | Shopify Dev MCP: dagens `claude mcp add`-rad | 14 | Att göra |
+| F07 | Shopify CLI-installation och dagens `theme`-kommandon | 14 | **Verifierat: npm global install; theme pull/dev/check/push --unpublished/publish finns** (sekundärt, via sökning mot shopify.dev) |
+| F08 | Shopify AI Toolkit: pluginkommando och Node-krav | 14 | **Medvetet inte utskrivet** — paketeringen har ändrats förr, så kursen säger åt läsaren att läsa Shopifys aktuella dokumentation |
+| F09 | Shopify Dev MCP: dagens `claude mcp add`-rad | 14 | **Syntaxen verifierad mot code.claude.com/docs/en/mcp.** Paketnamnet är obekräftat, så kursen hänvisar läsaren till Shopifys aktuella dokumentation |
 | F10 | ChatGPT bildgenerering: dagens funktionsnamn | 15 | Att göra |
 | F11 | "Agent Studio" → rätt tjänst (sannolikt Google AI Studio) | 16 | Att göra — briefen § 13 kräver detta |
 | F12 | Google Cloud-kreditens belopp, villkor och giltighet | 16 | Att göra — briefen § 13.1 rättar "3000 kr gratis" |
@@ -191,8 +191,8 @@ länkar i PDF:en i en version 1.1 — en inspelningslista tas fram när kursens 
 1. Innehållskarta och faktaregister — **klar**
 2. Designprov, sju sidor — `design-samples.html`, **klar**
 3. Butikstexterna omskrivna så att de matchar kursens verkliga innehåll — **klar**
-4. Modul 1–12 producerade — `jad-method-full.html`, **klar** (61 sidor).
-   Strategi och produkt, samt hela butiksdelen, är skrivna.
-5. Modul 13–21, i ordning, med bild- och käll-logg — pågår
+4. Modul 1–14 producerade — `jad-method-full.html`, **klar** (75 sidor).
+   Strategi och produkt, butiksdelen och AI-delen är skrivna.
+5. Modul 15–21, i ordning, med bild- och käll-logg — pågår
 6. QC enligt § 28: faktakontroll, täckning, visuell QA, platshållarsökning
 7. Exportera slutlig PDF
