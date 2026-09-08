@@ -77,8 +77,15 @@
     border-bottom:1px solid var(--edge);background:rgba(28,39,72,.5);
     font-size:7.5pt;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
   }
-  .code .bar i{width:2mm;height:2mm;border-radius:50%;background:var(--beam);display:block}
-  .code pre{padding:4mm 5mm;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+  /* <i> är kursivt som standard och ingen kursiv skärning är inbäddad —
+     utan font-style:normal drar den in ett reservtypsnitt i PDF:en. */
+  .code .bar i{width:2mm;height:2mm;border-radius:50%;background:var(--beam);
+    display:block;font-style:normal}
+  /* <pre> har font-family: monospace i webbläsarens standardstil, och den
+     slår ut arvet från .code. Utan de här två raderna renderas varje
+     kodblock i systemets generiska monospace i stället för IBM Plex Mono. */
+  .code pre{padding:4mm 5mm;white-space:pre-wrap;word-break:break-word;
+    overflow-wrap:anywhere;font-family:var(--mono);font-size:inherit}
   .code .cmt{color:var(--dim)}
   .code .pmt{color:var(--beam)}
 
@@ -188,3 +195,6 @@
   }
   .ws-field .rule{height:8mm;border-bottom:1px solid var(--lit)}
   .ws-field.short .rule{height:6mm}
+
+  /* innehållsförteckningens länkar ska se ut som text, inte som länkar */
+  .toc-row .t a{color:inherit;text-decoration:none}

@@ -6,6 +6,10 @@
 | --- | --- |
 | `PLAN.md` | Innehållskarta, sidbudget, faktaregister och avsteg från briefen |
 | `design-samples.html` | Sju sidor som visar varje komponenttyp den färdiga kursen behöver |
+| `jad-method-full.html` | **Kursen — 122 sidor, alla 21 moduler** |
+| `check.sh` | Letar sidor som spiller över sidfoten, och kvarglömda platshållare |
+| `preview.sh` | Renderar enskilda sidor som PNG för visuell granskning |
+| `course.css` | Formgivningen, delad av kursen och designprovet |
 | `jad-method.html` | Den korta produktmallen, elva sidor med platshållare |
 | `fonts-inline.css` | Chakra Petch, IBM Plex Sans och IBM Plex Mono som base64 |
 | `build.sh` | Renderar valfri av HTML-filerna till PDF |
@@ -102,6 +106,17 @@ Ads Manager, Google Ads och Google AI Studio. Härifrån går det inte — det f
 ingen inloggad webbläsarsession mot de gränssnitten. Briefen § 14.2 punkt 6 säger
 vad som gäller då: en tydligt märkt förenklad illustration, aldrig en falsk
 skärmbild. Varje figur bär därför märkningen och menyvägen i text.
+
+## Kör alltid check.sh efter en ändring
+
+```sh
+./check.sh                      # jad-method-full.html
+./check.sh design-samples.html
+./preview.sh 12 18              # -> /tmp/jad-preview/p12.png
+```
+
+`check.sh` hoppar över `<pre>`-block när den letar platshållare, eftersom
+mallar som läsaren själv fyller i avsiktligt innehåller hakparenteser.
 
 ## Kontrollera att en sida inte spiller över
 

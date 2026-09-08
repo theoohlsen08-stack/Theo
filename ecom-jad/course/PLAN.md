@@ -191,8 +191,52 @@ länkar i PDF:en i en version 1.1 — en inspelningslista tas fram när kursens 
 1. Innehållskarta och faktaregister — **klar**
 2. Designprov, sju sidor — `design-samples.html`, **klar**
 3. Butikstexterna omskrivna så att de matchar kursens verkliga innehåll — **klar**
-4. Modul 1–14 producerade — `jad-method-full.html`, **klar** (75 sidor).
-   Strategi och produkt, butiksdelen och AI-delen är skrivna.
-5. Modul 15–21, i ordning, med bild- och käll-logg — pågår
-6. QC enligt § 28: faktakontroll, täckning, visuell QA, platshållarsökning
-7. Exportera slutlig PDF
+4. Modul 1–21 producerade — `jad-method-full.html`, **klar**
+5. QC enligt § 28 — **klar**, se nedan
+6. Slutlig PDF exporterad: **122 sidor**
+
+## Slutstatus
+
+| | |
+| --- | --- |
+| Sidor | 122 (briefens spann är 80–120; överskottet är innehåll, inte utfyllnad) |
+| Moduler | 21 av 21 |
+| Tabeller | 34 |
+| Arbetsblad | 9 |
+| Figurer | 3, samtliga märkta *Simplified illustration* |
+| Kod- och mallblock | 18 |
+| Verifieringsstämplar | 6 |
+| Märkta räkneexempel | 5 |
+| Platshållare kvar | 0 |
+| Sidor som spiller över | 0 |
+
+Innehållsförteckningen räknar ut sina egna sidnummer ur var modulerna faktiskt
+börjar, och varje rad är en klickbar länk till sin modul. Källhänvisningar med
+publik URL är klickbara.
+
+**Känd begränsning:** Chromiums `--print-to-pdf` skapar inga PDF-bokmärken
+(dokumentöversikt). Briefen § 23.3 önskar det. Interna länkar och sidnumrering
+finns, men bokmärkesträdet kräver ett efterbearbetningssteg som inte finns i
+den här miljön.
+
+## Vad slutkontrollen hittade
+
+Två fel som inte syntes med blotta ögat, båda funna genom att räkna inbäddade
+typsnitt i den färdiga PDF:en:
+
+1. **Alla 18 kodblock renderades i fel typsnitt.** `<pre>` har
+   `font-family: monospace` i webbläsarens standardstil, och den slår ut arvet
+   från `.code`. Blocken använde systemets generiska monospace i stället för
+   IBM Plex Mono. Rättat med `font-family: var(--mono)` direkt på `.code pre`.
+2. **Tre tecken låg utanför de inbäddade delmängderna** — `→`, `−` och `★` —
+   och drog in tre reservtypsnitt i PDF:en. Ersatta med `->`, `-` och `*`.
+
+Efter rättningen innehåller PDF:en bara Chakra Petch, IBM Plex Sans och
+IBM Plex Mono. Kontrollera det efter varje ändring:
+
+```sh
+python3 -c "
+import re; raw=open('jad-method-full.pdf','rb').read()
+f={m.decode().split('+')[1] for m in re.findall(rb'/FontName\s*/([A-Za-z0-9+\-]+)', raw)}
+print([x for x in sorted(f) if not x.startswith(('ChakraPetch','IBMPlex'))] or 'inga reservtypsnitt')"
+```

@@ -101,9 +101,20 @@ Kedjan är verifierad: rätt A4-format, alla tre typsnitten inbäddade, ingen n�
 behövs vid rendering. **`ecom-jad/course/PLAN.md` bär alla beslut som styr kursen —
 läs den först.**
 
-Masterbriefen kräver **80–120 sidor** i 21 moduler. Planen landar på 112.
-`design-samples.html` är sju sidor som visar varje komponenttyp kursen behöver
-(terminalrutor, tabeller, arbetsblad, figurer, callouts, käll- och verifieringsmärkning).
+**Kursen är färdigskriven: `jad-method-full.html`, 122 sidor, alla 21 moduler.**
+Inga platshållare, inga sidor som spiller över sidfoten. Innehållsförteckningen
+räknar ut sina egna sidnummer och varje rad länkar till sin modul.
+
+Kör alltid `./check.sh` efter en ändring — den fångar två fel som inte syns:
+innehåll som växer förbi den absolut placerade sidfoten och därmed försvinner
+tyst, och kvarglömda platshållare. `./preview.sh 12 18` renderar enskilda sidor.
+
+Två fel som slutkontrollen hittade och som är värda att komma ihåg: `<pre>` har
+`font-family: monospace` i webbläsarens standardstil, vilket slår ut arvet och
+fick alla kodblock att renderas i fel typsnitt; och tecknen `→`, `−` och `★`
+ligger utanför de inbäddade latinska delmängderna och drar in reservtypsnitt.
+Räkna typsnitten i den färdiga PDF:en efter varje ändring — bara Chakra Petch
+och IBM Plex ska finnas där.
 
 **Kursen ska vara helt på engelska och får inte innehålla något exklusivt svenskt** —
 vem som helst i världen ska kunna använda den. Briefen säger på flera ställen "på
