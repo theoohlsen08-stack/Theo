@@ -122,8 +122,8 @@ och policy kontrolleras mot officiell källa, och att kursen bär ett synligt
 | ID | Påstående som måste kontrolleras | Modul | Status |
 | --- | --- | --- | --- |
 | F01 | Shopifys planer, priser, provperiod, introduktionserbjudande | 9 | Att göra |
-| F02 | Namnet på Shopifys officiella app för digitala produkter | 10 | **Preliminärt: heter numera "Shopify Digital Products", inte "Digital Downloads"** |
-| F03 | Filstorleksgränser och länkstöd i leveransappen | 10 | Att göra |
+| F02 | Namnet på Shopifys officiella app för digitala produkter | 10 | **Verifierat: heter "Shopify Digital Products", inte "Digital Downloads"** |
+| F03 | Filstorleksgränser och länkstöd i leveransappen | 10 | **Verifierat: 5 GB per fil, ingen bandbreddsgräns** (sekundärt, via sökning) |
 | F04 | Claude-planer och vad som ingår | 13 | **Verifierat: Claude Code kräver Pro, Max, Team, Enterprise eller Console — gratisplanen ingår inte** |
 | F05 | Installationskommandon för Claude Code, alla plattformar | 13 | **Verifierat mot code.claude.com/docs/en/setup** |
 | F06 | `claude --version` och `claude doctor` som kontroll | 13 | **Verifierat** |
@@ -156,12 +156,30 @@ Ur briefen § 1.4, § 7.2 och Theos stående regler:
 - Ingen uppmaning att kringgå plattformsgranskning, dataskydd eller kontoregler.
 - Slutfilen får inte innehålla en enda platshållare (§ 30).
 
+## Rörlig bild i kursen
+
+Theo bad om video som komplement till bilderna. Det går **inte** att producera
+härifrån, av tre skäl som alla gäller samtidigt:
+
+- Ingen `ffmpeg` finns i miljön, så det går inte att sätta ihop bildrutor till en fil.
+- Det finns ingen inloggad webbläsarsession mot Shopify Admin, Meta, TikTok, Google Ads
+  eller AI Studio, så det går inte att skärminspela de riktiga gränssnitten.
+- En genererad video som *ser ut* som ett gränssnitt är en påhittad skärmbild i rörelse
+  och bryter mot briefen § 1.4 och § 14.2.
+
+Vad kursen gör i stället: fler och tätare figurer, och för de moment där rörelse
+verkligen hjälper en stegsekvens ruta för ruta i stället för en enda bild.
+
+Vill Theo ha riktig video spelar han in de skärmarna själv. Då läggs klippen som
+länkar i PDF:en i en version 1.1 — en inspelningslista tas fram när kursens moduler
+är klara, så att listan matchar de steg som faktiskt visade sig svåra att följa.
+
 ## Produktionsordning
 
-1. Innehållskarta och faktaregister — **den här filen, klar**
-2. Designprov, 5 representativa sidor — `design-samples.html`, **klar**
-3. Theo godkänner formen
-4. Verifiera faktaregistret modul för modul, logga varje källa
-5. Producera modul 1–21 i ordning, med bild- och käll-logg
+1. Innehållskarta och faktaregister — **klar**
+2. Designprov, sju sidor — `design-samples.html`, **klar**
+3. Butikstexterna omskrivna så att de matchar kursens verkliga innehåll — **klar**
+4. Modul 1–2 producerade — `jad-method-full.html`, **klar** (9 sidor)
+5. Modul 3–21, i ordning, med bild- och käll-logg — pågår
 6. QC enligt § 28: faktakontroll, täckning, visuell QA, platshållarsökning
 7. Exportera slutlig PDF

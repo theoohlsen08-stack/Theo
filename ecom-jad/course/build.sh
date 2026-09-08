@@ -23,8 +23,11 @@ import sys
 html  = open(sys.argv[1], encoding='utf-8').read()
 fonts = open('fonts-inline.css', encoding='utf-8').read()
 assert '<!--FONTS-->' in html, 'markören <!--FONTS--> saknas i ' + sys.argv[1]
-open(sys.argv[2], 'w', encoding='utf-8').write(
-    html.replace('<!--FONTS-->', '<style>\n' + fonts + '\n</style>', 1))
+html = html.replace('<!--FONTS-->', '<style>\n' + fonts + '\n</style>', 1)
+if '<!--STYLES-->' in html:
+    styles = open('course.css', encoding='utf-8').read()
+    html = html.replace('<!--STYLES-->', '<style>\n' + styles + '\n</style>', 1)
+open(sys.argv[2], 'w', encoding='utf-8').write(html)
 PY
 
 "$CHROME" --headless --disable-gpu --no-sandbox --hide-scrollbars \
