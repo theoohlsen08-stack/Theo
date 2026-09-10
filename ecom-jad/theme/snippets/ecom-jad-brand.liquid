@@ -1,0 +1,125 @@
+{% comment %}
+  Ecom Jad — brand layer
+  Carries the Jad Method landing-page design onto the Horizon theme:
+  typefaces, bevelled corners, the blueprint grid and the cyan accent.
+  Rendered from snippets/stylesheets.liquid, which loads BEFORE the theme's
+  own color-palette snippet — so the body rules here are written as
+  `html body` to outrank it. Colours themselves come from the palette in
+  config/settings_data.json; this file only carries type and form.
+{% endcomment %}
+{% style %}
+  @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+  :root {
+    --jad-void:   #05070F;
+    --jad-deep:   #0A1024;
+    --jad-panel:  #0E1630;
+    --jad-edge:   #1C2748;
+    --jad-lit:    #2A3A66;
+    --jad-ice:    #E6EDFB;
+    --jad-mute:   #8497BF;
+    --jad-dim:    #5B6C96;
+    --jad-beam:   #2DE2FF;
+    --jad-signal: #4B7BFF;
+    --jad-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+    --jad-body:    "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --jad-mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --jad-cut: 12px;
+  }
+
+  html body {
+    font-family: var(--jad-body);
+    background-color: var(--jad-void);
+    color: var(--jad-ice);
+  }
+
+  /* blueprint grid, fixed behind everything */
+  html body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--jad-edge) 1px, transparent 1px),
+      linear-gradient(90deg, var(--jad-edge) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: .16;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  html body .page-wrapper { position: relative; z-index: 1; }
+
+  h1, h2, h3, h4, h5, h6,
+  .h0, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--jad-display);
+    letter-spacing: -0.015em;
+    color: var(--jad-ice);
+  }
+
+  /* small caps labels take the utility face */
+  h5, h6, .caption, .caption-with-letter-spacing, .price__badge,
+  .product__accordion summary, legend, label {
+    font-family: var(--jad-mono);
+    letter-spacing: .12em;
+  }
+
+  a { color: var(--jad-beam); }
+
+  /* buttons: bevelled corners echoing the display face */
+  .button, button.button, .shopify-payment-button__button--unbranded,
+  .button--primary, .button--secondary {
+    font-family: var(--jad-display);
+    font-weight: 600;
+    letter-spacing: .01em;
+    clip-path: polygon(
+      var(--jad-cut) 0, 100% 0,
+      100% calc(100% - var(--jad-cut)), calc(100% - var(--jad-cut)) 100%,
+      0 100%, 0 var(--jad-cut)
+    );
+    transition: transform .15s ease, box-shadow .2s ease;
+  }
+
+  .button--primary:hover, .shopify-payment-button__button--unbranded:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 34px rgba(45, 226, 255, .28);
+  }
+
+  /* panels, cards and inputs sit on the raised surface */
+  .card, .card-wrapper, .quick-add-modal__content,
+  .cart-drawer, .drawer__inner, .popover, dialog {
+    background-color: var(--jad-panel);
+    border-color: var(--jad-edge);
+  }
+
+  input, select, textarea, .field__input, .select__select {
+    font-family: var(--jad-body);
+    background-color: var(--jad-void);
+    border-color: var(--jad-edge);
+    color: var(--jad-ice);
+  }
+
+  input:focus, textarea:focus, select:focus, .field__input:focus {
+    border-color: var(--jad-beam);
+    outline-color: var(--jad-beam);
+  }
+
+  ::placeholder { color: var(--jad-dim); }
+
+  /* prices and any tabular figures line up */
+  .price, .price-item, .cart-item__price, .totals__total-value {
+    font-family: var(--jad-display);
+    font-variant-numeric: tabular-nums;
+    color: var(--jad-ice);
+  }
+
+  hr, .border, .section-divider { border-color: var(--jad-edge); }
+
+  ::selection { background: var(--jad-beam); color: #04101C; }
+
+  :focus-visible { outline: 2px solid var(--jad-beam); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button, .button--primary { transition: none; }
+    .button--primary:hover { transform: none; }
+  }
+{% endstyle %}

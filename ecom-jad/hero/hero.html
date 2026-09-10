@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --void:#05070F; --deep:#0A1024; --panel:#0E1630;
+    --edge:#1C2748; --lit:#2A3A66;
+    --ice:#E6EDFB; --mute:#8497BF; --dim:#5B6C96;
+    --beam:#2DE2FF; --signal:#4B7BFF;
+    --display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:2560px; height:1097px; overflow:hidden; background:var(--void); }
+
+  .stage { position:relative; width:2560px; height:1097px; background:var(--void); }
+
+  /* blueprint grid */
+  .stage::before {
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--edge) 1px, transparent 1px),
+      linear-gradient(90deg, var(--edge) 1px, transparent 1px);
+    background-size:64px 64px; opacity:.30;
+  }
+  /* cyan atmosphere behind the panel */
+  .glow {
+    position:absolute; top:-220px; right:-60px; width:1900px; height:1450px;
+    background:radial-gradient(ellipse at 55% 45%,
+      rgba(45,226,255,.22), rgba(75,123,255,.10) 40%, transparent 68%);
+  }
+  /* darkening toward the left so headline text stays legible */
+  .scrim {
+    position:absolute; inset:0;
+    background:linear-gradient(100deg, rgba(5,7,15,.94) 18%, rgba(5,7,15,.42) 42%, rgba(5,7,15,0) 66%);
+  }
+
+  .rig {
+    position:absolute; top:50%; right:96px; transform:translateY(-50%);
+    perspective:2400px;
+  }
+  .screen {
+    width:1180px;
+    transform:rotateY(-14deg) rotateX(4deg);
+    transform-style:preserve-3d;
+    background:linear-gradient(160deg,#101A38,#0A1024 55%);
+    border:1px solid var(--lit);
+    box-shadow:
+      0 0 0 1px rgba(45,226,255,.10),
+      0 60px 140px rgba(0,0,0,.75),
+      0 0 160px rgba(45,226,255,.16);
+    padding:26px 30px 32px;
+  }
+
+  .chrome { display:flex; align-items:center; gap:14px; padding-bottom:20px; border-bottom:1px solid var(--edge); }
+  .dots { display:flex; gap:8px; }
+  .dots i { width:11px; height:11px; border-radius:50%; background:var(--lit); display:block; }
+  .dots i:first-child { background:var(--beam); box-shadow:0 0 10px rgba(45,226,255,.8); }
+  .crumb { font-family:var(--mono); font-size:15px; letter-spacing:.18em; color:var(--dim); text-transform:uppercase; }
+  .live { margin-left:auto; display:flex; align-items:center; gap:9px; font-family:var(--mono); font-size:14px; letter-spacing:.14em; color:var(--beam); text-transform:uppercase; }
+  .live b { width:8px; height:8px; border-radius:50%; background:var(--beam); box-shadow:0 0 12px var(--beam); }
+
+  .tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:24px 0 26px; }
+  .tile { background:rgba(14,22,48,.85); border:1px solid var(--edge); padding:18px 20px 20px; }
+  .tile span { font-family:var(--mono); font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); display:block; }
+  .meter { margin-top:14px; height:9px; background:rgba(42,58,102,.55); position:relative; }
+  .meter i { position:absolute; inset:0 auto 0 0; background:linear-gradient(90deg,var(--beam),var(--signal)); box-shadow:0 0 14px rgba(45,226,255,.55); display:block; }
+  .t1 .meter i { width:72%; } .t2 .meter i { width:54%; } .t3 .meter i { width:63%; }
+
+  .chart { background:rgba(10,16,36,.7); border:1px solid var(--edge); padding:22px 24px 12px; }
+  .chart .cap { font-family:var(--mono); font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-bottom:14px; }
+
+  .rows { margin-top:22px; display:flex; flex-direction:column; gap:12px; }
+  .row { display:grid; grid-template-columns:150px 1fr 90px; gap:20px; align-items:center; }
+  .bar { height:12px; background:rgba(42,58,102,.45); position:relative; }
+  .bar i { position:absolute; inset:0 auto 0 0; background:rgba(45,226,255,.55); display:block; }
+  .r1 .bar i{width:88%} .r2 .bar i{width:61%} .r3 .bar i{width:74%} .r4 .bar i{width:43%}
+  .chip { height:12px; background:rgba(75,123,255,.35); }
+  .stub { height:12px; background:rgba(132,151,191,.28); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="glow"></div>
+
+  <div class="rig">
+    <div class="screen">
+      <div class="chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="crumb">Overview</div>
+        <div class="live"><b></b>Live</div>
+      </div>
+
+      <div class="tiles">
+        <div class="tile t1"><span>Sessions</span><div class="meter"><i></i></div></div>
+        <div class="tile t2"><span>Orders</span><div class="meter"><i></i></div></div>
+        <div class="tile t3"><span>Conversion</span><div class="meter"><i></i></div></div>
+      </div>
+
+      <div class="chart">
+        <div class="cap">Last 30 days</div>
+        <svg width="100%" height="290" viewBox="0 0 1320 330" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2DE2FF" stop-opacity="0.42"/>
+              <stop offset="100%" stop-color="#2DE2FF" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="stroke" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#4B7BFF"/>
+              <stop offset="100%" stop-color="#2DE2FF"/>
+            </linearGradient>
+          </defs>
+          <g stroke="#1C2748" stroke-width="1">
+            <line x1="0" y1="66" x2="1320" y2="66"/>
+            <line x1="0" y1="148" x2="1320" y2="148"/>
+            <line x1="0" y1="230" x2="1320" y2="230"/>
+            <line x1="0" y1="312" x2="1320" y2="312"/>
+          </g>
+          <path fill="url(#fill)"
+            d="M0,286 C90,276 150,250 232,258 C320,266 372,214 452,206 C534,198 588,232 668,208 C752,182 800,132 884,124 C968,116 1016,150 1096,122 C1176,94 1236,58 1320,40 L1320,330 L0,330 Z"/>
+          <path fill="none" stroke="url(#stroke)" stroke-width="4" stroke-linecap="round"
+            d="M0,286 C90,276 150,250 232,258 C320,266 372,214 452,206 C534,198 588,232 668,208 C752,182 800,132 884,124 C968,116 1016,150 1096,122 C1176,94 1236,58 1320,40"/>
+          <circle cx="1320" cy="40" r="9" fill="#2DE2FF"/>
+          <circle cx="1320" cy="40" r="19" fill="none" stroke="#2DE2FF" stroke-opacity=".35" stroke-width="3"/>
+        </svg>
+      </div>
+
+      <div class="rows">
+        <div class="row r1"><div class="stub"></div><div class="bar"><i></i></div><div class="chip"></div></div>
+        <div class="row r2"><div class="stub"></div><div class="bar"><i></i></div><div class="chip"></div></div>
+        <div class="row r3"><div class="stub"></div><div class="bar"><i></i></div><div class="chip"></div></div>
+        <div class="row r4"><div class="stub"></div><div class="bar"><i></i></div><div class="chip"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scrim"></div>
+</div>
+</body>
+</html>
