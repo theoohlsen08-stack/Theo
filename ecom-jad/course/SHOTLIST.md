@@ -6,7 +6,7 @@ Urvalsregeln: **rörlig bild vinner bara där läsaren måste följa ett levande
 gränssnitt.** Är momentet ett resonemang eller ett arbetsblad tillför video
 ingenting utom en pratande röst. Därför finns modul 3–8, 12, 20 och 21 inte här.
 
-Sidnumren pekar på kursens 122-sidiga PDF (`jad-method-full.pdf`).
+Sidnumren pekar på kursens 136-sidiga PDF (`jad-method-full.pdf`).
 
 ## Innan du spelar in något
 
@@ -30,7 +30,7 @@ Enklast att spela in, tydligast för läsaren, ingen risk för läckt kunddata.
 
 ## A1 · Installera Claude Code och bevisa att den kör
 
-**Modul 13, s. 64–65** — *Install* och *Prove it worked*
+**Modul 13, s. 71 och 73** — *Install* och *Prove it worked*
 **Varför klipp:** text kan beskriva ett kommando, men inte visa hur "det
 fungerade" ser ut. Ett versionsnummer som skrivs ut är ett bevis man känner igen.
 
@@ -47,7 +47,7 @@ fungerade" ser ut. Ett versionsnummer som skrivs ut är ett bevis man känner ig
 
 ## A2 · Hämta ner temat och ta säkerhetskopian
 
-**Modul 14, s. 70** — *Get the theme onto your machine*
+**Modul 14, s. 78** — *Get the theme onto your machine*
 **Varför klipp:** fem steg som måste ske i rätt ordning, där ett av dem
 (läsa butiksnamnet på inloggningsskärmen) är lätt att slarva förbi i text.
 
@@ -65,7 +65,7 @@ fungerade" ser ut. Ett versionsnummer som skrivs ut är ett bevis man känner ig
 
 ## A3 · Förhandsgranska och kodkontrollera
 
-**Modul 14, s. 73** — *Preview and check before anything leaves your machine*
+**Modul 14, s. 81** — *Preview and check before anything leaves your machine*
 **Varför klipp:** att en sparad fil laddar om förhandsvisningen av sig själv är
 svårt att tro på i text och självklart när man ser det.
 
@@ -83,7 +83,7 @@ svårt att tro på i text och självklart när man ser det.
 
 ## A4 · Ladda upp opublicerat och publicera för hand
 
-**Modul 14, s. 74** — *Upload as unpublished, publish by hand*
+**Modul 14, s. 82** — *Upload as unpublished, publish by hand*
 **Varför klipp:** hela poängen sitter i de sista fem sekunderna — att det gamla
 temat fortfarande ligger kvar att gå tillbaka till.
 
@@ -106,9 +106,9 @@ Högre värde för läsaren, men kräver maskering.
 
 ## B1 · Skapa produkten och stänga av "fysisk vara"
 
-**Modul 10, s. 45** — *Creating the product*
+**Modul 10, s. 49** — *Creating the product*
 **Varför klipp:** en enda kryssruta avgör om kassan fungerar. Figur 10.1 visar
-konsekvensen; klippet visar var rutan sitter.
+konsekvensen och figur 10.3 hela testordern; klippet visar var rutan sitter.
 
 | Tid | Vad som syns |
 | --- | --- |
@@ -125,7 +125,7 @@ konsekvensen; klippet visar var rutan sitter.
 
 ## B2 · Bifoga filen i leveransappen
 
-**Modul 10, s. 47** — *Attaching the file*
+**Modul 10, s. 51** — *Attaching the file*
 **Varför klipp:** kort och konkret, och slutet är en avsiktlig utelämning som
 text lätt får att låta som ett misstag.
 
@@ -142,7 +142,7 @@ text lätt får att låta som ett misstag.
 
 ## B3 · Testordern
 
-**Modul 10, s. 48** — *The test order*
+**Modul 10, s. 53** — *The test order*
 **Det viktigaste klippet i listan.** Testordern är det enda momentet som avgör
 om en butik fungerar, och det är det moment nybörjare oftast hoppar över.
 Det är också längst — ta den tiden.
@@ -166,7 +166,7 @@ Det är också längst — ta den tiden.
 
 ## B4 · Koppla butiken och verifiera köp-eventet
 
-**Modul 17, s. 90** — *Connecting the store*
+**Modul 17, s. 100** — *Connecting the store*
 **Varför klipp:** kursen säger att eventet ska avfyras *exakt en gång*. Att se
 det hända i testverktyget är skillnaden mellan att tro och att veta.
 
@@ -184,7 +184,7 @@ det hända i testverktyget är skillnaden mellan att tro och att veta.
 
 ## B5 · Bygga den första kampanjen
 
-**Modul 17, s. 92** — *The first campaign*
+**Modul 17, s. 103** — *The first campaign*
 **Varför klipp:** bokens längsta procedur, tolv steg, där varje steg är ett val
 och inte en knapptryckning.
 
@@ -209,7 +209,7 @@ och inte en knapptryckning.
 
 ## B6 · Bildarbetsflödet
 
-**Modul 15, s. 78** — *The workflow that produces usable images*
+**Modul 15, s. 86** — *The workflow that produces usable images*
 **Varför klipp:** nio steg där ordningen är hela poängen, och där det vanligaste
 felet — att be om bilder direkt — är lätt att visa och svårt att beskriva.
 

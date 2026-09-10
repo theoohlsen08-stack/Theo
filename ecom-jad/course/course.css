@@ -128,6 +128,13 @@
   .ws-total .slot{font-family:var(--mono);color:var(--beam);
     border-bottom:1px solid var(--lit);padding:0 8mm}
 
+  /* ---- piktogram ---- */
+  /* Generiska former, medvetet inte någons logotyp: varumärkeskällorna går inte
+     att nå härifrån, och en egenritad efterlikning vore sämre än ingen alls.
+     Ligger som <symbol> en gång och återanvänds med <use>. */
+  .pict-sheet{position:absolute;width:0;height:0;overflow:hidden}
+  .pict{width:15mm;height:15mm;display:block;color:var(--beam);margin-bottom:6mm}
+
   /* ---- figures ---- */
   .fig{margin:4mm 0 5mm}
   .fig .frame{border:1px solid var(--edge);background:rgba(10,16,36,.7);padding:6mm}

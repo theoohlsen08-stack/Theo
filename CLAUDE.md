@@ -101,13 +101,16 @@ Kedjan är verifierad: rätt A4-format, alla tre typsnitten inbäddade, ingen n�
 behövs vid rendering. **`ecom-jad/course/PLAN.md` bär alla beslut som styr kursen —
 läs den först.**
 
-**Kursen är färdigskriven: `jad-method-full.html`, 122 sidor, alla 21 moduler.**
+**Kursen är färdigskriven: `jad-method-full.html`, 136 sidor, alla 21 moduler,
+17 figurer och 20 piktogram.**
 Inga platshållare, inga sidor som spiller över sidfoten. Innehållsförteckningen
 räknar ut sina egna sidnummer och varje rad länkar till sin modul.
 
 Kör alltid `./check.sh` efter en ändring — den fångar två fel som inte syns:
 innehåll som växer förbi den absolut placerade sidfoten och därmed försvinner
 tyst, och kvarglömda platshållare. `./preview.sh 12 18` renderar enskilda sidor.
+`check.sh` ser däremot **inte** text som sticker ut ur en figurs egen `viewBox` —
+den klipps tyst. Rendera varje ändrad figursida och titta på den.
 
 Två fel som slutkontrollen hittade och som är värda att komma ihåg: `<pre>` har
 `font-family: monospace` i webbläsarens standardstil, vilket slår ut arvet och
@@ -120,7 +123,15 @@ och IBM Plex ska finnas där.
 video går inte att producera härifrån (ingen `ffmpeg`, ingen inloggad session mot
 gränssnitten, och en genererad UI-video är en påhittad skärmbild i rörelse). När
 klippen finns läggs de in som länkar i marginalen i en version 1.1, vilket kräver en
-`.clip`-komponent i `course.css`. Inte gjort ännu.
+`.clip`-komponent i `course.css`. Inte gjort ännu. Listans sidhänvisningar pekar på
+den 136-sidiga PDF:en och måste räknas om varje gång kursen växer.
+
+**Logotyper och appikoner går inte att få in.** Shopifys, Metas och TikToks
+varumärkessidor är blockerade av nätverkspolicyn, liksom ikonbibliotek via jsDelivr
+och cdnjs — samtliga returnerar `000`. Att rita av dem är inte alternativet: en
+egenritad efterlikning av någon annans märke i en kurs som säljs kommersiellt är
+sämre än att låta bli. Kursen använder i stället 20 generiska piktogram, ritade en
+gång som `<symbol>` och återanvända med `<use>` på varje modulöppnare.
 
 **Kursen ska vara helt på engelska och får inte innehålla något exklusivt svenskt** —
 vem som helst i världen ska kunna använda den. Briefen säger på flera ställen "på
@@ -132,8 +143,9 @@ för sin marknad — aldrig ett svar som bara stämmer i ett land.
 **Skärmbilder går inte att ta härifrån.** Briefen vill ha aktuella vyer ur Shopify
 Admin, Meta/TikTok/Google Ads och Google AI Studio; det finns ingen inloggad
 webbläsarsession mot dem. Briefen § 14.2 punkt 6 ger svaret: tydligt märkt
-"Simplified illustration", aldrig en falsk skärmbild. Alla figurer bär den märkningen
-plus menyvägen i text.
+"Simplified illustration", aldrig en falsk skärmbild. De sex figurer som avbildar
+ett gränssnitt bär den märkningen plus menyvägen i text; övriga elva visar ett flöde
+eller en kalkyl och har ingen skärm att förväxlas med.
 
 Nätläget för faktagranskning: `code.claude.com/docs` och `cloud.google.com/free` är
 fullt nåbara med WebFetch. `shopify.com`, `help.shopify.com`, `claude.com/pricing`,

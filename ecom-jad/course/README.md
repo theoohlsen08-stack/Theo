@@ -6,7 +6,7 @@
 | --- | --- |
 | `PLAN.md` | Innehållskarta, sidbudget, faktaregister och avsteg från briefen |
 | `design-samples.html` | Sju sidor som visar varje komponenttyp den färdiga kursen behöver |
-| `jad-method-full.html` | **Kursen — 122 sidor, alla 21 moduler** |
+| `jad-method-full.html` | **Kursen — 136 sidor, alla 21 moduler, 17 figurer** |
 | `check.sh` | Letar sidor som spiller över sidfoten, och kvarglömda platshållare |
 | `preview.sh` | Renderar enskilda sidor som PNG för visuell granskning |
 | `course.css` | Formgivningen, delad av kursen och designprovet |
@@ -94,6 +94,7 @@ Kursen behöver mer än brödtext. De här är byggda och verifierade:
 | `table` | Fåkolumnstabell för felsökning och kalkyler |
 | `.ws` | Arbetsblad med poängrutor 1–5 och totalrad |
 | `.fig` + `.figcap` | Figur med bildnummer, förklaring och märkning |
+| `.pict` | Piktogram på modulöppnarna, ritade en gång som `<symbol>` |
 | `.note` / `.win` / `.warn` | Utmärkta rutor i cyan, grönt och rött |
 | `.stamp` | "Last verified"-datum, krävs av briefen § 28.1 |
 | `.illus` | "Illustrative example", krävs för varje räkneexempel |
@@ -105,7 +106,23 @@ Briefen vill ha riktiga skärmbilder ur Shopify Admin, Meta Ads Manager, TikTok
 Ads Manager, Google Ads och Google AI Studio. Härifrån går det inte — det finns
 ingen inloggad webbläsarsession mot de gränssnitten. Briefen § 14.2 punkt 6 säger
 vad som gäller då: en tydligt märkt förenklad illustration, aldrig en falsk
-skärmbild. Varje figur bär därför märkningen och menyvägen i text.
+skärmbild. Varje figur som avbildar ett gränssnitt bär därför märkningen och
+menyvägen i text. De figurer som inte visar något gränssnitt — ett flöde, en
+kalkyl, en tratt — bär den inte, eftersom det inte finns någon skärm att förväxla
+dem med.
+
+Av samma skäl finns inga logotyper eller appikoner i kursen. Varumärkessidorna hos
+Shopify, Meta och TikTok är blockerade av nätverkspolicyn, och en egenritad
+efterlikning av någon annans märke i en kurs som säljs är sämre än att låta bli.
+Piktogrammen på modulöppnarna är därför generiska former: en terminal, ett kuvert,
+ett diagram. Ingens varumärke.
+
+### Figurer spiller över utan att synas
+
+`check.sh` fångar sidor som spiller över sidfoten, men inte text som sticker ut ur
+en figurs egen `viewBox` — den klipps tyst i renderingen och syns inte i HTML.
+Rendera varje figursida med `./preview.sh <sida> <sida>` och titta på den. Tre
+rader hittades den vägen, och en etikett som låg ovanpå en tabellrad.
 
 ## Kör alltid check.sh efter en ändring
 

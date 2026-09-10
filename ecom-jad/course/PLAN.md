@@ -180,7 +180,9 @@ härifrån, av tre skäl som alla gäller samtidigt:
   och bryter mot briefen § 1.4 och § 14.2.
 
 Vad kursen gör i stället: fler och tätare figurer, och för de moment där rörelse
-verkligen hjälper en stegsekvens ruta för ruta i stället för en enda bild.
+verkligen hjälper en stegsekvens ruta för ruta i stället för en enda bild. Det är
+gjort: **kursen har 17 figurer**, och testordern — det enda moment som avgör om en
+butik fungerar — ligger som fyra rutor i figur 10.3.
 
 Vill Theo ha riktig video spelar han in de skärmarna själv. **Inspelningslistan
 finns nu: `SHOTLIST.md`.** Tio klipp, valda efter regeln att rörlig bild bara vinner
@@ -196,6 +198,54 @@ När klippen är inspelade läggs de in som länkar i marginalen i en version 1.
 Det kräver en `.clip`-komponent i `course.css` och en rad per moment — det arbetet
 är inte gjort.
 
+## Figurerna
+
+Briefen § 14 vill ha 35–60 visuella objekt. Den färdigskrivna kursen hade tre. Fjorton
+nya kom till, och kursen växte från 122 till 136 sidor.
+
+| Figur | Modul | Vad den visar |
+| --- | --- | --- |
+| 2.1 | 02 | Kursens väg, och var den loopar tillbaka |
+| 3.1 | 03 | Hur smal en målgrupp måste vara innan någon känner igen sig |
+| 5.1 | 05 | Poängkortet ifyllt: idé B har högst total och åker ändå ut på stoppregeln |
+| 8.1 | 08 | Nollpunkten som flöde, med samma siffror som räkneexemplet i texten |
+| 9.1 | 09 | Fast mot rörlig kostnad, och varför butiksavgiften ensam ljuger |
+| 10.1 | 10 | Vad kassan frågar efter, fysisk mot digital vara |
+| 10.2 | 10 | Leveranskedjans sex länkar och felet som gömmer sig bakom varje |
+| 10.3 | 10 | Testordern i fyra rutor — det viktigaste momentet i hela kursen |
+| 11.1 | 11 | Produktsidans nio sektioner som wireframe i mobilbredd |
+| 13.1 | 13 | Vad en terminal visar, och tre prompter för tre skal |
+| 14.1 | 14 | De två kopplingarna som blandas ihop |
+| 15.1 | 15 | Bildarbetsflödets tre faser och de två grindarna |
+| 16.1 | 16 | Storyboard, fem rutor |
+| 17.1 | 17 | Eventkedjan, och exakt var dubbelräkningen uppstår |
+| 17.2 | 17 | Kampanjstruktur: en annonsgrupp mot fyra, samma budget |
+| 20.1 | 20 | Mättratten och var den läcker |
+| 20.2 | 20 | Skalningsgrinden: sex villkor sammanbundna med "och", inte "eller" |
+
+Figurnumren följer läsordningen. 17.1 och 17.2 är därför omvända mot briefens
+§ 14.1-lista: eventkapitlet kommer före kampanjkapitlet i kursen.
+
+### Logotyper och appikoner: nej
+
+Theo bad om appikoner. Det blev inget, av två skäl som båda gäller. Shopifys, Metas
+och TikToks officiella varumärkessidor är blockerade av nätverkspolicyn, liksom
+ikonbibliotek via jsDelivr och cdnjs — samtliga returnerade `000`. Och att rita av
+dem vore värre: en egenritad efterlikning av någon annans varumärke i en kurs som
+säljs kommersiellt är sämre än originalet och rättsligt sämre än ingenting.
+Briefen § 14.3 tillåter officiella logotyper — men villkoret är att de *är* officiella.
+
+I stället finns 20 generiska piktogram, ett per modulöppnare, som `<symbol>` en gång
+och `<use>` på varje öppnare. De är ingens varumärke.
+
+### Två fel som bara syntes i rendering
+
+`svgfit.sh`-kontrollen (i sessionens skräpkatalog, inte i repot) mäter varje
+`<text>` i varje figur mot dess `viewBox` och fångade tre rader som stack ut
+utanför ramen — de syns inte i HTML och inte i `check.sh`. Och en etikettrad i
+figur 5.1 låg ovanpå en tabellrad. Bägge sorterna kräver att man faktiskt renderar
+sidan och tittar; `./preview.sh <sida> <sida>` är vägen.
+
 ## Produktionsordning
 
 1. Innehållskarta och faktaregister — **klar**
@@ -204,16 +254,18 @@ Det kräver en `.clip`-komponent i `course.css` och en rad per moment — det ar
 4. Modul 1–21 producerade — `jad-method-full.html`, **klar**
 5. QC enligt § 28 — **klar**, se nedan
 6. Slutlig PDF exporterad: **122 sidor**
+7. Figurarbetet: 14 nya figurer och en piktogramuppsättning — **klart**, 136 sidor
 
 ## Slutstatus
 
 | | |
 | --- | --- |
-| Sidor | 122 (briefens spann är 80–120; överskottet är innehåll, inte utfyllnad) |
+| Sidor | 136 (briefens spann är 80–120; överskottet är innehåll, inte utfyllnad) |
 | Moduler | 21 av 21 |
 | Tabeller | 34 |
 | Arbetsblad | 9 |
-| Figurer | 3, samtliga märkta *Simplified illustration* |
+| Figurer | 17, varav 6 avbildar ett gränssnitt och bär *Simplified illustration* |
+| Piktogram | 20, ett per modulöppnare, generiska former |
 | Kod- och mallblock | 18 |
 | Verifieringsstämplar | 6 |
 | Märkta räkneexempel | 5 |
