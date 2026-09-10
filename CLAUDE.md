@@ -116,6 +116,12 @@ ligger utanför de inbäddade latinska delmängderna och drar in reservtypsnitt.
 Räkna typsnitten i den färdiga PDF:en efter varje ändring — bara Chakra Petch
 och IBM Plex ska finnas där.
 
+`SHOTLIST.md` är inspelningslistan för de tio videoklipp Theo ska spela in själv —
+video går inte att producera härifrån (ingen `ffmpeg`, ingen inloggad session mot
+gränssnitten, och en genererad UI-video är en påhittad skärmbild i rörelse). När
+klippen finns läggs de in som länkar i marginalen i en version 1.1, vilket kräver en
+`.clip`-komponent i `course.css`. Inte gjort ännu.
+
 **Kursen ska vara helt på engelska och får inte innehålla något exklusivt svenskt** —
 vem som helst i världen ska kunna använda den. Briefen säger på flera ställen "på
 svenska" och pekar ut Konsumentverket, Skatteverket och svenska sökord; Theos

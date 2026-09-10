@@ -182,9 +182,19 @@ härifrån, av tre skäl som alla gäller samtidigt:
 Vad kursen gör i stället: fler och tätare figurer, och för de moment där rörelse
 verkligen hjälper en stegsekvens ruta för ruta i stället för en enda bild.
 
-Vill Theo ha riktig video spelar han in de skärmarna själv. Då läggs klippen som
-länkar i PDF:en i en version 1.1 — en inspelningslista tas fram när kursens moduler
-är klara, så att listan matchar de steg som faktiskt visade sig svåra att följa.
+Vill Theo ha riktig video spelar han in de skärmarna själv. **Inspelningslistan
+finns nu: `SHOTLIST.md`.** Tio klipp, valda efter regeln att rörlig bild bara vinner
+där läsaren måste följa ett levande gränssnitt — fyra terminalinspelningar och sex
+gränssnittsgenomgångar. Modul 3–8, 12, 20 och 21 finns medvetet inte med: de är
+tänkande och ifyllande, inte klickande.
+
+Varje post anger moment, sidnummer, vad som ska synas sekund för sekund, längd,
+vad som måste maskas, och om röst behövs. Samtliga sidhänvisningar är verifierade
+mot kursen.
+
+När klippen är inspelade läggs de in som länkar i marginalen i en version 1.1.
+Det kräver en `.clip`-komponent i `course.css` och en rad per moment — det arbetet
+är inte gjort.
 
 ## Produktionsordning
 
