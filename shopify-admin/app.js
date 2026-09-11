@@ -19,7 +19,36 @@
     conversionRate: 3.7,
     aov: 68.4,
     returningRate: 27,
-    seed: 42
+    cartRate: 30,
+    checkoutRate: 60,
+    seed: 42,
+    channels: [
+      { name: 'Online Store', share: 64 },
+      { name: 'Point of Sale', share: 14 },
+      { name: 'Social', share: 12 },
+      { name: 'Direct', share: 10 }
+    ],
+    devices: [
+      { name: 'Mobile', share: 66 },
+      { name: 'Desktop', share: 29 },
+      { name: 'Tablet', share: 5 }
+    ],
+    products: [
+      { name: 'Classic Tee', price: 24, share: 14, inventory: 70, status: 'Active' },
+      { name: 'Pullover Hoodie', price: 58, share: 13, inventory: 12, status: 'Active' },
+      { name: 'Canvas Tote Bag', price: 22, share: 10, inventory: 21, status: 'Active' },
+      { name: 'Ceramic Mug', price: 16, share: 9, inventory: 138, status: 'Active' },
+      { name: 'Wool Beanie', price: 20, share: 8, inventory: 79, status: 'Active' },
+      { name: 'Leather Wallet', price: 48, share: 8, inventory: 33, status: 'Active' },
+      { name: 'Dot-grid Notebook', price: 14, share: 7, inventory: 24, status: 'Active' },
+      { name: 'Sticker Pack', price: 8, share: 7, inventory: 49, status: 'Active' },
+      { name: 'Steel Water Bottle', price: 26, share: 6, inventory: 77, status: 'Draft' },
+      { name: 'Baseball Cap', price: 22, share: 5, inventory: 95, status: 'Active' },
+      { name: 'Phone Case', price: 19, share: 5, inventory: 100, status: 'Active' },
+      { name: 'Crew Socks (2-pack)', price: 13, share: 4, inventory: 25, status: 'Active' },
+      { name: 'Enamel Pin Set', price: 12, share: 3, inventory: 86, status: 'Active' },
+      { name: 'Soy Candle', price: 28, share: 1, inventory: 40, status: 'Active' }
+    ]
   };
 
   var KPI_DEFS = [
@@ -29,36 +58,6 @@
     { key: 'sessions', label: 'Sessions', type: 'integer' },
     { key: 'aov', label: 'Average order value', type: 'currency' },
     { key: 'returningRate', label: 'Returning customer rate', type: 'percent' }
-  ];
-
-  var CHANNEL_SPLIT = [
-    { name: 'Online Store', share: 0.64 },
-    { name: 'Point of Sale', share: 0.14 },
-    { name: 'Social', share: 0.12 },
-    { name: 'Direct', share: 0.10 }
-  ];
-
-  var DEVICE_SPLIT = [
-    { name: 'Mobile', share: 0.66 },
-    { name: 'Desktop', share: 0.29 },
-    { name: 'Tablet', share: 0.05 }
-  ];
-
-  var PRODUCTS = [
-    { name: 'Classic Tee', price: 24, weight: 0.14 },
-    { name: 'Pullover Hoodie', price: 58, weight: 0.13 },
-    { name: 'Canvas Tote Bag', price: 22, weight: 0.10 },
-    { name: 'Ceramic Mug', price: 16, weight: 0.09 },
-    { name: 'Wool Beanie', price: 20, weight: 0.08 },
-    { name: 'Leather Wallet', price: 48, weight: 0.08 },
-    { name: 'Dot-grid Notebook', price: 14, weight: 0.07 },
-    { name: 'Sticker Pack', price: 8, weight: 0.07 },
-    { name: 'Steel Water Bottle', price: 26, weight: 0.06 },
-    { name: 'Baseball Cap', price: 22, weight: 0.05 },
-    { name: 'Phone Case', price: 19, weight: 0.05 },
-    { name: 'Crew Socks (2-pack)', price: 13, weight: 0.04 },
-    { name: 'Enamel Pin Set', price: 12, weight: 0.03 },
-    { name: 'Soy Candle', price: 28, weight: 0.01 }
   ];
 
   var FIRST_NAMES = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Elijah', 'Sophia', 'Lucas', 'Mia', 'Mason',
@@ -123,6 +122,12 @@
   function badgeCount(n) { return n > 999 ? '999+' : formatInt(n); }
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
   function formatAxisDate(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
 
   function formatRelativeDate(d) {
@@ -147,19 +152,22 @@
      State: load / persist / derive
      ========================================================================= */
 
+  function cloneDefaultState() {
+    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  }
+
   function loadState() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var parsed = JSON.parse(raw);
+        var defaults = cloneDefaultState();
         var merged = {};
-        for (var k in DEFAULT_STATE) { merged[k] = (parsed[k] !== undefined) ? parsed[k] : DEFAULT_STATE[k]; }
+        for (var k in defaults) { merged[k] = (parsed[k] !== undefined) ? parsed[k] : defaults[k]; }
         return merged;
       }
     } catch (e) { /* ignore corrupted storage */ }
-    var copy = {};
-    for (var k2 in DEFAULT_STATE) { copy[k2] = DEFAULT_STATE[k2]; }
-    return copy;
+    return cloneDefaultState();
   }
 
   function persist() {
@@ -195,6 +203,43 @@
     state.aov = d.orders > 0 ? Math.max(0, v / d.orders) : state.aov;
   }
   function setReturningRate(v) { state.returningRate = clamp(v, 0, 100); }
+  function setFunnelRate(field, v) {
+    v = clamp(v, 0, 100);
+    if (field === 'cartRate') state.cartRate = v;
+    else if (field === 'checkoutRate') state.checkoutRate = v;
+  }
+
+  /* ---- editable catalog / breakdown mutators ---- */
+
+  function setProductField(idx, field, val) {
+    var p = state.products[idx];
+    if (!p) return;
+    if (field === 'name') p.name = (val && val.trim()) || 'Untitled product';
+    else if (field === 'price') p.price = Math.max(0, val);
+    else if (field === 'share') p.share = Math.max(0, val);
+    else if (field === 'inventory') p.inventory = Math.max(0, Math.round(val));
+  }
+  function toggleProductStatus(idx) {
+    var p = state.products[idx];
+    if (!p) return;
+    p.status = p.status === 'Active' ? 'Draft' : 'Active';
+  }
+  function addProduct() {
+    state.products.push({ name: 'New product', price: 20, share: 1, inventory: 50, status: 'Active' });
+  }
+  function removeProduct(idx) { state.products.splice(idx, 1); }
+
+  function setBreakdownField(group, idx, field, val) {
+    var arr = state[group];
+    var row = arr && arr[idx];
+    if (!row) return;
+    if (field === 'name') row.name = (val && val.trim()) || 'Untitled';
+    else if (field === 'share') row.share = Math.max(0, val);
+  }
+  function addBreakdownRow(group) {
+    state[group].push({ name: group === 'channels' ? 'New channel' : 'New device', share: 1 });
+  }
+  function removeBreakdownRow(group, idx) { state[group].splice(idx, 1); }
 
   /* =========================================================================
      Organic daily series generation (seeded, deterministic, exact-sum)
@@ -326,7 +371,7 @@
   }
 
   /* =========================================================================
-     Synthetic rows: orders / customers / products
+     Synthetic rows: orders / customers
      ========================================================================= */
 
   function generateOrders(count, totalSales, seed, N) {
@@ -526,11 +571,18 @@
       '</div>';
   }
 
-  function breakdownRowHTML(name, valueText, share) {
-    var pct = Math.round(share * 1000) / 10;
+  function editableBreakdownRowHTML(group, idx, row, displayPct, amountText) {
+    var safeName = escapeHtml(row.name);
     return '<div class="breakdown-row">' +
-      '<div class="breakdown-top"><span class="name">' + name + '</span><span class="val">' + valueText + '</span></div>' +
-      '<div class="breakdown-bar"><span style="width:' + pct + '%"></span></div>' +
+      '<div class="breakdown-top">' +
+        '<span class="name editable-text" data-group="' + group + '" data-idx="' + idx + '" data-field="name" data-raw="' + safeName + '" title="Click to edit">' + safeName + '</span>' +
+        '<span class="val">' +
+          '<span class="editable-num" data-group="' + group + '" data-idx="' + idx + '" data-field="share" data-raw="' + displayPct.toFixed(1) + '" title="Click to edit">' + displayPct.toFixed(1) + '%</span>' +
+          ' · ' + amountText +
+          '<button type="button" class="row-delete" data-group="' + group + '" data-idx="' + idx + '" aria-label="Remove" title="Remove">&times;</button>' +
+        '</span>' +
+      '</div>' +
+      '<div class="breakdown-bar"><span style="width:' + displayPct + '%"></span></div>' +
       '</div>';
   }
 
@@ -552,6 +604,29 @@
       '<h2>Nothing here yet</h2>' +
       '<p>' + text + '</p>' +
       '</div></div>';
+  }
+
+  /* =========================================================================
+     Generic inline-edit helper (products / channels / devices / funnel)
+     ========================================================================= */
+
+  function startInlineEdit(span, editText, onCommit) {
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.inputMode = 'decimal';
+    input.className = 'inline-edit-input';
+    input.value = editText;
+    span.replaceWith(input);
+    input.focus();
+    input.select();
+    var cancelled = false;
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') input.blur();
+      if (e.key === 'Escape') { cancelled = true; input.blur(); }
+    });
+    input.addEventListener('focusout', function () {
+      if (!cancelled) onCommit(input.value);
+    });
   }
 
   /* =========================================================================
@@ -605,22 +680,24 @@
     els.chartSessionsLabel.textContent = formatInt(pd.derived.sessions);
     renderMainChart(els.sessionsChart, pd.sessionsDaily, pd.dates, formatInt, { color: '#5c6ac4' });
 
-    var channelAmounts = scaleToSum(CHANNEL_SPLIT.map(function (c) { return c.share; }), pd.derived.totalSales);
-    els.channelList.innerHTML = CHANNEL_SPLIT.map(function (c, i2) {
-      return breakdownRowHTML(c.name, formatCurrency(channelAmounts[i2]), c.share);
+    var channelShareSum = state.channels.reduce(function (a, c) { return a + c.share; }, 0) || 1;
+    var channelAmounts = scaleToSum(state.channels.map(function (c) { return c.share; }), pd.derived.totalSales);
+    els.channelList.innerHTML = state.channels.map(function (c, i2) {
+      return editableBreakdownRowHTML('channels', i2, c, c.share / channelShareSum * 100, formatCurrency(channelAmounts[i2]));
     }).join('');
 
-    var deviceAmounts = distributeInt(pd.derived.sessions, DEVICE_SPLIT.map(function (d) { return d.share; }));
-    els.deviceList.innerHTML = DEVICE_SPLIT.map(function (d, i2) {
-      return breakdownRowHTML(d.name, formatInt(deviceAmounts[i2]), d.share);
+    var deviceShareSum = state.devices.reduce(function (a, d) { return a + d.share; }, 0) || 1;
+    var deviceAmounts = distributeInt(pd.derived.sessions, state.devices.map(function (d) { return d.share; }));
+    els.deviceList.innerHTML = state.devices.map(function (d, i2) {
+      return editableBreakdownRowHTML('devices', i2, d, d.share / deviceShareSum * 100, formatInt(deviceAmounts[i2]));
     }).join('');
 
-    var revenues = scaleToSum(PRODUCTS.map(function (p) { return p.weight; }), pd.derived.totalSales);
-    var ranked = PRODUCTS.map(function (p, i2) { return { name: p.name, revenue: revenues[i2] }; })
+    var revenues = scaleToSum(state.products.map(function (p) { return p.share; }), pd.derived.totalSales);
+    var ranked = state.products.map(function (p, i2) { return { name: p.name, revenue: revenues[i2] }; })
       .sort(function (a, b) { return b.revenue - a.revenue; }).slice(0, 6);
-    els.topProductsTable.innerHTML = ranked.map(function (p) {
-      return '<tr><td>' + p.name + '</td><td class="num">' + formatCurrency(p.revenue) + '</td></tr>';
-    }).join('');
+    els.topProductsTable.innerHTML = ranked.length ? ranked.map(function (p) {
+      return '<tr><td>' + escapeHtml(p.name) + '</td><td class="num">' + formatCurrency(p.revenue) + '</td></tr>';
+    }).join('') : '<tr><td style="color:var(--text-muted)">No products yet</td></tr>';
   }
 
   function renderOrders() {
@@ -643,27 +720,31 @@
     els.ordersFooter.textContent = 'Showing ' + filtered.length + ' of ' + formatInt(pd.derived.orders) + ' orders';
   }
 
+  function productRowHTML(idx, p, units, sharePct) {
+    var safeName = escapeHtml(p.name);
+    var swatchInitials = escapeHtml(p.name.split(' ').filter(Boolean).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase());
+    var statusCls = p.status === 'Active' ? 'badge-green' : 'badge-gray';
+    return '<tr>' +
+      '<td><div class="product-cell"><span class="product-swatch" style="background:' + colorFor(p.name) + '">' + swatchInitials + '</span>' +
+        '<span class="editable-text" data-idx="' + idx + '" data-field="name" data-raw="' + safeName + '" title="Click to edit">' + safeName + '</span></div></td>' +
+      '<td><span class="badge ' + statusCls + ' status-toggle" data-idx="' + idx + '" title="Click to toggle Active/Draft">' + p.status + '</span></td>' +
+      '<td class="num"><span class="editable-num" data-idx="' + idx + '" data-field="inventory" data-raw="' + p.inventory + '" title="Click to edit">' + formatInt(p.inventory) + '</span></td>' +
+      '<td class="num">' + formatInt(units) + '</td>' +
+      '<td class="num"><span class="editable-num" data-idx="' + idx + '" data-field="price" data-raw="' + p.price.toFixed(2) + '" title="Click to edit">' + formatCurrency(p.price) + '</span></td>' +
+      '<td class="num"><span class="editable-num" data-idx="' + idx + '" data-field="share" data-raw="' + sharePct.toFixed(1) + '" title="Click to edit">' + sharePct.toFixed(1) + '%</span></td>' +
+      '<td class="action-col"><button type="button" class="row-delete" data-idx="' + idx + '" aria-label="Remove product" title="Remove">&times;</button></td>' +
+      '</tr>';
+  }
+
   function renderProducts() {
     var pd = getPeriodData();
-    var revenues = scaleToSum(PRODUCTS.map(function (p) { return p.weight; }), pd.derived.totalSales);
-    var rand = mulberry32(state.seed * 13 + 3);
-    var rows = PRODUCTS.map(function (p, i) {
-      var units = Math.max(0, Math.round(revenues[i] / p.price));
-      var inventory = 8 + Math.floor(rand() * 140);
-      var status = rand() < 0.9 ? 'Active' : 'Draft';
-      return { name: p.name, price: p.price, units: units, inventory: inventory, status: status };
-    }).sort(function (a, b) { return b.units - a.units; });
-    els.productsTableBody.innerHTML = rows.map(function (p) {
-      var swatchInitials = p.name.split(' ').map(function (w) { return w[0]; }).slice(0, 2).join('');
-      var statusBadge = p.status === 'Active' ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-gray">Draft</span>';
-      return '<tr>' +
-        '<td><div class="product-cell"><span class="product-swatch" style="background:' + colorFor(p.name) + '">' + swatchInitials + '</span>' + p.name + '</div></td>' +
-        '<td>' + statusBadge + '</td>' +
-        '<td class="num">' + formatInt(p.inventory) + '</td>' +
-        '<td class="num">' + formatInt(p.units) + '</td>' +
-        '<td class="num">' + formatCurrency(p.price) + '</td>' +
-        '</tr>';
-    }).join('');
+    var shareSum = state.products.reduce(function (a, p) { return a + p.share; }, 0) || 1;
+    var revenues = scaleToSum(state.products.map(function (p) { return p.share; }), pd.derived.totalSales);
+    els.productsTableBody.innerHTML = state.products.length ? state.products.map(function (p, i) {
+      var units = Math.max(0, Math.round(revenues[i] / (p.price || 1)));
+      var sharePct = p.share / shareSum * 100;
+      return productRowHTML(i, p, units, sharePct);
+    }).join('') : emptyRowHTML(6, 'No products yet — add one below.');
   }
 
   function renderCustomers() {
@@ -683,19 +764,25 @@
   function renderAnalytics() {
     var pd = getPeriodData();
     var sessions = pd.derived.sessions, orders = pd.derived.orders;
-    var addedToCart = Math.round(sessions * 0.30);
-    var reachedCheckout = Math.round(addedToCart * 0.6);
+    var cartRate = clamp(state.cartRate, 0, 100);
+    var checkoutRate = clamp(state.checkoutRate, 0, 100);
+    var addedToCart = Math.round(sessions * cartRate / 100);
+    var reachedCheckout = Math.round(addedToCart * checkoutRate / 100);
     reachedCheckout = Math.max(reachedCheckout, orders);
     addedToCart = Math.max(addedToCart, reachedCheckout);
     var steps = [
       { label: 'Sessions', value: sessions },
-      { label: 'Added to cart', value: addedToCart },
-      { label: 'Reached checkout', value: reachedCheckout },
+      { label: 'Added to cart', value: addedToCart, field: 'cartRate', rate: cartRate, suffix: ' of sessions' },
+      { label: 'Reached checkout', value: reachedCheckout, field: 'checkoutRate', rate: checkoutRate, suffix: ' of cart' },
       { label: 'Converted', value: orders }
     ];
     els.funnel.innerHTML = steps.map(function (s) {
       var pct = sessions > 0 ? Math.max(2, s.value / sessions * 100) : 0;
-      return '<div class="funnel-row"><span class="label">' + s.label + '</span><div class="track"><span style="width:' + pct + '%"></span></div><span class="count">' + formatInt(s.value) + '</span></div>';
+      var label = s.label;
+      if (s.field) {
+        label += ' (<span class="editable-num" data-field="' + s.field + '" data-raw="' + s.rate.toFixed(0) + '" title="Click to edit">' + s.rate.toFixed(0) + '%</span>' + s.suffix + ')';
+      }
+      return '<div class="funnel-row"><span class="label">' + label + '</span><div class="track"><span style="width:' + pct + '%"></span></div><span class="count">' + formatInt(s.value) + '</span></div>';
     }).join('');
     renderMainChart(els.ordersChart, pd.ordersDaily, pd.dates, formatInt, { color: '#5c6ac4' });
     var aovDaily = pd.salesDaily.map(function (s, i) { return pd.ordersDaily[i] > 0 ? s / pd.ordersDaily[i] : state.aov; });
@@ -805,11 +892,14 @@
       sessionsChart: document.getElementById('sessionsChart'),
       channelList: document.getElementById('channelList'),
       deviceList: document.getElementById('deviceList'),
+      addChannelBtn: document.getElementById('addChannelBtn'),
+      addDeviceBtn: document.getElementById('addDeviceBtn'),
       topProductsTable: document.getElementById('topProductsTable'),
       orderSearch: document.getElementById('orderSearch'),
       ordersTableBody: document.getElementById('ordersTableBody'),
       ordersFooter: document.getElementById('ordersFooter'),
       productsTableBody: document.getElementById('productsTableBody'),
+      addProductBtn: document.getElementById('addProductBtn'),
       customersTableBody: document.getElementById('customersTableBody'),
       customersFooter: document.getElementById('customersFooter'),
       funnel: document.getElementById('funnel'),
@@ -828,6 +918,74 @@
     document.getElementById('view-marketing').innerHTML = emptyStateHTML('Marketing', 'Run campaigns across email, social, and search to bring customers to your store.');
     document.getElementById('view-discounts').innerHTML = emptyStateHTML('Discounts', 'Create discount codes and automatic promotions to drive more sales.');
     document.getElementById('view-content').innerHTML = emptyStateHTML('Content', 'Manage blog posts, pages, and metaobjects for your store’s content.');
+  }
+
+  function parseEditedNumber(raw) {
+    var num = parseFloat(String(raw).replace(/[^0-9.\-]/g, ''));
+    return isNaN(num) ? null : num;
+  }
+
+  function wireBreakdownEditing(container) {
+    container.addEventListener('click', function (e) {
+      var del = e.target.closest('.row-delete');
+      if (del) {
+        removeBreakdownRow(del.getAttribute('data-group'), parseInt(del.getAttribute('data-idx'), 10));
+        renderAll();
+        return;
+      }
+      var edit = e.target.closest('.editable-text, .editable-num');
+      if (!edit) return;
+      var group = edit.getAttribute('data-group');
+      var idx = parseInt(edit.getAttribute('data-idx'), 10);
+      var field = edit.getAttribute('data-field');
+      startInlineEdit(edit, edit.getAttribute('data-raw'), function (val) {
+        if (field === 'name') {
+          setBreakdownField(group, idx, 'name', val);
+        } else {
+          var num = parseEditedNumber(val);
+          if (num === null) { renderAll(); return; }
+          setBreakdownField(group, idx, field, num);
+        }
+        renderAll();
+      });
+    });
+  }
+
+  function wireProductEditing() {
+    els.productsTableBody.addEventListener('click', function (e) {
+      var del = e.target.closest('.row-delete');
+      if (del) { removeProduct(parseInt(del.getAttribute('data-idx'), 10)); renderAll(); return; }
+      var toggle = e.target.closest('.status-toggle');
+      if (toggle) { toggleProductStatus(parseInt(toggle.getAttribute('data-idx'), 10)); renderAll(); return; }
+      var edit = e.target.closest('.editable-text, .editable-num');
+      if (!edit) return;
+      var idx = parseInt(edit.getAttribute('data-idx'), 10);
+      var field = edit.getAttribute('data-field');
+      startInlineEdit(edit, edit.getAttribute('data-raw'), function (val) {
+        if (field === 'name') {
+          setProductField(idx, 'name', val);
+        } else {
+          var num = parseEditedNumber(val);
+          if (num === null) { renderAll(); return; }
+          setProductField(idx, field, num);
+        }
+        renderAll();
+      });
+    });
+  }
+
+  function wireFunnelEditing() {
+    els.funnel.addEventListener('click', function (e) {
+      var edit = e.target.closest('.editable-num');
+      if (!edit) return;
+      var field = edit.getAttribute('data-field');
+      startInlineEdit(edit, edit.getAttribute('data-raw'), function (val) {
+        var num = parseEditedNumber(val);
+        if (num === null) { renderAll(); return; }
+        setFunnelRate(field, num);
+        renderAll();
+      });
+    });
   }
 
   function wireStaticEvents() {
@@ -857,6 +1015,15 @@
       if (e.target.matches && e.target.matches('.kpi-edit-input')) commitEdit(e.target);
     });
 
+    wireBreakdownEditing(els.channelList);
+    wireBreakdownEditing(els.deviceList);
+    wireProductEditing();
+    wireFunnelEditing();
+
+    els.addChannelBtn.addEventListener('click', function () { addBreakdownRow('channels'); renderAll(); });
+    els.addDeviceBtn.addEventListener('click', function () { addBreakdownRow('devices'); renderAll(); });
+    els.addProductBtn.addEventListener('click', function () { addProduct(); renderAll(); });
+
     els.orderSearch.addEventListener('input', renderOrders);
 
     els.settingStoreName.addEventListener('input', function (e) { state.storeName = e.target.value || 'My Store'; persist(); renderShell(); });
@@ -870,9 +1037,7 @@
     });
     els.resetBtn.addEventListener('click', function () {
       if (!window.confirm('Reset all numbers back to the sample defaults? This clears anything you changed.')) return;
-      var copy = {};
-      for (var k in DEFAULT_STATE) { copy[k] = DEFAULT_STATE[k]; }
-      state = copy;
+      state = cloneDefaultState();
       _baselineCache = null;
       renderAll();
       renderSettings();

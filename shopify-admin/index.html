@@ -132,11 +132,11 @@
 
           <div class="panel-grid panel-grid-3">
             <div class="card">
-              <h2>Sales by channel</h2>
+              <div class="card-header"><h2>Sales by channel</h2><button type="button" class="btn-add" id="addChannelBtn">+ Add</button></div>
               <div class="breakdown-list" id="channelList"></div>
             </div>
             <div class="card">
-              <h2>Sessions by device</h2>
+              <div class="card-header"><h2>Sessions by device</h2><button type="button" class="btn-add" id="addDeviceBtn">+ Add</button></div>
               <div class="breakdown-list" id="deviceList"></div>
             </div>
             <div class="card">
@@ -172,11 +172,14 @@
         </section>
 
         <section class="view" id="view-products" data-view="products" hidden>
-          <div class="view-header"><h1>Products</h1></div>
+          <div class="view-header">
+            <h1>Products</h1>
+            <div class="header-actions"><button type="button" class="btn" id="addProductBtn">+ Add product</button></div>
+          </div>
           <div class="card table-card">
             <table class="data-table">
               <thead>
-                <tr><th>Product</th><th>Status</th><th class="num">Inventory</th><th class="num">Sold</th><th class="num">Price</th></tr>
+                <tr><th>Product</th><th>Status</th><th class="num">Inventory</th><th class="num">Sold</th><th class="num">Price</th><th class="num">Share</th><th></th></tr>
               </thead>
               <tbody id="productsTableBody"></tbody>
             </table>
