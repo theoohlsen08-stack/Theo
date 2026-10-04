@@ -1,0 +1,70 @@
+{%- comment -%}
+  KaffeSmak – bred fotobanner överst på startsidan (Monteriva-referensens första sektion).
+{%- endcomment -%}
+
+{{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="ks-hero"
+  style="--ks-hero-height: {{ section.settings.height }}px; --ks-hero-height-mobile: {{ section.settings.height_mobile }}px; --ks-hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
+>
+  <div class="ks-hero__media">
+    {%- if section.settings.image != blank -%}
+      {{
+        section.settings.image
+        | image_url: width: 2400
+        | image_tag:
+          widths: '600, 900, 1200, 1600, 2000, 2400',
+          sizes: '100vw',
+          alt: section.settings.image.alt,
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'ks-hero__img'
+      }}
+    {%- else -%}
+      {{ 'hero-apparel-1' | placeholder_svg_tag: 'ks-hero__img ks-hero__img--placeholder' }}
+    {%- endif -%}
+  </div>
+
+  <div class="ks-container ks-hero__content ks-hero__content--{{ section.settings.alignment }}">
+    {%- if section.settings.heading != blank -%}
+      <h1 class="ks-hero__heading">{{ section.settings.heading }}</h1>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <div class="ks-hero__text">{{ section.settings.text }}</div>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="ks-button ks-button--green ks-button--large">
+        {{- section.settings.button_label -}}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KaffeSmak bildbanner",
+  "class": "ks-hero-section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Bild" },
+    { "type": "text", "id": "heading", "label": "Rubrik", "default": "Kaffe Smak Rosteri" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Kaffe, kaffemaskiner och tillbehör – och kaffebar på Storgatan 55 i Sollefteå.</p>" },
+    { "type": "text", "id": "button_label", "label": "Knapptext", "default": "Utforska sortimentet" },
+    { "type": "url", "id": "button_link", "label": "Knapplänk" },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Textplacering",
+      "options": [
+        { "value": "left", "label": "Vänster" },
+        { "value": "center", "label": "Mitten" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "height", "label": "Höjd, dator", "min": 280, "max": 640, "step": 10, "unit": "px", "default": 440 },
+    { "type": "range", "id": "height_mobile", "label": "Höjd, mobil", "min": 220, "max": 520, "step": 10, "unit": "px", "default": 320 },
+    { "type": "range", "id": "overlay", "label": "Mörk toning över bilden", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 }
+  ],
+  "presets": [{ "name": "KaffeSmak bildbanner" }]
+}
+{% endschema %}

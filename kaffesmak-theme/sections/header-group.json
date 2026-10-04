@@ -1,0 +1,32 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "ks_header": {
+      "type": "ks-header",
+      "settings": {
+        "logo_alt": "Kaffe Smak Rosteri",
+        "logo_height": 112,
+        "logo_height_mobile": 58,
+        "menu": "monteriva-utkast-huvudmeny",
+        "show_view_all": true,
+        "view_all_label": "Visa alla",
+        "customer_account_menu": "customer-account-main-menu",
+        "search_placeholder": "Sök produkter",
+        "contact_label": "Kontakt",
+        "contact_link": "shopify://pages/contact",
+        "sticky": false,
+        "color_header": "#000000",
+        "color_nav": "#C10C29",
+        "color_dropdown": "#9F0922",
+        "color_button": "#2C8420",
+        "nav_font": "barlow_condensed_n5",
+        "heading_font": "jost_n5",
+        "body_font": "noto_sans_n4"
+      }
+    }
+  },
+  "order": [
+    "ks_header"
+  ]
+}

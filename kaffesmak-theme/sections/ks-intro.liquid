@@ -1,0 +1,55 @@
+{%- comment -%}
+  KaffeSmak – beige introduktion i två kolumner (Monteriva-referensens första innehållssektion).
+{%- endcomment -%}
+
+{{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+
+<section class="ks-intro" style="--ks-intro-bg: {{ section.settings.background }}; --ks-intro-heading: {{ section.settings.heading_color }};">
+  <div class="ks-container ks-intro__grid">
+    <div class="ks-intro__col ks-intro__col--heading">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ks-intro__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="ks-intro__heading">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="ks-intro__col ks-intro__col--text">
+      <div class="ks-intro__text">{{ section.settings.text }}</div>
+      <div class="ks-intro__buttons">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: '/pages/contact' }}" class="ks-button ks-button--green">
+            {{- section.settings.button_label -}}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button2_label != blank -%}
+          <a href="{{ section.settings.button2_link | default: routes.all_products_collection_url }}" class="ks-button ks-button--outline">
+            {{- section.settings.button2_label -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KaffeSmak introduktion",
+  "class": "ks-intro-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Liten överrubrik", "default": "Kaffe Smak Rosteri i Sollefteå" },
+    { "type": "text", "id": "heading", "label": "Rubrik", "default": "Välkommen till Kaffe Smak Rosteri" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Välkommen till Kaffe Smak Rosteri i Sollefteå. Utforska vårt sortiment av kaffe, kaffemaskiner och tillbehör, eller besök vår kaffebar på Storgatan 55.</p>"
+    },
+    { "type": "text", "id": "button_label", "label": "Knapp 1, text", "default": "Kontakt och hitta hit" },
+    { "type": "url", "id": "button_link", "label": "Knapp 1, länk" },
+    { "type": "text", "id": "button2_label", "label": "Knapp 2, text", "default": "Se vårt kaffe" },
+    { "type": "url", "id": "button2_link", "label": "Knapp 2, länk" },
+    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#E2D8C8" },
+    { "type": "color", "id": "heading_color", "label": "Rubrikfärg", "default": "#653A2B" }
+  ],
+  "presets": [{ "name": "KaffeSmak introduktion" }]
+}
+{% endschema %}

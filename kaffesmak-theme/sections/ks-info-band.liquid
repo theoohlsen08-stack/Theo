@@ -1,0 +1,52 @@
+{%- comment -%}
+  KaffeSmak – guldbrunt informationsband under bannern (Monteriva-referensens infoband).
+  Varje punkt är ett eget block så att texterna kan ändras i temaredigeraren.
+{%- endcomment -%}
+
+{{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+
+<section class="ks-band" style="--ks-band-bg: {{ section.settings.background }};">
+  <ul class="ks-container ks-band__list" role="list">
+    {%- for block in section.blocks -%}
+      <li class="ks-band__item" {{ block.shopify_attributes }}>
+        <svg class="ks-band__icon" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 18 18"><path d="M3 9.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+        {%- else -%}
+          <span>{{ block.settings.text }}</span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "KaffeSmak infoband",
+  "class": "ks-band-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#A38358" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Punkt",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Kaffebar och rosteri i Sollefteå" },
+        { "type": "url", "id": "link", "label": "Länk" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KaffeSmak infoband",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Kaffebar och rosteri i Sollefteå" } },
+        { "type": "item", "settings": { "text": "Storgatan 55, 881 30 Sollefteå" } },
+        { "type": "item", "settings": { "text": "Ring oss: 076-270 89 27" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

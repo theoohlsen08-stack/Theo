@@ -1,0 +1,243 @@
+{%- comment -%}
+  KaffeSmak – Monteriva-inspirerat sidhuvud.
+  Svart toppfält (logga, sökfält, konto, varukorg, Kontakt-knapp) och röd huvudmeny
+  med nedfällbara undermenyer som öppnas vid klick. Menyn hämtas från en Shopify-meny.
+{%- endcomment -%}
+
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  assign nav_font = section.settings.nav_font
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
+  assign nav_font_bold = nav_font | font_modify: 'weight', '600'
+  assign logo_alt = section.settings.logo_alt | default: shop.name
+-%}
+
+<style>
+  {{ nav_font | font_face: font_display: 'swap' }}
+  {{ nav_font_bold | font_face: font_display: 'swap' }}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  :root {
+    --ks-black: {{ section.settings.color_header }};
+    --ks-red: {{ section.settings.color_nav }};
+    --ks-red-dark: {{ section.settings.color_dropdown }};
+    --ks-green: {{ section.settings.color_button }};
+    --ks-font-nav: {{ nav_font.family }}, {{ nav_font.fallback_families }};
+    --ks-font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --ks-font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --ks-logo-height: {{ section.settings.logo_height }}px;
+    --ks-logo-height-mobile: {{ section.settings.logo_height_mobile }}px;
+  }
+</style>
+
+{{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ks-header.js' | asset_url }}" defer></script>
+
+<ks-header class="ks-header{% if section.settings.sticky %} ks-header--sticky{% endif %}">
+  <div class="ks-header__top">
+    <div class="ks-container ks-header__top-inner">
+      <button
+        type="button"
+        class="ks-header__burger"
+        aria-expanded="false"
+        aria-controls="KsMobileNav-{{ section.id }}"
+        data-ks-burger
+      >
+        <span class="ks-visually-hidden">Meny</span>
+        <svg aria-hidden="true" focusable="false" width="26" height="20" viewBox="0 0 26 20"><path d="M0 1h26M0 10h26M0 19h26" stroke="currentColor" stroke-width="2.4"/></svg>
+      </button>
+
+      <a href="{{ routes.root_url }}" class="ks-header__logo">
+        {%- if section.settings.logo != blank -%}
+          {{
+            section.settings.logo
+            | image_url: height: 300
+            | image_tag: alt: logo_alt, class: 'ks-header__logo-img', loading: 'eager', fetchpriority: 'high'
+          }}
+        {%- elsif section.settings.logo_asset != blank -%}
+          <img
+            src="{{ section.settings.logo_asset | asset_url }}"
+            alt="{{ logo_alt | escape }}"
+            class="ks-header__logo-img"
+            fetchpriority="high"
+          >
+        {%- else -%}
+          <span class="ks-header__logo-text">{{ logo_alt }}</span>
+        {%- endif -%}
+      </a>
+
+      <form action="{{ routes.search_url }}" method="get" role="search" class="ks-search">
+        <label for="KsSearch-{{ section.id }}" class="ks-visually-hidden">{{ section.settings.search_placeholder }}</label>
+        <input
+          id="KsSearch-{{ section.id }}"
+          class="ks-search__input"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ section.settings.search_placeholder | escape }}"
+          autocomplete="off"
+        >
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="ks-search__button">
+          <span class="ks-visually-hidden">Sök</span>
+          <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13.5 13.5 19 19" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </form>
+
+      <div class="ks-header__actions">
+        {% render 'header-actions',
+          customer_account_menu: section.settings.customer_account_menu,
+          display_style: 'icon',
+          section: section
+        %}
+        {%- if section.settings.contact_label != blank -%}
+          <a href="{{ section.settings.contact_link | default: '/pages/contact' }}" class="ks-button ks-button--green ks-header__contact">
+            {{- section.settings.contact_label -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if menu.links.size > 0 -%}
+    <nav class="ks-nav" aria-label="Huvudmeny">
+      <div class="ks-container">
+        <ul class="ks-nav__list" role="list">
+          {%- for link in menu.links -%}
+            {%- assign item_id = 'KsNav-' | append: section.id | append: '-' | append: forloop.index -%}
+            <li class="ks-nav__item{% if link.links.size > 0 %} ks-nav__item--parent{% endif %}{% if link.active or link.child_active %} ks-nav__item--current{% endif %}">
+              {%- if link.links.size > 0 -%}
+                <button
+                  type="button"
+                  class="ks-nav__top"
+                  aria-expanded="false"
+                  aria-controls="{{ item_id }}"
+                  data-ks-toggle
+                >
+                  <span>{{ link.title }}</span>
+                  <svg class="ks-nav__caret" aria-hidden="true" focusable="false" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                </button>
+                <ul class="ks-dropdown" id="{{ item_id }}" role="list" hidden>
+                  {%- if section.settings.show_view_all and link.url != '#' and link.url != blank -%}
+                    <li>
+                      <a class="ks-dropdown__link ks-dropdown__link--all" href="{{ link.url }}">
+                        {{- section.settings.view_all_label }} {{ link.title | downcase -}}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- for child in link.links -%}
+                    <li>
+                      <a
+                        class="ks-dropdown__link"
+                        href="{{ child.url }}"
+                        {% if child.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{- child.title -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+                <a
+                  class="ks-nav__top"
+                  href="{{ link.url }}"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="ks-mobile-nav" id="KsMobileNav-{{ section.id }}" hidden>
+      <ul class="ks-mobile-nav__list" role="list">
+        {%- for link in menu.links -%}
+          {%- assign m_id = 'KsMobile-' | append: section.id | append: '-' | append: forloop.index -%}
+          <li class="ks-mobile-nav__item">
+            {%- if link.links.size > 0 -%}
+              <button
+                type="button"
+                class="ks-mobile-nav__top"
+                aria-expanded="false"
+                aria-controls="{{ m_id }}"
+                data-ks-accordion
+              >
+                <span>{{ link.title }}</span>
+                <svg class="ks-nav__caret" aria-hidden="true" focusable="false" width="12" height="8" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+              </button>
+              <ul class="ks-mobile-nav__sub" id="{{ m_id }}" role="list" hidden>
+                {%- if section.settings.show_view_all and link.url != '#' and link.url != blank -%}
+                  <li>
+                    <a class="ks-mobile-nav__link ks-mobile-nav__link--all" href="{{ link.url }}">
+                      {{- section.settings.view_all_label }} {{ link.title | downcase -}}
+                    </a>
+                  </li>
+                {%- endif -%}
+                {%- for child in link.links -%}
+                  <li><a class="ks-mobile-nav__link" href="{{ child.url }}">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- else -%}
+              <a class="ks-mobile-nav__top" href="{{ link.url }}">{{ link.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if section.settings.contact_label != blank -%}
+        <div class="ks-mobile-nav__footer">
+          <a href="{{ section.settings.contact_link | default: '/pages/contact' }}" class="ks-button ks-button--green">
+            {{- section.settings.contact_label -}}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</ks-header>
+
+{% schema %}
+{
+  "name": "KaffeSmak sidhuvud",
+  "class": "ks-header-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "header", "content": "Logotyp" },
+    { "type": "image_picker", "id": "logo", "label": "Logotyp (vit på svart)" },
+    {
+      "type": "text",
+      "id": "logo_asset",
+      "label": "Logotyp från temafiler (filnamn i assets)",
+      "info": "Används om ingen bild valts ovan. Lämna tomt för att visa butiksnamnet."
+    },
+    { "type": "text", "id": "logo_alt", "label": "Alt-text", "default": "Kaffe Smak Rosteri" },
+    { "type": "range", "id": "logo_height", "label": "Logotypens höjd, dator", "min": 60, "max": 140, "step": 2, "unit": "px", "default": 112 },
+    { "type": "range", "id": "logo_height_mobile", "label": "Logotypens höjd, mobil", "min": 36, "max": 90, "step": 2, "unit": "px", "default": 58 },
+    { "type": "header", "content": "Meny" },
+    { "type": "link_list", "id": "menu", "label": "Huvudmeny", "default": "main-menu" },
+    { "type": "checkbox", "id": "show_view_all", "label": "Visa länken \"Visa alla\" i undermenyn", "default": true },
+    { "type": "text", "id": "view_all_label", "label": "Text för \"Visa alla\"", "default": "Visa alla" },
+    { "type": "link_list", "id": "customer_account_menu", "label": "Kundkontomeny", "default": "customer-account-main-menu" },
+    { "type": "header", "content": "Sök och kontakt" },
+    { "type": "text", "id": "search_placeholder", "label": "Text i sökfältet", "default": "Sök produkter" },
+    { "type": "text", "id": "contact_label", "label": "Kontaktknappens text", "default": "Kontakt" },
+    { "type": "url", "id": "contact_link", "label": "Kontaktknappens länk" },
+    { "type": "checkbox", "id": "sticky", "label": "Fäst sidhuvudet vid skrollning", "default": false },
+    { "type": "header", "content": "Färger" },
+    { "type": "color", "id": "color_header", "label": "Sidhuvud", "default": "#000000" },
+    { "type": "color", "id": "color_nav", "label": "Huvudmeny", "default": "#C10C29" },
+    { "type": "color", "id": "color_dropdown", "label": "Undermeny", "default": "#9F0922" },
+    { "type": "color", "id": "color_button", "label": "Kontaktknapp", "default": "#2C8420" },
+    { "type": "header", "content": "Typsnitt" },
+    { "type": "font_picker", "id": "nav_font", "label": "Meny och knappar", "default": "barlow_condensed_n5" },
+    { "type": "font_picker", "id": "heading_font", "label": "Stora rubriker", "default": "jost_n5" },
+    { "type": "font_picker", "id": "body_font", "label": "Brödtext", "default": "noto_sans_n4" }
+  ]
+}
+{% endschema %}
