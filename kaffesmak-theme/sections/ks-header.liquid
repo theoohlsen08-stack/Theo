@@ -23,6 +23,7 @@
     --ks-red: {{ section.settings.color_nav }};
     --ks-red-dark: {{ section.settings.color_dropdown }};
     --ks-green: {{ section.settings.color_button }};
+    --ks-icon-red: {{ section.settings.color_icons }};
     --ks-font-nav: {{ nav_font.family }}, {{ nav_font.fallback_families }};
     --ks-font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
     --ks-font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
@@ -48,7 +49,7 @@
         <svg aria-hidden="true" focusable="false" width="26" height="20" viewBox="0 0 26 20"><path d="M0 1h26M0 10h26M0 19h26" stroke="currentColor" stroke-width="2.4"/></svg>
       </button>
 
-      <a href="{{ routes.root_url }}" class="ks-header__logo">
+      <a href="{{ routes.root_url }}" class="ks-header__logo"{% if request.page_type == 'index' %} aria-current="page"{% endif %}>
         {%- if section.settings.logo != blank -%}
           {{
             section.settings.logo
@@ -81,7 +82,7 @@
         <input type="hidden" name="options[prefix]" value="last">
         <button type="submit" class="ks-search__button">
           <span class="ks-visually-hidden">Sök</span>
-          <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13.5 13.5 19 19" stroke="currentColor" stroke-width="2"/></svg>
+          <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 22 22"><circle cx="9" cy="9" r="6.6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 14l6 6" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
         </button>
       </form>
 
@@ -93,7 +94,10 @@
         %}
         {%- if section.settings.contact_label != blank -%}
           <a href="{{ section.settings.contact_link | default: '/pages/contact' }}" class="ks-button ks-button--green ks-header__contact">
-            {{- section.settings.contact_label -}}
+            <span class="ks-header__contact-label">{{ section.settings.contact_label }}</span>
+            <span class="ks-header__contact-arrow" aria-hidden="true">
+              <svg width="8" height="12" viewBox="0 0 8 12" focusable="false"><path d="M1.5 1.5L6 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+            </span>
           </a>
         {%- endif -%}
       </div>
@@ -214,11 +218,12 @@
       "type": "text",
       "id": "logo_asset",
       "label": "Logotyp från temafiler (filnamn i assets)",
+      "default": "ks-logo-vit.png",
       "info": "Används om ingen bild valts ovan. Lämna tomt för att visa butiksnamnet."
     },
     { "type": "text", "id": "logo_alt", "label": "Alt-text", "default": "Kaffe Smak Rosteri" },
-    { "type": "range", "id": "logo_height", "label": "Logotypens höjd, dator", "min": 60, "max": 140, "step": 2, "unit": "px", "default": 112 },
-    { "type": "range", "id": "logo_height_mobile", "label": "Logotypens höjd, mobil", "min": 36, "max": 90, "step": 2, "unit": "px", "default": 58 },
+    { "type": "range", "id": "logo_height", "label": "Logotypens höjd, dator", "min": 60, "max": 148, "step": 2, "unit": "px", "default": 132 },
+    { "type": "range", "id": "logo_height_mobile", "label": "Logotypens höjd, mobil", "min": 36, "max": 90, "step": 2, "unit": "px", "default": 64 },
     { "type": "header", "content": "Meny" },
     { "type": "link_list", "id": "menu", "label": "Huvudmeny", "default": "main-menu" },
     { "type": "checkbox", "id": "show_view_all", "label": "Visa länken \"Visa alla\" i undermenyn", "default": true },
@@ -233,9 +238,10 @@
     { "type": "color", "id": "color_header", "label": "Sidhuvud", "default": "#000000" },
     { "type": "color", "id": "color_nav", "label": "Huvudmeny", "default": "#C10C29" },
     { "type": "color", "id": "color_dropdown", "label": "Undermeny", "default": "#9F0922" },
-    { "type": "color", "id": "color_button", "label": "Kontaktknapp", "default": "#2C8420" },
+    { "type": "color", "id": "color_button", "label": "Kontakt- och sökknapp", "default": "#2C8420" },
+    { "type": "color", "id": "color_icons", "label": "Konto- och varukorgsikoner", "default": "#D91441" },
     { "type": "header", "content": "Typsnitt" },
-    { "type": "font_picker", "id": "nav_font", "label": "Meny och knappar", "default": "barlow_condensed_n5" },
+    { "type": "font_picker", "id": "nav_font", "label": "Meny och knappar", "default": "barlow_condensed_n4" },
     { "type": "font_picker", "id": "heading_font", "label": "Stora rubriker", "default": "jost_n5" },
     { "type": "font_picker", "id": "body_font", "label": "Brödtext", "default": "noto_sans_n4" }
   ]

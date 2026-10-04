@@ -1,22 +1,37 @@
 {%- comment -%}
-  KaffeSmak – bred fotobanner överst på startsidan (Monteriva-referensens första sektion).
+  KaffeSmak – bred, låg fotobanner överst på startsidan (Monteriva-referensens första sektion).
+  Referensen visar bilden utan text; rubrik, text och knapp är valfria och visas bara om de fylls i.
 {%- endcomment -%}
 
 {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign image = section.settings.image
+  assign focal = 'center'
+  if section.settings.position != 'focal'
+    assign focal = section.settings.position
+  elsif image.presentation.focal_point != blank
+    assign focal = image.presentation.focal_point
+  endif
+  assign has_content = false
+  if section.settings.heading != blank or section.settings.text != blank or section.settings.button_label != blank
+    assign has_content = true
+  endif
+-%}
+
 <section
-  class="ks-hero"
-  style="--ks-hero-height: {{ section.settings.height }}px; --ks-hero-height-mobile: {{ section.settings.height_mobile }}px; --ks-hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
+  class="ks-hero{% if has_content %} ks-hero--with-content{% endif %}"
+  style="--ks-hero-height: {{ section.settings.height }}px; --ks-hero-height-mobile: {{ section.settings.height_mobile }}px; --ks-hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --ks-hero-position: {{ focal }};"
 >
   <div class="ks-hero__media">
-    {%- if section.settings.image != blank -%}
+    {%- if image != blank -%}
       {{
-        section.settings.image
-        | image_url: width: 2400
+        image
+        | image_url: width: 2800
         | image_tag:
-          widths: '600, 900, 1200, 1600, 2000, 2400',
+          widths: '600, 900, 1200, 1600, 2000, 2400, 2800',
           sizes: '100vw',
-          alt: section.settings.image.alt,
+          alt: image.alt,
           loading: 'eager',
           fetchpriority: 'high',
           class: 'ks-hero__img'
@@ -26,19 +41,21 @@
     {%- endif -%}
   </div>
 
-  <div class="ks-container ks-hero__content ks-hero__content--{{ section.settings.alignment }}">
-    {%- if section.settings.heading != blank -%}
-      <h1 class="ks-hero__heading">{{ section.settings.heading }}</h1>
-    {%- endif -%}
-    {%- if section.settings.text != blank -%}
-      <div class="ks-hero__text">{{ section.settings.text }}</div>
-    {%- endif -%}
-    {%- if section.settings.button_label != blank -%}
-      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="ks-button ks-button--green ks-button--large">
-        {{- section.settings.button_label -}}
-      </a>
-    {%- endif -%}
-  </div>
+  {%- if has_content -%}
+    <div class="ks-container ks-hero__content ks-hero__content--{{ section.settings.alignment }}">
+      {%- if section.settings.heading != blank -%}
+        <h1 class="ks-hero__heading">{{ section.settings.heading }}</h1>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="ks-hero__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="ks-button ks-button--green">
+          {{- section.settings.button_label -}}
+        </a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
 </section>
 
 {% schema %}
@@ -47,9 +64,25 @@
   "class": "ks-hero-section",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Bild" },
-    { "type": "text", "id": "heading", "label": "Rubrik", "default": "Kaffe Smak Rosteri" },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Kaffe, kaffemaskiner och tillbehör – och kaffebar på Storgatan 55 i Sollefteå.</p>" },
-    { "type": "text", "id": "button_label", "label": "Knapptext", "default": "Utforska sortimentet" },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Bildbeskärning",
+      "info": "\"Bildens fokuspunkt\" använder fokuspunkten som valts för bilden i Shopify.",
+      "options": [
+        { "value": "focal", "label": "Bildens fokuspunkt" },
+        { "value": "center top", "label": "Överkant" },
+        { "value": "center", "label": "Mitten" },
+        { "value": "center bottom", "label": "Underkant" }
+      ],
+      "default": "focal"
+    },
+    { "type": "range", "id": "height", "label": "Höjd, dator", "min": 200, "max": 560, "step": 10, "unit": "px", "default": 300 },
+    { "type": "range", "id": "height_mobile", "label": "Höjd, mobil", "min": 120, "max": 400, "step": 10, "unit": "px", "default": 180 },
+    { "type": "header", "content": "Valfri text på bilden" },
+    { "type": "text", "id": "heading", "label": "Rubrik" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "button_label", "label": "Knapptext" },
     { "type": "url", "id": "button_link", "label": "Knapplänk" },
     {
       "type": "select",
@@ -61,9 +94,7 @@
       ],
       "default": "left"
     },
-    { "type": "range", "id": "height", "label": "Höjd, dator", "min": 280, "max": 640, "step": 10, "unit": "px", "default": 440 },
-    { "type": "range", "id": "height_mobile", "label": "Höjd, mobil", "min": 220, "max": 520, "step": 10, "unit": "px", "default": 320 },
-    { "type": "range", "id": "overlay", "label": "Mörk toning över bilden", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 }
+    { "type": "range", "id": "overlay", "label": "Mörk toning över bilden", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 0 }
   ],
   "presets": [{ "name": "KaffeSmak bildbanner" }]
 }

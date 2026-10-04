@@ -4,14 +4,14 @@
       "type": "ks-hero",
       "settings": {
         "image": "shopify://shop_images/image_95973c1c-a3ca-4721-a3e1-f74a745a03f0.png",
-        "heading": "Kaffe Smak Rosteri",
-        "text": "<p>Kaffe, kaffemaskiner och tillbehör – och kaffebar på Storgatan 55 i Sollefteå.</p>",
-        "button_label": "Utforska sortimentet",
-        "button_link": "shopify://collections/all",
+        "position": "focal",
+        "height": 300,
+        "height_mobile": 180,
+        "heading": "",
+        "text": "",
+        "button_label": "",
         "alignment": "left",
-        "height": 440,
-        "height_mobile": 320,
-        "overlay": 35
+        "overlay": 0
       }
     },
     "ks_band": {
@@ -20,18 +20,11 @@
         "b1": {
           "type": "item",
           "settings": {
-            "text": "Kaffebar och rosteri i Sollefteå",
+            "text": "Kaffebar och rosteri på Storgatan 55 i Sollefteå",
             "link": "shopify://pages/contact"
           }
         },
         "b2": {
-          "type": "item",
-          "settings": {
-            "text": "Storgatan 55, 881 30 Sollefteå",
-            "link": "shopify://pages/contact"
-          }
-        },
-        "b3": {
           "type": "item",
           "settings": {
             "text": "Ring oss: 076-270 89 27",
@@ -41,8 +34,7 @@
       },
       "block_order": [
         "b1",
-        "b2",
-        "b3"
+        "b2"
       ],
       "settings": {
         "background": "#A38358"
@@ -51,15 +43,14 @@
     "ks_intro": {
       "type": "ks-intro",
       "settings": {
-        "eyebrow": "Kaffe Smak Rosteri i Sollefteå",
-        "heading": "Välkommen till Kaffe Smak Rosteri",
-        "text": "<p>Välkommen till Kaffe Smak Rosteri i Sollefteå. Utforska vårt sortiment av kaffe, kaffemaskiner och tillbehör, eller besök vår kaffebar på Storgatan 55.</p>",
-        "button_label": "Kontakt och hitta hit",
-        "button_link": "shopify://pages/contact",
-        "button2_label": "Se vårt kaffe",
-        "button2_link": "shopify://collections/morkt-kaffe",
+        "heading": "Välkommen till Kaffe Smak Rosteri.",
+        "text": "<p>Utforska vårt sortiment av kaffe, kaffemaskiner och tillbehör, eller <strong>besök vår kaffebar på Storgatan 55 i Sollefteå.</strong></p>",
+        "show_icon": true,
+        "button_label": "",
+        "button2_label": "",
         "background": "#E2D8C8",
-        "heading_color": "#653A2B"
+        "heading_color": "#653A2B",
+        "icon_background": "#653A2B"
       }
     },
     "collection_list_JrikMp": {
