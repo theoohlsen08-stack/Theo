@@ -44,7 +44,7 @@
   {%- if has_content -%}
     <div class="ks-container ks-hero__content ks-hero__content--{{ section.settings.alignment }}">
       {%- if section.settings.heading != blank -%}
-        <h1 class="ks-hero__heading">{{ section.settings.heading }}</h1>
+        <h2 class="ks-hero__heading">{{ section.settings.heading }}</h2>
       {%- endif -%}
       {%- if section.settings.text != blank -%}
         <div class="ks-hero__text">{{ section.settings.text }}</div>
@@ -80,7 +80,7 @@
     { "type": "range", "id": "height", "label": "Höjd, dator", "min": 200, "max": 560, "step": 10, "unit": "px", "default": 300 },
     { "type": "range", "id": "height_mobile", "label": "Höjd, mobil", "min": 120, "max": 400, "step": 10, "unit": "px", "default": 180 },
     { "type": "header", "content": "Valfri text på bilden" },
-    { "type": "text", "id": "heading", "label": "Rubrik" },
+    { "type": "text", "id": "heading", "label": "Rubrik", "info": "Visas som H2. Startsidans H1 ligger i introduktionen." },
     { "type": "richtext", "id": "text", "label": "Text" },
     { "type": "text", "id": "button_label", "label": "Knapptext" },
     { "type": "url", "id": "button_link", "label": "Knapplänk" },

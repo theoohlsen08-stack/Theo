@@ -1,0 +1,101 @@
+{%- comment -%}
+  KaffeSmak – produktrad (referensens produktkaruseller): röd rubrik med linje, valfri text och knapp,
+  och en vågrät rad produktkort med bild, röd produkttitel, artikelnummer (om det finns), pris och Köp-knapp.
+  Produkterna hämtas från en vald kategori. Sektionen döljs helt när kategorin saknas eller är tom.
+{%- endcomment -%}
+
+
+{%- assign collection = section.settings.collection -%}
+{%- if collection != blank and collection.products_count > 0 -%}
+  {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'ks-carousel.js' | asset_url }}" defer></script>
+  <section class="ks-section ks-products" aria-labelledby="KsProducts-{{ section.id }}">
+    <div class="ks-container">
+      <h2 class="ks-section__heading ks-section__heading--red ks-section__heading--rule" id="KsProducts-{{ section.id }}">
+        {{- section.settings.heading | default: collection.title -}}
+      </h2>
+      {%- if section.settings.text != blank -%}
+        <div class="ks-section__lead ks-section__lead--wide">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <div class="ks-section__actions">
+          {%- assign button_url = section.settings.button_link | default: collection.url -%}
+          {% render 'ks-button', label: section.settings.button_label, url: button_url %}
+        </div>
+      {%- endif -%}
+
+      <ks-carousel class="ks-carousel" data-ks-carousel>
+        <button type="button" class="ks-carousel__arrow ks-carousel__arrow--prev" data-ks-prev hidden>
+          <span class="ks-visually-hidden">Föregående produkter</span>
+          {% render 'ks-icon', icon: 'chevron-left', size: 26 %}
+        </button>
+        <ul class="ks-carousel__track ks-products__list" role="list" data-ks-track>
+          {%- for product in collection.products limit: section.settings.limit -%}
+            {%- assign variant = product.selected_or_first_available_variant -%}
+            <li class="ks-product-card">
+              <a href="{{ product.url }}" class="ks-product-card__media" tabindex="-1" aria-hidden="true">
+                {%- if product.featured_image != blank -%}
+                  {%- assign img_alt = product.featured_image.alt | default: product.title -%}
+                  {{
+                    product.featured_image
+                    | image_url: width: 480
+                    | image_tag:
+                      widths: '240, 360, 480',
+                      sizes: '(min-width: 990px) 200px, 45vw',
+                      alt: img_alt,
+                      loading: 'lazy',
+                      class: 'ks-product-card__img'
+                  }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'ks-product-card__img ks-product-card__img--placeholder' }}
+                {%- endif -%}
+              </a>
+              <h3 class="ks-product-card__title">
+                <a href="{{ product.url }}">{{ product.title }}</a>
+              </h3>
+              {%- if section.settings.show_sku and variant.sku != blank -%}
+                <p class="ks-product-card__sku"><span class="ks-visually-hidden">Artikelnummer:</span> {{ variant.sku }}</p>
+              {%- endif -%}
+              <p class="ks-product-card__price">
+                {%- if product.price_varies -%}Från {% endif -%}
+                {{- product.price | money -}}
+                {%- if product.compare_at_price > product.price -%}
+                  <s class="ks-product-card__compare"><span class="ks-visually-hidden">Ordinarie pris</span> {{ product.compare_at_price | money }}</s>
+                {%- endif -%}
+              </p>
+              {%- liquid
+                assign buy_label = section.settings.buy_label | default: 'Köp'
+                assign buy_aria = buy_label | append: ' ' | append: product.title
+              -%}
+              {% render 'ks-button', label: buy_label, url: product.url, size: 'small', aria_label: buy_aria, class: 'ks-product-card__buy' %}
+            </li>
+          {%- endfor -%}
+        </ul>
+        <button type="button" class="ks-carousel__arrow ks-carousel__arrow--next" data-ks-next hidden>
+          <span class="ks-visually-hidden">Nästa produkter</span>
+          {% render 'ks-icon', icon: 'chevron-right', size: 26 %}
+        </button>
+      </ks-carousel>
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <div class="ks-editor-note">KaffeSmak produktrad: {% if collection == blank %}ingen kategori vald{% else %}kategorin "{{ collection.title }}" saknar produkter{% endif %}. Sektionen syns inte för besökare förrän kategorin har produkter.</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak produktrad",
+  "class": "ks-products-section",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Kategori" },
+    { "type": "text", "id": "heading", "label": "Rubrik", "info": "Tomt fält visar kategorins namn." },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "button_label", "label": "Knapptext" },
+    { "type": "url", "id": "button_link", "label": "Knapplänk", "info": "Tomt fält länkar till kategorin." },
+    { "type": "range", "id": "limit", "label": "Antal produkter", "min": 2, "max": 16, "step": 1, "default": 12 },
+    { "type": "checkbox", "id": "show_sku", "label": "Visa artikelnummer", "default": true },
+    { "type": "text", "id": "buy_label", "label": "Köpknappens text", "default": "Köp" }
+  ],
+  "presets": [{ "name": "KaffeSmak produktrad" }]
+}
+{% endschema %}

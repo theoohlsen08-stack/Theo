@@ -1,0 +1,98 @@
+{%- comment -%}
+  KaffeSmak – kategorikort (referensens "Hur kan vi hjälpa dig"-rad):
+  breda bildkort med röd ram och en grön knapp på bilden.
+  Ett kort som pekar på en kategori utan produkter döljs automatiskt (kan stängas av per kort),
+  och hela sektionen döljs när inget kort har innehåll.
+{%- endcomment -%}
+
+
+{%- capture cards -%}
+  {%- for block in section.blocks -%}
+    {%- liquid
+      assign c = block.settings.collection
+      assign url = block.settings.link
+      if url == blank and c != blank
+        assign url = c.url
+      endif
+      assign label = block.settings.label
+      if label == blank and c != blank
+        assign label = c.title
+      endif
+      assign img = block.settings.image
+      if img == blank and c != blank
+        assign img = c.featured_image
+      endif
+      assign hidden = false
+      if label == blank or url == blank
+        assign hidden = true
+      endif
+      if c != blank and block.settings.hide_when_empty and c.products_count == 0
+        assign hidden = true
+      endif
+    -%}
+    {%- unless hidden -%}
+      <li class="ks-cat-card{% if img == blank %} ks-cat-card--no-image{% endif %}" {{ block.shopify_attributes }}>
+        {%- if img != blank -%}
+          {{
+            img
+            | image_url: width: 900
+            | image_tag:
+              widths: '420, 640, 900',
+              sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+              alt: '',
+              loading: 'lazy',
+              class: 'ks-cat-card__img'
+          }}
+        {%- endif -%}
+        {% render 'ks-button', label: label, url: url, class: 'ks-cat-card__button' %}
+      </li>
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if cards != blank -%}
+  {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+  <section class="ks-section ks-cat" style="--ks-card-height: {{ section.settings.card_height }}px; --ks-card-height-mobile: {{ section.settings.card_height_mobile }}px;">
+    <div class="ks-container">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="ks-section__heading ks-section__heading--red">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="ks-section__lead">{{ section.settings.text }}</div>
+      {%- endif -%}
+      <ul class="ks-cat__list" role="list">
+        {{ cards }}
+      </ul>
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <div class="ks-editor-note">KaffeSmak kategorikort: inga kort visas ännu (kategorierna saknar produkter eller korten saknar text och länk). Sektionen syns inte för besökare.</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak kategorikort",
+  "class": "ks-cat-section",
+  "max_blocks": 9,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Rubrik", "default": "Hitta rätt i vårt sortiment" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "range", "id": "card_height", "label": "Kortens höjd, dator", "min": 80, "max": 320, "step": 10, "unit": "px", "default": 100 },
+    { "type": "range", "id": "card_height_mobile", "label": "Kortens höjd, mobil", "min": 80, "max": 240, "step": 10, "unit": "px", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Kort",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Kategori" },
+        { "type": "text", "id": "label", "label": "Knapptext", "info": "Tomt fält visar kategorins namn." },
+        { "type": "url", "id": "link", "label": "Länk", "info": "Tomt fält länkar till kategorin." },
+        { "type": "image_picker", "id": "image", "label": "Bild", "info": "Tomt fält använder kategorins bild. Utan bild visas ett brunt kort." },
+        { "type": "checkbox", "id": "hide_when_empty", "label": "Dölj kortet när kategorin saknar produkter", "default": true }
+      ]
+    }
+  ],
+  "presets": [{ "name": "KaffeSmak kategorikort" }]
+}
+{% endschema %}

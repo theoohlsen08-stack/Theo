@@ -1,0 +1,171 @@
+{%- comment -%}
+  KaffeSmak – mörk sidfot (referensens mörkgrå sidfot #333333):
+  logga och företagsuppgifter, kontaktuppgifter, länkmeny, sociala ikoner och en nedre rad
+  med upphovsrätt och Shopifys policysidor. Tomma fält visas inte.
+{%- endcomment -%}
+
+{{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = section.settings
+  assign menu = linklists[s.menu]
+  assign company = s.company_name | default: shop.name
+  assign social_count = 0
+  if s.facebook_url != blank
+    assign social_count = social_count | plus: 1
+  endif
+  if s.instagram_url != blank
+    assign social_count = social_count | plus: 1
+  endif
+  if s.youtube_url != blank
+    assign social_count = social_count | plus: 1
+  endif
+  if s.tiktok_url != blank
+    assign social_count = social_count | plus: 1
+  endif
+  if s.linkedin_url != blank
+    assign social_count = social_count | plus: 1
+  endif
+-%}
+
+<footer class="ks-footer" style="--ks-footer-bg: {{ s.background }};">
+  <div class="ks-container ks-footer__top">
+    <div class="ks-footer__col ks-footer__col--brand">
+      <a href="{{ routes.root_url }}" class="ks-footer__logo">
+        {%- if s.logo != blank -%}
+          {%- assign logo_style = 'height: ' | append: s.logo_height | append: 'px;' -%}
+          {{ s.logo | image_url: height: 280 | image_tag: alt: s.logo_alt, class: 'ks-footer__logo-img', loading: 'lazy', style: logo_style }}
+        {%- elsif s.logo_asset != blank -%}
+          <img src="{{ s.logo_asset | asset_url }}" alt="{{ s.logo_alt | escape }}" class="ks-footer__logo-img" style="height: {{ s.logo_height }}px;" loading="lazy">
+        {%- else -%}
+          <span class="ks-footer__logo-text">{{ s.logo_alt }}</span>
+        {%- endif -%}
+      </a>
+      {%- if s.about != blank -%}
+        <div class="ks-footer__about">{{ s.about }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="ks-footer__col">
+      <h2 class="ks-footer__heading">{{ s.contact_heading }}</h2>
+      <ul class="ks-footer__list" role="list">
+        {%- if s.address != blank -%}
+          <li class="ks-footer__item">{% render 'ks-icon', icon: 'map', size: 18 %}<span>{{ s.address | newline_to_br }}</span></li>
+        {%- endif -%}
+        {%- if s.phone != blank -%}
+          {%- assign phone_href = s.phone | remove: ' ' | remove: '-' -%}
+          {%- assign first_digit = phone_href | slice: 0 -%}
+          {%- if first_digit == '0' -%}{%- assign phone_href = phone_href | remove_first: '0' | prepend: '+46' -%}{%- endif -%}
+          <li class="ks-footer__item">{% render 'ks-icon', icon: 'phone', size: 18 %}<a href="tel:{{ phone_href }}">{{ s.phone }}</a></li>
+        {%- endif -%}
+        {%- if s.email != blank -%}
+          <li class="ks-footer__item"><span class="ks-footer__label">E-post:</span> <a href="mailto:{{ s.email }}">{{ s.email }}</a></li>
+        {%- endif -%}
+      </ul>
+      {%- if s.opening_hours != blank -%}
+        <div class="ks-footer__hours">{{ s.opening_hours }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="ks-footer__col">
+      <h2 class="ks-footer__heading">{{ s.company_heading }}</h2>
+      <ul class="ks-footer__list" role="list">
+        <li>{{ company }}</li>
+        {%- if s.org_number != blank -%}
+          <li>Org.nr {{ s.org_number }}</li>
+        {%- endif -%}
+        {%- if s.vat_number != blank -%}
+          <li>Momsreg.nr {{ s.vat_number }}</li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    {%- if menu.links.size > 0 -%}
+      <nav class="ks-footer__col" aria-labelledby="KsFooterMenu-{{ section.id }}">
+        <h2 class="ks-footer__heading" id="KsFooterMenu-{{ section.id }}">{{ s.menu_heading | default: menu.title }}</h2>
+        <ul class="ks-footer__list ks-footer__links" role="list">
+          {%- for link in menu.links -%}
+            <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+
+  {%- if social_count > 0 -%}
+    <div class="ks-container">
+      <ul class="ks-footer__social" role="list" aria-label="Sociala medier">
+        {%- if s.facebook_url != blank -%}
+          <li><a href="{{ s.facebook_url }}" target="_blank" rel="noopener">{% render 'ks-icon', icon: 'facebook', size: 26 %}<span class="ks-visually-hidden">Facebook (öppnas i ny flik)</span></a></li>
+        {%- endif -%}
+        {%- if s.instagram_url != blank -%}
+          <li><a href="{{ s.instagram_url }}" target="_blank" rel="noopener">{% render 'ks-icon', icon: 'instagram', size: 24 %}<span class="ks-visually-hidden">Instagram (öppnas i ny flik)</span></a></li>
+        {%- endif -%}
+        {%- if s.youtube_url != blank -%}
+          <li><a href="{{ s.youtube_url }}" target="_blank" rel="noopener">{% render 'ks-icon', icon: 'youtube', size: 26 %}<span class="ks-visually-hidden">YouTube (öppnas i ny flik)</span></a></li>
+        {%- endif -%}
+        {%- if s.tiktok_url != blank -%}
+          <li><a href="{{ s.tiktok_url }}" target="_blank" rel="noopener">{% render 'ks-icon', icon: 'tiktok', size: 24 %}<span class="ks-visually-hidden">TikTok (öppnas i ny flik)</span></a></li>
+        {%- endif -%}
+        {%- if s.linkedin_url != blank -%}
+          <li><a href="{{ s.linkedin_url }}" target="_blank" rel="noopener">{% render 'ks-icon', icon: 'linkedin', size: 24 %}<span class="ks-visually-hidden">LinkedIn (öppnas i ny flik)</span></a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  <div class="ks-container ks-footer__bottom">
+    <p class="ks-footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ company }}. Alla rättigheter förbehållna.</p>
+    {%- if s.show_policies -%}
+      <ul class="ks-footer__policies" role="list">
+        {%- capture menu_urls -%}{%- for link in menu.links -%}|{{ link.url }}|{%- endfor -%}{%- endcapture -%}
+        {%- for policy in shop.policies -%}
+          {%- assign policy_key = '|' | append: policy.url | append: '|' -%}
+          {%- if menu_urls contains policy_key -%}{%- continue -%}{%- endif -%}
+          {%- if policy != blank and policy.body != blank -%}
+            <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "KaffeSmak sidfot",
+  "class": "ks-footer-section",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "header", "content": "Logotyp" },
+    { "type": "image_picker", "id": "logo", "label": "Logotyp (vit, för mörk bakgrund)" },
+    { "type": "text", "id": "logo_asset", "label": "Logotyp från temafiler", "default": "ks-logo-vit.png" },
+    { "type": "text", "id": "logo_alt", "label": "Alt-text", "default": "Kaffe Smak Rosteri" },
+    { "type": "range", "id": "logo_height", "label": "Logotypens höjd", "min": 40, "max": 140, "step": 2, "unit": "px", "default": 96 },
+    { "type": "richtext", "id": "about", "label": "Kort text under loggan" },
+    { "type": "header", "content": "Kontakt" },
+    { "type": "text", "id": "contact_heading", "label": "Rubrik", "default": "Kontakt" },
+    { "type": "textarea", "id": "address", "label": "Adress", "default": "Storgatan 55\n881 30 Sollefteå" },
+    { "type": "text", "id": "phone", "label": "Telefon", "default": "076-270 89 27" },
+    { "type": "text", "id": "email", "label": "E-post", "info": "Visas bara när fältet är ifyllt." },
+    { "type": "richtext", "id": "opening_hours", "label": "Öppettider", "info": "Ange ett fullständigt, verifierat veckoschema. Visas bara när fältet är ifyllt." },
+    { "type": "header", "content": "Företagsuppgifter" },
+    { "type": "text", "id": "company_heading", "label": "Rubrik", "default": "Företagsuppgifter" },
+    { "type": "text", "id": "company_name", "label": "Bolagsnamn", "default": "Kaffe smak rosteri sweden AB" },
+    { "type": "text", "id": "org_number", "label": "Organisationsnummer", "default": "559237-4747" },
+    { "type": "text", "id": "vat_number", "label": "Momsregistreringsnummer", "info": "Visas bara när fältet är ifyllt." },
+    { "type": "header", "content": "Länkar" },
+    { "type": "link_list", "id": "menu", "label": "Meny" },
+    { "type": "text", "id": "menu_heading", "label": "Menyns rubrik", "default": "Kundservice" },
+    { "type": "checkbox", "id": "show_policies", "label": "Visa butikens policysidor i nedre raden", "default": true },
+    { "type": "header", "content": "Sociala medier", "info": "Fyll bara i konton som är bekräftade och aktuella." },
+    { "type": "url", "id": "facebook_url", "label": "Facebook" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram" },
+    { "type": "url", "id": "youtube_url", "label": "YouTube" },
+    { "type": "url", "id": "tiktok_url", "label": "TikTok" },
+    { "type": "url", "id": "linkedin_url", "label": "LinkedIn" },
+    { "type": "header", "content": "Färg" },
+    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#333333" }
+  ]
+}
+{% endschema %}

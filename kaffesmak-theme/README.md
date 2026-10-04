@@ -18,3 +18,12 @@ Etapp 1:
   Barlow Condensed ur Shopifys typsnittsbibliotek).
 
 Temat publiceras inte utan Theos uttryckliga instruktion.
+
+## Etapp 2 (startsida och sidfot)
+
+- `sections/ks-category-cards.liquid` – kategorikort; kort för kategorier utan produkter döljs.
+- `sections/ks-product-row.liquid` – produktrad/karusell från en kategori; döljs när kategorin är tom.
+- `sections/ks-reviews.liquid` – Google-recensioner; visas först när "Recensionerna är verifierade" är ikryssat och verkliga recensioner (eller en recensionsapp) finns.
+- `sections/ks-info-cards.liquid`, `sections/ks-contact-cards.liquid` – informations- och kontaktkort.
+- `sections/ks-footer.liquid` – mörk sidfot med företagsuppgifter, meny "monteriva-utkast-sidfot", sociala länkar och policysidor.
+- `snippets/ks-button.liquid`, `snippets/ks-icon.liquid`, `assets/ks-carousel.js` – gemensamma delar.

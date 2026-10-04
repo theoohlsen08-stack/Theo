@@ -1,0 +1,95 @@
+{%- comment -%}
+  KaffeSmak – informationskort på beige bakgrund (referensens "Därför väljer du ..."):
+  tre färgade kort med ikon, rubrik, text och grön knapp. Kort utan rubrik döljs,
+  och hela sektionen döljs när inget kort har innehåll.
+{%- endcomment -%}
+
+
+{%- capture cards -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.heading != blank -%}
+      <li
+        class="ks-info-card{% if block.settings.image != blank %} ks-info-card--image{% endif %}"
+        style="--ks-card-bg: {{ block.settings.background }};"
+        {{ block.shopify_attributes }}
+      >
+        {%- if block.settings.image != blank -%}
+          {{
+            block.settings.image
+            | image_url: width: 900
+            | image_tag: widths: '450, 700, 900', sizes: '(min-width: 990px) 33vw, 100vw', alt: '', loading: 'lazy', class: 'ks-info-card__bg'
+          }}
+        {%- endif -%}
+        <div class="ks-info-card__inner">
+          {%- if block.settings.icon != 'none' -%}
+            <span class="ks-info-card__icon">{% render 'ks-icon', icon: block.settings.icon, size: 52 %}</span>
+          {%- endif -%}
+          <h3 class="ks-info-card__heading">{{ block.settings.heading }}</h3>
+          {%- if block.settings.text != blank -%}
+            <div class="ks-info-card__text">{{ block.settings.text }}</div>
+          {%- endif -%}
+          {%- assign new_tab = false -%}
+          {%- if block.settings.link contains 'http' -%}{%- assign new_tab = true -%}{%- endif -%}
+          {% render 'ks-button', label: block.settings.button_label, url: block.settings.link, new_tab: new_tab %}
+        </div>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if cards != blank -%}
+  {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+  <section class="ks-section ks-info" style="--ks-info-bg: {{ section.settings.background }};">
+    <div class="ks-container">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="ks-section__heading ks-section__heading--brown">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      <ul class="ks-info__list" role="list">
+        {{ cards }}
+      </ul>
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <div class="ks-editor-note">KaffeSmak informationskort: lägg till kort med rubrik. Sektionen syns inte för besökare utan innehåll.</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak informationskort",
+  "class": "ks-info-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Rubrik" },
+    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#E2D8C8" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Kort",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ikon",
+          "options": [
+            { "value": "none", "label": "Ingen" },
+            { "value": "cup", "label": "Kaffekopp" },
+            { "value": "beans", "label": "Kaffebönor" },
+            { "value": "map", "label": "Karta" },
+            { "value": "phone", "label": "Telefon" },
+            { "value": "play", "label": "Film" }
+          ],
+          "default": "cup"
+        },
+        { "type": "text", "id": "heading", "label": "Rubrik" },
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "text", "id": "button_label", "label": "Knapptext" },
+        { "type": "url", "id": "link", "label": "Knapplänk" },
+        { "type": "image_picker", "id": "image", "label": "Bakgrundsbild (valfri)", "info": "Bilden tonas mörkt så att texten går att läsa." },
+        { "type": "color", "id": "background", "label": "Kortets färg", "info": "Välj en färg som ger vit text tillräcklig kontrast (minst 4,5:1).", "default": "#8E6E43" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "KaffeSmak informationskort" }]
+}
+{% endschema %}

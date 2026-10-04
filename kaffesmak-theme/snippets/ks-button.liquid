@@ -1,0 +1,22 @@
+{%- comment -%}
+  KaffeSmak – grön knapp med ljusare pilfält, som referensens knappar.
+  Parametrar: label (text), url (länk), size ('small' eller tom), class (extra klasser),
+  aria_label (valfri), new_tab (true/false).
+{%- endcomment -%}
+{%- if label != blank and url != blank -%}
+  <a
+    href="{{ url }}"
+    class="ks-button ks-button--green ks-button--arrow{% if size == 'small' %} ks-button--small{% endif %}{% if class != blank %} {{ class }}{% endif %}"
+    {% if aria_label != blank %}
+      aria-label="{{ aria_label | escape }}"
+    {% endif %}
+    {% if new_tab %}
+      target="_blank" rel="noopener"
+    {% endif %}
+  >
+    <span class="ks-button__label">{{ label }}</span>
+    <span class="ks-button__arrow" aria-hidden="true">
+      <svg width="8" height="12" viewBox="0 0 8 12" focusable="false"><path d="M1.5 1.5L6 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    </span>
+  </a>
+{%- endif -%}

@@ -1,0 +1,36 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "ks_footer": {
+      "type": "ks-footer",
+      "settings": {
+        "logo_asset": "ks-logo-vit.png",
+        "logo_alt": "Kaffe Smak Rosteri",
+        "logo_height": 96,
+        "about": "",
+        "contact_heading": "Kontakt",
+        "address": "Storgatan 55\n881 30 Sollefteå",
+        "phone": "076-270 89 27",
+        "email": "",
+        "opening_hours": "",
+        "company_heading": "Företagsuppgifter",
+        "company_name": "Kaffe smak rosteri sweden AB",
+        "org_number": "559237-4747",
+        "vat_number": "",
+        "menu": "monteriva-utkast-sidfot",
+        "menu_heading": "Kundservice",
+        "show_policies": true,
+        "facebook_url": "",
+        "instagram_url": "https://www.instagram.com/kaffe_smak/",
+        "youtube_url": "https://www.youtube.com/@Adamkaffe",
+        "tiktok_url": "https://www.tiktok.com/@adam.kaffe",
+        "linkedin_url": "",
+        "background": "#333333"
+      }
+    }
+  },
+  "order": [
+    "ks_footer"
+  ]
+}

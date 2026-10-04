@@ -50,371 +50,218 @@
         "button2_label": "",
         "background": "#E2D8C8",
         "heading_color": "#653A2B",
-        "icon_background": "#653A2B"
+        "icon_background": "#653A2B",
+        "heading_tag": "h1"
       }
     },
-    "collection_list_JrikMp": {
-      "type": "collection-list",
+    "ks_categories": {
+      "type": "ks-category-cards",
       "blocks": {
-        "group_GY9PWm": {
-          "type": "group",
-          "name": "t:names.header",
+        "c_kaffe": {
+          "type": "card",
           "settings": {
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 16,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "link": "",
-            "open_in_new_tab": false,
-            "placeholder": "",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "text_Lx7fnB": {
-              "type": "text",
-              "name": "t:names.text",
-              "settings": {
-                "text": "<h3>Handla efter produktserie</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 16,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_Lx7fnB"
-          ]
+            "collection": "morkt-kaffe",
+            "label": "Kaffe",
+            "hide_when_empty": true
+          }
         },
-        "static-collection-card": {
-          "type": "_collection-card",
-          "name": "t:names.collection_card",
-          "static": true,
+        "c_maskiner": {
+          "type": "card",
           "settings": {
-            "placement": "on_image",
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "flex-end",
-            "collection_card_gap": 8,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0
-          },
-          "blocks": {
-            "collection_title_JRHkkp": {
-              "type": "collection-title",
-              "name": "t:names.collection_title",
-              "settings": {
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": true,
-                "background_color": "#ffffff",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 4,
-                "padding-inline-start": 8,
-                "padding-inline-end": 8
-              },
-              "blocks": {}
-            },
-            "collection-card-image": {
-              "type": "_collection-card-image",
-              "name": "t:names.collection_card_image",
-              "static": true,
-              "settings": {
-                "image_ratio": "adapt",
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "collection_title_JRHkkp"
-          ]
+            "collection": "kaffemaskiner",
+            "label": "Kaffemaskiner",
+            "hide_when_empty": true
+          }
+        },
+        "c_moka": {
+          "type": "card",
+          "settings": {
+            "collection": "mockabryggare",
+            "label": "Mokabryggare",
+            "hide_when_empty": true
+          }
+        },
+        "c_tillbehor": {
+          "type": "card",
+          "settings": {
+            "collection": "tillbehor",
+            "label": "Tillbehör",
+            "hide_when_empty": true
+          }
+        },
+        "c_presskanna": {
+          "type": "card",
+          "settings": {
+            "collection": "presskanna",
+            "label": "Presskannor",
+            "hide_when_empty": true
+          }
+        },
+        "c_reservdelar": {
+          "type": "card",
+          "settings": {
+            "collection": "reservdelar",
+            "label": "Reservdelar",
+            "hide_when_empty": true
+          }
+        },
+        "c_kaffebar": {
+          "type": "card",
+          "settings": {
+            "label": "Besök kaffebaren",
+            "link": "shopify://pages/contact",
+            "hide_when_empty": true
+          }
         }
       },
       "block_order": [
-        "group_GY9PWm"
+        "c_kaffe",
+        "c_maskiner",
+        "c_moka",
+        "c_tillbehor",
+        "c_presskanna",
+        "c_reservdelar",
+        "c_kaffebar"
       ],
-      "name": "t:names.collections_bento",
       "settings": {
-        "collection_list": [
-          "morkt-kaffe",
-          "kaffemaskiner",
-          "mockabryggare",
-          "tillbehor",
-          "reservdelar",
-          "presskanna"
-        ],
-        "layout_type": "bento",
-        "carousel_on_mobile": false,
-        "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "bento_gap": 8,
-        "rows_gap": 8,
-        "max_collections": 4,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "gap": 12,
-        "color_scheme": "",
-        "padding-block-start": 24,
-        "padding-block-end": 24
+        "heading": "Hitta rätt i vårt sortiment",
+        "text": "<p>Kaffe, kaffemaskiner och tillbehör, och en kaffebar på Storgatan 55 i Sollefteå.</p>",
+        "card_height": 100,
+        "card_height_mobile": 96
       }
     },
-    "product_list_fa6P9H": {
-      "type": "product-list",
+    "ks_products_kaffe": {
+      "type": "ks-product-row",
+      "settings": {
+        "collection": "morkt-kaffe",
+        "heading": "Vårt kaffe",
+        "text": "",
+        "button_label": "Se allt kaffe",
+        "button_link": "shopify://collections/morkt-kaffe",
+        "limit": 12,
+        "show_sku": true,
+        "buy_label": "Köp"
+      }
+    },
+    "ks_reviews": {
+      "type": "ks-reviews",
+      "settings": {
+        "verified": false,
+        "heading": "Så här säger våra kunder",
+        "source_name": "Google",
+        "rating_value": "",
+        "rating_count": "",
+        "rating_date": "",
+        "all_reviews_label": "Läs alla recensioner",
+        "all_reviews_link": "",
+        "write_review_label": "Lämna ditt omdöme på Google",
+        "write_review_link": "",
+        "background": "#E2D8C8"
+      }
+    },
+    "ks_products_maskiner": {
+      "type": "ks-product-row",
+      "settings": {
+        "collection": "kaffemaskiner",
+        "heading": "Kaffemaskiner",
+        "limit": 12,
+        "show_sku": true,
+        "buy_label": "Köp",
+        "button_label": "Se alla kaffemaskiner",
+        "button_link": "shopify://collections/kaffemaskiner"
+      }
+    },
+    "ks_info": {
+      "type": "ks-info-cards",
       "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "static": true,
+        "i_kaffebar": {
+          "type": "card",
           "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-end",
-            "align_baseline": true,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_list_text_YFtzcL": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_list_button_MWeP9V": {
-              "type": "_product-list-button",
-              "name": "t:names.product_list_button",
-              "settings": {
-                "label": "Se alla",
-                "open_in_new_tab": false,
-                "style_class": "link",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
-          ]
+            "icon": "cup",
+            "heading": "Besök vår kaffebar",
+            "text": "<p>Kaffebar och rosteri på Storgatan 55 i Sollefteå. Hos oss kan du till exempel ta en Espresso Moderno eller en Latte.</p>",
+            "button_label": "Hitta hit",
+            "link": "shopify://pages/contact",
+            "background": "#8E6E43"
+          }
         },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
+        "i_kaffe": {
+          "type": "card",
           "settings": {
-            "product_card_gap": 4,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_677WP3": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_YXxMTj": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_JQzVV4": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "color": "var(--color-foreground)",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
-          ]
+            "icon": "beans",
+            "heading": "Kaffe från Kaffe Smak Rosteri",
+            "text": "<p>ASO, Bergamo, London och Sollefteå finns att beställa i webbutiken.</p>",
+            "button_label": "Se vårt kaffe",
+            "link": "shopify://collections/morkt-kaffe",
+            "background": "#6B3D2A"
+          }
+        },
+        "i_youtube": {
+          "type": "card",
+          "settings": {
+            "icon": "play",
+            "heading": "Följ oss på YouTube",
+            "text": "<p>Kaffe Smak Rosteri drivs av Adam. Följ kanalen Adam Kaffe på YouTube.</p>",
+            "button_label": "Till YouTube",
+            "link": "https://www.youtube.com/@Adamkaffe",
+            "background": "#3B2A12"
+          }
         }
       },
-      "name": "Featured collection",
+      "block_order": [
+        "i_kaffebar",
+        "i_kaffe",
+        "i_youtube"
+      ],
       "settings": {
-        "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 8,
-        "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "heading": "Kaffe Smak Rosteri i Sollefteå",
+        "background": "#E2D8C8"
+      }
+    },
+    "ks_products_tillbehor": {
+      "type": "ks-product-row",
+      "settings": {
+        "collection": "tillbehor",
+        "heading": "Tillbehör",
+        "limit": 12,
+        "show_sku": true,
+        "buy_label": "Köp",
+        "button_label": "Se alla tillbehör",
+        "button_link": "shopify://collections/tillbehor"
+      }
+    },
+    "ks_contact": {
+      "type": "ks-contact-cards",
+      "blocks": {
+        "k_hitta": {
+          "type": "card",
+          "settings": {
+            "icon": "map",
+            "heading": "Hitta hit",
+            "text": "<p>Kaffe Smak Rosteri<br/>Storgatan 55<br/>881 30 Sollefteå</p>",
+            "button_label": "Kontakt och hitta hit",
+            "link": "shopify://pages/contact",
+            "border_color": "#7A5C3A"
+          }
+        },
+        "k_fragor": {
+          "type": "card",
+          "settings": {
+            "icon": "phone",
+            "heading": "Har du några frågor?",
+            "text": "<p>Ring oss på <a href=\"tel:+46762708927\">076-270 89 27</a> eller skriv till oss via kontaktformuläret.</p>",
+            "button_label": "Kontakta oss",
+            "link": "shopify://pages/contact",
+            "border_color": "#C8C8C8"
+          }
+        }
+      },
+      "block_order": [
+        "k_hitta",
+        "k_fragor"
+      ],
+      "settings": {
+        "label": "Kontakt"
       }
     }
   },
@@ -422,7 +269,12 @@
     "ks_hero",
     "ks_band",
     "ks_intro",
-    "collection_list_JrikMp",
-    "product_list_fa6P9H"
+    "ks_categories",
+    "ks_products_kaffe",
+    "ks_reviews",
+    "ks_products_maskiner",
+    "ks_info",
+    "ks_products_tillbehor",
+    "ks_contact"
   ]
 }

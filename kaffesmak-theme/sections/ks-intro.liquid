@@ -24,7 +24,8 @@
         {%- endif -%}
       </div>
     {%- endif -%}
-    <h2 class="ks-intro__heading">{{ section.settings.heading }}</h2>
+    {%- assign heading_tag = section.settings.heading_tag | default: 'h1' -%}
+    <{{ heading_tag }} class="ks-intro__heading">{{ section.settings.heading }}</{{ heading_tag }}>
     <div class="ks-intro__text">
       {{ section.settings.text }}
       {%- if section.settings.button_label != blank or section.settings.button2_label != blank -%}
@@ -51,6 +52,17 @@
   "class": "ks-intro-section",
   "settings": [
     { "type": "text", "id": "heading", "label": "Rubrik", "default": "Välkommen till Kaffe Smak Rosteri." },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Rubriknivå",
+      "info": "Startsidans huvudrubrik ska vara H1. Använd bara en H1 per sida.",
+      "options": [
+        { "value": "h1", "label": "H1 (sidans huvudrubrik)" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
+    },
     {
       "type": "richtext",
       "id": "text",
