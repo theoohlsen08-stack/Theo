@@ -1,0 +1,85 @@
+{%- comment -%}
+  KaffeSmak – omdömen från företags- och cafékunder (referensens "Kundrecensioner: så säger våra
+  företags- & cafékunder"): beige fält med brun rubrik och citat i tre kolumner.
+  Sektionen visas för besökare ENDAST när "Omdömena är verkliga och godkända" är ikryssat OCH minst
+  ett omdöme har både citat och namn. Varje citat läggs in ordagrant som kunden lämnat det, med
+  kundens godkännande att publicera namn och företag. Lägg aldrig in exempeltexter här.
+{%- endcomment -%}
+
+
+{%- liquid
+  assign quote_count = 0
+  for block in section.blocks
+    if block.settings.quote != blank and block.settings.name != blank
+      assign quote_count = quote_count | plus: 1
+    endif
+  endfor
+  assign show = false
+  if section.settings.verified and quote_count > 0
+    assign show = true
+  endif
+-%}
+
+{%- if show -%}
+  {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+  <section class="ks-section ks-testimonials" aria-labelledby="KsTestimonials-{{ section.id }}" style="--ks-testimonials-bg: {{ section.settings.background }};">
+    <div class="ks-container">
+      <h2 class="ks-section__heading ks-section__heading--brown" id="KsTestimonials-{{ section.id }}">{{ section.settings.heading }}</h2>
+      <ul class="ks-testimonials__list" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.quote != blank and block.settings.name != blank -%}
+            <li class="ks-testimonial" {{ block.shopify_attributes }}>
+              <figure class="ks-testimonial__figure">
+                <blockquote class="ks-testimonial__quote">{{ block.settings.quote | newline_to_br }}</blockquote>
+                <figcaption class="ks-testimonial__caption">
+                  <span class="ks-testimonial__name">{{ block.settings.name }}</span>
+                  {%- if block.settings.company != blank -%}
+                    <span class="ks-testimonial__company">{{ block.settings.company }}</span>
+                  {%- endif -%}
+                </figcaption>
+              </figure>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <div class="ks-editor-note">
+    KaffeSmak kundomdömen:
+    {%- if quote_count == 0 %} inga omdömen med citat och namn ännu.{% endif -%}
+    {%- unless section.settings.verified %} Rutan "Omdömena är verkliga och godkända" är inte ikryssad.{% endunless %}
+    Sektionen syns inte för besökare förrän båda delarna är klara.
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak kundomdömen",
+  "class": "ks-testimonials-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "verified",
+      "label": "Omdömena är verkliga och godkända",
+      "info": "Kryssa bara i när varje citat kommer från en verklig kund som godkänt att det publiceras med namn.",
+      "default": false
+    },
+    { "type": "text", "id": "heading", "label": "Rubrik", "default": "Så säger våra företags- och cafékunder" },
+    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#E2D8C8" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Omdöme",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Citat", "info": "Ordagrant som kunden skrev det, utan citattecken (de läggs till automatiskt)." },
+        { "type": "text", "id": "name", "label": "Namn" },
+        { "type": "text", "id": "company", "label": "Företag (valfritt)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "KaffeSmak kundomdömen" }]
+}
+{% endschema %}

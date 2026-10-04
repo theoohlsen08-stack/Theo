@@ -827,7 +827,7 @@
   font-family: var(--ks-font-body);
   color: #444444;
 }
-.ks-section + .ks-section:not(.ks-reviews):not(.ks-info) {
+.ks-section + .ks-section:not(.ks-reviews):not(.ks-info):not(.ks-testimonials) {
   padding-block-start: 16px;
 }
 .ks-section__heading {
@@ -1823,5 +1823,64 @@ button.ks-button {
   }
   .ks-articles__list {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Etapp 3: kundomdömen från företag och caféer ---------- */
+.ks-testimonials {
+  background: var(--ks-testimonials-bg, var(--ks-beige));
+}
+.ks-testimonials__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px 48px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-testimonial__figure {
+  margin: 0;
+}
+.ks-testimonial__quote {
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+  color: var(--ks-brown);
+  font-family: var(--ks-font-heading);
+  font-size: 20px;
+  font-style: normal;
+  line-height: 1.5;
+}
+.ks-testimonial__quote::before {
+  content: "\201D";
+}
+.ks-testimonial__quote::after {
+  content: "\201D";
+}
+.ks-testimonial__caption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 15px;
+}
+.ks-testimonial__name {
+  color: var(--ks-green-dark);
+  font-weight: 700;
+}
+.ks-testimonial__company {
+  color: #444444;
+}
+@media screen and (max-width: 989px) {
+  .ks-testimonials__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media screen and (max-width: 749px) {
+  .ks-testimonials__list {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .ks-testimonial__quote {
+    font-size: 18px;
   }
 }

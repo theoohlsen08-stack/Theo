@@ -273,6 +273,40 @@
       "settings": {
         "label": "Kontakt"
       }
+    },
+    "ks_guides": {
+      "type": "ks-info-cards",
+      "blocks": {
+        "guide_1": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "background": "#8E6E43"
+          }
+        },
+        "guide_2": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "background": "#653A2B"
+          }
+        }
+      },
+      "block_order": [
+        "guide_1",
+        "guide_2"
+      ],
+      "settings": {
+        "background": "#E6E1DA"
+      }
+    },
+    "ks_testimonials": {
+      "type": "ks-testimonials",
+      "settings": {
+        "verified": false,
+        "heading": "Så säger våra företags- och cafékunder",
+        "background": "#E2D8C8"
+      }
     }
   },
   "order": [
@@ -280,12 +314,14 @@
     "ks_band",
     "ks_intro",
     "ks_categories",
+    "ks_guides",
     "ks_products_kaffe",
     "ks_reviews",
     "ks_products_maskiner",
     "ks_knowledge",
     "ks_info",
     "ks_products_tillbehor",
+    "ks_testimonials",
     "ks_contact"
   ]
 }
