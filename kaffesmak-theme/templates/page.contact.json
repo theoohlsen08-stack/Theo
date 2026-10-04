@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-contact-page",
+      "settings": {
+        "heading": "Kontakta oss",
+        "intro_heading": "Välkommen att höra av dig",
+        "intro_text": "<p>Har du frågor om vårt kaffe, kaffebaren eller sortimentet? Ring oss eller skicka ett meddelande med formuläret.</p>",
+        "form_heading": "Skicka ett meddelande",
+        "show_company_field": true,
+        "submit_label": "Skicka meddelande",
+        "success_message": "Tack! Ditt meddelande har skickats.",
+        "visit_heading": "Kaffebar och rosteri",
+        "company_name": "Kaffe smak rosteri sweden AB",
+        "address": "Storgatan 55\n881 30 Sollefteå",
+        "opening_hours": "",
+        "reach_heading": "Ring eller mejla oss",
+        "phone": "076-270 89 27",
+        "email": "info@kaffesmak.se",
+        "org_number": "559237-4747",
+        "vat_number": "",
+        "map_heading": "Hitta hit",
+        "directions_text": "",
+        "directions_url": "",
+        "map_embed_url": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

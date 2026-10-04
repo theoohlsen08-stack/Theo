@@ -1,6 +1,6 @@
 {%- comment -%}
   KaffeSmak – produktrad (referensens produktkaruseller): röd rubrik med linje, valfri text och knapp,
-  och en vågrät rad produktkort med bild, röd produkttitel, artikelnummer (om det finns), pris och Köp-knapp.
+  och en vågrät rad produktkort med bild, röd produkttitel, artikelnummer (om det finns), pris och en knapp som öppnar produktsidan.
   Produkterna hämtas från en vald kategori. Sektionen döljs helt när kategorin saknas eller är tom.
 {%- endcomment -%}
 
@@ -64,7 +64,7 @@
                 {%- endif -%}
               </p>
               {%- liquid
-                assign buy_label = section.settings.buy_label | default: 'Köp'
+                assign buy_label = section.settings.buy_label | default: 'Visa produkt'
                 assign buy_aria = buy_label | append: ' ' | append: product.title
               -%}
               {% render 'ks-button', label: buy_label, url: product.url, size: 'small', aria_label: buy_aria, class: 'ks-product-card__buy' %}
@@ -94,7 +94,7 @@
     { "type": "url", "id": "button_link", "label": "Knapplänk", "info": "Tomt fält länkar till kategorin." },
     { "type": "range", "id": "limit", "label": "Antal produkter", "min": 2, "max": 16, "step": 1, "default": 12 },
     { "type": "checkbox", "id": "show_sku", "label": "Visa artikelnummer", "default": true },
-    { "type": "text", "id": "buy_label", "label": "Köpknappens text", "default": "Köp" }
+    { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "info": "Knappen öppnar produktsidan.", "default": "Visa produkt" }
   ],
   "presets": [{ "name": "KaffeSmak produktrad" }]
 }

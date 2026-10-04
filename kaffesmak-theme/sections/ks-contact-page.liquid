@@ -1,0 +1,212 @@
+{%- comment -%}
+  KaffeSmak – kontaktsida (referensens kontaktsida): stor röd H1, centrerad röd mellanrubrik med ingress,
+  kontaktformulär på svenska med grön knapp och beige informationskort med ikon, grön rubrik och text.
+  Kontaktuppgifterna fylls i som inställningar; tomma uppgifter visas inte. En karta visas bara när
+  en verifierad inbäddningslänk har lagts in.
+{%- endcomment -%}
+
+
+{{ 'ks-theme.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = section.settings
+  assign heading = s.heading | default: page.title
+  assign phone_digits = s.phone | remove: ' ' | remove: '-'
+  assign phone_first = phone_digits | slice: 0
+  if phone_first == '0'
+    assign phone_href = phone_digits | remove_first: '0' | prepend: '+46'
+  else
+    assign phone_href = phone_digits
+  endif
+  assign form_id = 'KsContactForm-' | append: section.id
+-%}
+
+<section class="ks-section ks-contact-page" aria-labelledby="KsContactTitle-{{ section.id }}">
+  <div class="ks-container">
+    <h1 class="ks-page-title" id="KsContactTitle-{{ section.id }}">{{ heading }}</h1>
+
+    {%- if s.intro_heading != blank or s.intro_text != blank or page.content != blank -%}
+      <div class="ks-contact-page__intro">
+        {%- if s.intro_heading != blank -%}
+          <h2 class="ks-section__heading ks-section__heading--red">{{ s.intro_heading }}</h2>
+        {%- endif -%}
+        {%- if s.intro_text != blank -%}
+          <div class="ks-section__lead">{{ s.intro_text }}</div>
+        {%- endif -%}
+        {%- if page.content != blank -%}
+          <div class="ks-section__lead ks-contact-page__page-content">{{ page.content }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ks-contact-page__form-wrap">
+      {%- if s.form_heading != blank -%}
+        <h2 class="ks-contact-page__form-heading">{{ s.form_heading }}</h2>
+      {%- endif -%}
+      {%- form 'contact', id: form_id, class: 'ks-contact-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="ks-contact-form__notice ks-contact-form__notice--success" tabindex="-1" autofocus>
+            {{- s.success_message | default: 'Tack! Ditt meddelande har skickats.' -}}
+          </p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <div class="ks-contact-form__notice ks-contact-form__notice--error" tabindex="-1" autofocus>
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="ks-contact-form__row">
+          <div class="ks-contact-form__field">
+            <label for="{{ form_id }}-name">Namn</label>
+            <input
+              type="text"
+              id="{{ form_id }}-name"
+              name="contact[name]"
+              autocomplete="name"
+              value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+            >
+          </div>
+          <div class="ks-contact-form__field">
+            <label for="{{ form_id }}-email">E-post <span aria-hidden="true">*</span><span class="ks-visually-hidden">(obligatoriskt)</span></label>
+            <input
+              type="email"
+              id="{{ form_id }}-email"
+              name="contact[email]"
+              autocomplete="email"
+              spellcheck="false"
+              autocapitalize="off"
+              required
+              value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+              {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}
+            >
+          </div>
+        </div>
+        <div class="ks-contact-form__row">
+          <div class="ks-contact-form__field">
+            <label for="{{ form_id }}-phone">Telefon</label>
+            <input
+              type="tel"
+              id="{{ form_id }}-phone"
+              name="contact[phone]"
+              autocomplete="tel"
+              value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+            >
+          </div>
+          {%- if s.show_company_field -%}
+            <div class="ks-contact-form__field">
+              <label for="{{ form_id }}-company">Företag (valfritt)</label>
+              <input
+                type="text"
+                id="{{ form_id }}-company"
+                name="contact[Företag]"
+                autocomplete="organization"
+                value="{{ form['Företag'] }}"
+              >
+            </div>
+          {%- endif -%}
+        </div>
+        <div class="ks-contact-form__field">
+          <label for="{{ form_id }}-body">Meddelande <span aria-hidden="true">*</span><span class="ks-visually-hidden">(obligatoriskt)</span></label>
+          <textarea id="{{ form_id }}-body" name="contact[body]" rows="7" required>{{ form.body }}</textarea>
+        </div>
+        <p class="ks-contact-form__required"><span aria-hidden="true">*</span> Obligatoriskt fält</p>
+        <button type="submit" class="ks-button ks-button--green ks-button--arrow ks-contact-form__submit">
+          <span class="ks-button__label">{{ s.submit_label | default: 'Skicka meddelande' }}</span>
+          <span class="ks-button__arrow" aria-hidden="true">
+            <svg width="8" height="12" viewBox="0 0 8 12" focusable="false"><path d="M1.5 1.5L6 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          </span>
+        </button>
+      {%- endform -%}
+    </div>
+
+    {%- capture visit_text -%}
+      {%- if s.company_name != blank -%}<p><strong>{{ s.company_name }}</strong></p>{%- endif -%}
+      {%- if s.address != blank -%}<p>{{ s.address | newline_to_br }}</p>{%- endif -%}
+      {%- if s.opening_hours != blank -%}
+        <p class="ks-contact-page__label">Öppettider:</p>
+        {{ s.opening_hours }}
+      {%- endif -%}
+    {%- endcapture -%}
+
+    {%- capture reach_text -%}
+      {%- if s.phone != blank -%}<p>Telefon: <a href="tel:{{ phone_href }}">{{ s.phone }}</a></p>{%- endif -%}
+      {%- if s.email != blank -%}<p>E-post: <a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{%- endif -%}
+      {%- if s.org_number != blank -%}<p>Org.nr: {{ s.org_number }}</p>{%- endif -%}
+      {%- if s.vat_number != blank -%}<p>Momsreg.nr: {{ s.vat_number }}</p>{%- endif -%}
+    {%- endcapture -%}
+
+    <ul class="ks-contact-page__cards" role="list">
+      {%- if visit_text != blank -%}
+        <li class="ks-contact-page__card">
+          <span class="ks-contact-page__icon">{% render 'ks-icon', icon: 'cup', size: 52 %}</span>
+          <h2 class="ks-contact-page__card-heading">{{ s.visit_heading }}</h2>
+          <div class="ks-contact-page__card-text">{{ visit_text }}</div>
+        </li>
+      {%- endif -%}
+      {%- if reach_text != blank -%}
+        <li class="ks-contact-page__card">
+          <span class="ks-contact-page__icon">{% render 'ks-icon', icon: 'phone', size: 52 %}</span>
+          <h2 class="ks-contact-page__card-heading">{{ s.reach_heading }}</h2>
+          <div class="ks-contact-page__card-text">{{ reach_text }}</div>
+        </li>
+      {%- endif -%}
+      {%- if s.directions_text != blank or s.directions_url != blank or s.map_embed_url != blank -%}
+        <li class="ks-contact-page__card{% if s.map_embed_url != blank %} ks-contact-page__card--map{% endif %}">
+          <span class="ks-contact-page__icon">{% render 'ks-icon', icon: 'map', size: 52 %}</span>
+          <h2 class="ks-contact-page__card-heading">{{ s.map_heading }}</h2>
+          <div class="ks-contact-page__card-text">
+            {%- if s.directions_text != blank -%}{{ s.directions_text }}{%- else -%}<p>{{ s.address | newline_to_br }}</p>{%- endif -%}
+          </div>
+          {%- if s.map_embed_url != blank -%}
+            <iframe
+              class="ks-contact-page__map"
+              src="{{ s.map_embed_url }}"
+              title="Karta: {{ s.company_name | default: shop.name | escape }}"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          {%- endif -%}
+          {%- if s.directions_url != blank -%}
+            {% render 'ks-button', label: 'Vägbeskrivning', url: s.directions_url, new_tab: true %}
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+    </ul>
+    {%- if request.design_mode and s.directions_text == blank and s.directions_url == blank and s.map_embed_url == blank -%}
+      <div class="ks-editor-note">Kortet "Hitta hit" med vägbeskrivning och karta visas när en vägbeskrivning, en länk eller en inbäddningslänk för karta har lagts in. Besökare ser inte denna ruta.</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KaffeSmak kontaktsida",
+  "class": "ks-contact-page-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Sidrubrik (H1)", "info": "Tomt fält visar sidans titel." },
+    { "type": "text", "id": "intro_heading", "label": "Mellanrubrik" },
+    { "type": "richtext", "id": "intro_text", "label": "Ingress" },
+    { "type": "header", "content": "Formulär" },
+    { "type": "text", "id": "form_heading", "label": "Formulärets rubrik", "default": "Skicka ett meddelande" },
+    { "type": "checkbox", "id": "show_company_field", "label": "Visa fältet Företag", "default": true },
+    { "type": "text", "id": "submit_label", "label": "Knapptext", "default": "Skicka meddelande" },
+    { "type": "text", "id": "success_message", "label": "Bekräftelse efter skickat meddelande", "default": "Tack! Ditt meddelande har skickats." },
+    { "type": "header", "content": "Kontaktuppgifter", "info": "Fyll bara i verifierade uppgifter. Tomma fält visas inte." },
+    { "type": "text", "id": "visit_heading", "label": "Rubrik, besök", "default": "Kaffebar och rosteri" },
+    { "type": "text", "id": "company_name", "label": "Bolagsnamn" },
+    { "type": "textarea", "id": "address", "label": "Adress" },
+    { "type": "richtext", "id": "opening_hours", "label": "Öppettider", "info": "Fyll i ett fullständigt och bekräftat schema." },
+    { "type": "text", "id": "reach_heading", "label": "Rubrik, kontakt", "default": "Ring eller mejla oss" },
+    { "type": "text", "id": "phone", "label": "Telefon" },
+    { "type": "text", "id": "email", "label": "E-post" },
+    { "type": "text", "id": "org_number", "label": "Organisationsnummer" },
+    { "type": "text", "id": "vat_number", "label": "Momsregistreringsnummer" },
+    { "type": "header", "content": "Hitta hit" },
+    { "type": "text", "id": "map_heading", "label": "Rubrik", "default": "Hitta hit" },
+    { "type": "richtext", "id": "directions_text", "label": "Vägbeskrivning", "info": "Tomt fält visar adressen." },
+    { "type": "url", "id": "directions_url", "label": "Länk till vägbeskrivning", "info": "Till exempel länken till företagets verifierade Google-profil." },
+    { "type": "text", "id": "map_embed_url", "label": "Inbäddningslänk för karta", "info": "Klistra in src-adressen från Google Maps inbäddningskod för rätt verksamhet. Tomt fält visar ingen karta." }
+  ],
+  "presets": [{ "name": "KaffeSmak kontaktsida" }]
+}
+{% endschema %}

@@ -59,7 +59,7 @@
           <li class="ks-footer__item">{% render 'ks-icon', icon: 'phone', size: 18 %}<a href="tel:{{ phone_href }}">{{ s.phone }}</a></li>
         {%- endif -%}
         {%- if s.email != blank -%}
-          <li class="ks-footer__item"><span class="ks-footer__label">E-post:</span> <a href="mailto:{{ s.email }}">{{ s.email }}</a></li>
+          <li class="ks-footer__item">{% render 'ks-icon', icon: 'mail', size: 18 %}<span class="ks-visually-hidden">E-post:</span><a href="mailto:{{ s.email }}">{{ s.email }}</a></li>
         {%- endif -%}
       </ul>
       {%- if s.opening_hours != blank -%}

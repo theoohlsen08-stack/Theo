@@ -140,7 +140,7 @@
         "button_link": "shopify://collections/morkt-kaffe",
         "limit": 12,
         "show_sku": true,
-        "buy_label": "Köp"
+        "buy_label": "Visa produkt"
       }
     },
     "ks_reviews": {
@@ -166,9 +166,19 @@
         "heading": "Kaffemaskiner",
         "limit": 12,
         "show_sku": true,
-        "buy_label": "Köp",
+        "buy_label": "Visa produkt",
         "button_label": "Se alla kaffemaskiner",
         "button_link": "shopify://collections/kaffemaskiner"
+      }
+    },
+    "ks_knowledge": {
+      "type": "ks-article-cards",
+      "settings": {
+        "blog": "nyheter",
+        "heading": "Kunskap och nyheter",
+        "text": "",
+        "limit": 4,
+        "read_label": "Läs mer"
       }
     },
     "ks_info": {
@@ -225,7 +235,7 @@
         "heading": "Tillbehör",
         "limit": 12,
         "show_sku": true,
-        "buy_label": "Köp",
+        "buy_label": "Visa produkt",
         "button_label": "Se alla tillbehör",
         "button_link": "shopify://collections/tillbehor"
       }
@@ -273,6 +283,7 @@
     "ks_products_kaffe",
     "ks_reviews",
     "ks_products_maskiner",
+    "ks_knowledge",
     "ks_info",
     "ks_products_tillbehor",
     "ks_contact"

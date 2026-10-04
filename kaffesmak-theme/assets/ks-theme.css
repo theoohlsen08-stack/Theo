@@ -1536,3 +1536,292 @@
     white-space: normal;
   }
 }
+
+/* =====================================================================
+   Etapp 3: kontaktsida och kunskapskort
+   ===================================================================== */
+
+/* ---------- Sidrubrik (H1 på undersidor) ---------- */
+.ks-page-title {
+  margin: 0 0 36px;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ---------- Kontaktsida ---------- */
+.ks-contact-page {
+  padding-block: 32px 80px;
+}
+.ks-contact-page__intro {
+  margin-block-end: 40px;
+}
+.ks-contact-page__page-content {
+  margin-block-start: 12px;
+}
+.ks-contact-page__form-wrap {
+  box-sizing: border-box;
+  max-width: 860px;
+  margin: 0 auto 64px;
+}
+.ks-contact-page__form-heading {
+  margin: 0 0 24px;
+  color: var(--ks-green);
+  font-family: var(--ks-font-heading);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-align: center;
+  text-transform: none;
+}
+.ks-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ks-contact-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+.ks-contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ks-contact-form__field label {
+  color: #222222;
+  font-size: 15px;
+  font-weight: 600;
+}
+.ks-contact-page .ks-contact-form input.ks-contact-form__input,
+.ks-contact-page .ks-contact-form input[type='text'],
+.ks-contact-page .ks-contact-form input[type='email'],
+.ks-contact-page .ks-contact-form input[type='tel'],
+.ks-contact-page .ks-contact-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 14px;
+  border: 1px solid #a9a9a9;
+  border-radius: 3px;
+  background-color: #ffffff;
+  color: #222222;
+  font-family: var(--ks-font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.ks-contact-page .ks-contact-form textarea {
+  min-height: 170px;
+  resize: vertical;
+}
+.ks-contact-page .ks-contact-form input:focus-visible,
+.ks-contact-page .ks-contact-form textarea:focus-visible {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px #1a73e8;
+}
+.ks-contact-form__required {
+  margin: -6px 0 0;
+  color: #555555;
+  font-size: 14px;
+}
+.ks-contact-form__submit {
+  align-self: flex-start;
+  font-family: var(--ks-font-nav);
+}
+button.ks-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ks-contact-form__notice {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 3px;
+  font-size: 16px;
+}
+.ks-contact-form__notice--success {
+  background: #e7f3e5;
+  color: #1d5a15;
+}
+.ks-contact-form__notice--error {
+  background: #fbe9ec;
+  color: #7e061a;
+}
+.ks-contact-form__notice ul {
+  margin: 4px 0 0;
+  padding-inline-start: 20px;
+}
+.ks-contact-page__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-contact-page__card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 36px 44px;
+  border-radius: 6px;
+  background: #e5e0db;
+}
+.ks-contact-page__icon {
+  display: flex;
+  color: var(--ks-red-dark);
+}
+.ks-contact-page__card-heading {
+  margin: 14px 0 22px;
+  color: var(--ks-green);
+  font-family: var(--ks-font-heading);
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-align: center;
+  text-transform: none;
+}
+.ks-contact-page__card-text {
+  align-self: stretch;
+  color: #444444;
+  font-size: 16px;
+  line-height: 2;
+}
+.ks-contact-page__card-text p {
+  margin: 0;
+}
+.ks-contact-page__card-text strong,
+.ks-contact-page__label {
+  color: #222222;
+  font-weight: 600;
+}
+.ks-contact-page__label {
+  margin-block-start: 14px !important;
+}
+.ks-contact-page__card-text a {
+  color: var(--ks-red-dark);
+  text-decoration: underline;
+}
+.ks-contact-page__map {
+  width: 100%;
+  height: 320px;
+  margin-block-start: 20px;
+  border: 0;
+}
+.ks-contact-page__card .ks-button {
+  margin-block-start: 24px;
+}
+
+/* ---------- Kunskapskort (artiklar från en blogg) ---------- */
+.ks-articles__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-article-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+.ks-article-card__media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--ks-beige);
+}
+.ks-article-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ks-article-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 20px 24px;
+}
+.ks-article-card__title {
+  margin: 0;
+  font-family: var(--ks-font-heading);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ks-article-card__title a {
+  color: var(--ks-red-dark);
+  text-decoration: none;
+}
+.ks-article-card__title a:hover {
+  text-decoration: underline;
+}
+.ks-article-card__excerpt {
+  margin: 0;
+  color: #444444;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.ks-article-card .ks-button {
+  margin-top: auto;
+}
+
+@media screen and (max-width: 989px) {
+  .ks-page-title {
+    font-size: 40px;
+  }
+  .ks-articles__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media screen and (max-width: 749px) {
+  .ks-page-title {
+    margin-block-end: 24px;
+    font-size: 34px;
+  }
+  .ks-contact-page {
+    padding-block: 24px 48px;
+  }
+  .ks-contact-page__form-heading {
+    font-size: 28px;
+  }
+  .ks-contact-form__row {
+    grid-template-columns: 1fr;
+  }
+  .ks-contact-form__submit {
+    align-self: stretch;
+  }
+  .ks-contact-page__cards {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .ks-contact-page__card {
+    padding: 30px 20px 34px;
+  }
+  .ks-contact-page__card-heading {
+    font-size: 30px;
+  }
+  .ks-articles__list {
+    grid-template-columns: 1fr;
+  }
+}
