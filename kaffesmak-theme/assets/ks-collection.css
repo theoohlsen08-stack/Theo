@@ -7,15 +7,26 @@
   padding-block: 24px 88px;
 }
 
-/* Sökresultat: inga brödsmulor, så rubriken sitter längre ned i bandet (referensen: sokresultat.jpg). */
+/* Sökresultat: inga brödsmulor, så rubriken sitter längre ned i bandet (referensen: sokresultat.jpg, uppmätt:
+   H1 76 px under bandets överkant, "Sökte efter" 35 px under H1:ans baslinje, 21 px från textens baslinje till bandets nederkant).
+   Texten är ett <p>, så reglerna behöver .ks-shop för att gå före .ks-shop p { margin: 0 }. */
 .ks-title-band.ks-title-band--search {
-  padding-block: 62px 20px;
+  padding-block: 70px 11px;
 }
-.ks-search-page__terms {
-  margin-block-start: 26px;
+.ks-shop .ks-title-band--search .ks-title-band__text {
+  margin-block-start: 12px;
 }
 .ks-search-page__term {
   color: var(--ks-link);
+}
+
+/* Kategori med beskrivning i bandet (referensen: utrustning.jpg): 34 px från H1:ans baslinje till texten
+   och ca 16 px under sista raden, i stället för de 36 px som gäller när bandet slutar med H1:an. */
+.ks-title-band.ks-title-band--with-text {
+  padding-block-end: 11px;
+}
+.ks-title-band--with-text .ks-title-band__text {
+  margin-block-start: 12px;
 }
 
 /* ---------- Två spalter: filter 25 % | produkter 75 % ---------- */
@@ -196,9 +207,10 @@
   padding-inline: 10px 34px;
   -moz-appearance: textfield;
 }
+/* #595959 på #e3e3e3 ger ca 5,5:1 (prisfältens platshållare visar det verkliga intervallet). */
 .ks-shop input.ks-facet__price-input::placeholder,
 .ks-shop input.ks-search-form__input::placeholder {
-  color: #767676;
+  color: #595959;
   opacity: 1;
 }
 .ks-facet__price-input::-webkit-outer-spin-button,
@@ -341,7 +353,7 @@
   align-items: center;
   min-height: 44px;
 }
-.ks-collection__no-match-action {
+.ks-shop .ks-collection__no-match-action {
   margin-block-start: 16px;
   text-align: center;
 }
@@ -530,6 +542,11 @@
   .ks-facets button.ks-facet__more {
     min-height: 44px;
   }
+  .ks-shop .ks-toolbar__count a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
   .ks-shop input.ks-facet__price-input,
   .ks-shop select.ks-toolbar__select,
   .ks-toolbar__apply {
@@ -554,8 +571,8 @@
   .ks-title-band.ks-title-band--search {
     padding-block: 32px 20px;
   }
-  .ks-search-page__terms {
-    margin-block-start: 16px;
+  .ks-shop .ks-title-band--search .ks-title-band__text {
+    margin-block-start: 8px;
   }
   .ks-collection__body--full .ks-collection__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

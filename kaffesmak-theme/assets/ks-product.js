@@ -2,7 +2,8 @@
    Progressiv förbättring: sidan fungerar utan JavaScript (formuläret skickas till /cart/add,
    miniatyrer och förstoring är vanliga bildlänkar, alla flikar visas under varandra).
    Här: bildbyte och förstoring i dialogruta, variantbyte (pris, artikelnummer, lager, knapp och ?variant=
-   i adressen), antalsväljare samt flikar (dator/surfplatta) och dragspel (mobil, högst 749 px). */
+   i adressen), antalsväljare samt flikar (dator/surfplatta) och dragspel (mobil, högst 749 px).
+   Länken "Läs fullständig beskrivning" väljer fliken Beskrivning (eller öppnar dragspelet). */
 (function () {
   'use strict';
 
@@ -131,9 +132,17 @@
     var byId = {};
     variants.forEach(function (v) { byId[String(v.id)] = v; });
 
+    // Utan JavaScript är slutsålda varianter inaktiva i listan. Här blir de valbara igen (med pris över 0 kr),
+    // så att lagerraden och den inaktiva knappen "Slut i lager" kan visas. Varianter utan pris förblir inaktiva.
+    Array.prototype.forEach.call(select.options, function (o) {
+      var ov = byId[o.value];
+      if (o.disabled && ov && ov.price > 0) o.disabled = false;
+    });
+
     var priceRow = root.querySelector('[data-ks-price-row]');
     var price = root.querySelector('[data-ks-price]');
     var taxNote = root.querySelector('[data-ks-tax-note]');
+    var unitPrice = root.querySelector('[data-ks-unit-price]');
     var skuLine = root.querySelector('[data-ks-sku]');
     var skuValue = root.querySelector('[data-ks-sku-value]');
     var stockRow = root.querySelector('[data-ks-stock-row]');
@@ -157,6 +166,10 @@
         price.innerHTML = v.priceHtml || '<span class="ks-product__price-missing">Inget pris angivet ännu</span>';
       }
       if (taxNote) taxNote.hidden = !hasPrice;
+      if (unitPrice) {
+        unitPrice.innerHTML = hasPrice ? v.unitPriceHtml || '' : '';
+        unitPrice.hidden = !(hasPrice && v.unitPriceHtml);
+      }
 
       if (skuLine && skuValue) {
         skuValue.textContent = v.sku || '';
@@ -312,6 +325,28 @@
         else if (k === 'Home') to = 0;
         else if (k === 'End') to = tabs.length - 1;
         if (to !== null) { e.preventDefault(); select(to, true); }
+      });
+    });
+
+    // Länken "Läs fullständig beskrivning" (och andra länkar till en panel): välj fliken eller öppna dragspelet.
+    var showLinks = root.querySelectorAll('a[data-ks-show-panel]');
+    Array.prototype.forEach.call(showLinks, function (a) {
+      a.addEventListener('click', function (e) {
+        var id = (a.getAttribute('href') || '').replace(/^#/, '');
+        var n = -1;
+        panels.forEach(function (p, i) { if (p.id === id) n = i; });
+        if (n < 0) return;
+        e.preventDefault();
+        if (mode === 'tabs') {
+          select(n, false);
+          box.scrollIntoView({ block: 'start' });
+          tabs[n].focus({ preventScroll: true });
+        } else {
+          var btn = panels[n].querySelector('.ks-tabs__toggle');
+          if (btn && btn.getAttribute('aria-expanded') !== 'true') btn.click();
+          panels[n].scrollIntoView({ block: 'start' });
+          if (btn) btn.focus({ preventScroll: true });
+        }
       });
     });
 

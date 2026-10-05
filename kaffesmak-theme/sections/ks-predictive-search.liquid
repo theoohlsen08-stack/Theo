@@ -1,0 +1,53 @@
+{%- comment -%}
+  KaffeSmak – sökförslag under sökfältet i sidhuvudet (Shopifys förslagssökning, routes.predictive_search_url).
+  Sektionen hämtas av assets/ks-header.js med section_id=ks-predictive-search och läggs i sidhuvudets förslagslista.
+  Varje förslag: liten bild (48 px), produktnamn och en grå rad med artikelnummer (bara när varianten har SKU)
+  och produkttyp (bara när den finns). Inget pris visas, så 0 kr kan aldrig synas här.
+  Shopify föreslår bara produkter som är publicerade i webbutiken; utkast kommer aldrig med.
+{%- endcomment -%}
+
+{%- if predictive_search.performed -%}
+  <ul data-ks-suggest-results>
+    {%- for product in predictive_search.resources.products -%}
+      {%- liquid
+        assign ks_sku = product.selected_or_first_available_variant.sku
+        assign ks_meta = ''
+        if ks_sku != blank
+          assign ks_meta = 'Art.nr ' | append: ks_sku
+        endif
+        if product.type != blank
+          if ks_meta != ''
+            assign ks_meta = ks_meta | append: ' · '
+          endif
+          assign ks_meta = ks_meta | append: product.type
+        endif
+      -%}
+      <li class="ks-suggest__option" role="option" aria-selected="false" data-ks-suggest-item>
+        <a href="{{ product.url }}" class="ks-suggest__link" tabindex="-1">
+          <span class="ks-suggest__media" aria-hidden="true">
+            {%- if product.featured_image != blank -%}
+              {{
+                product.featured_image
+                | image_url: width: 96
+                | image_tag: width: 48, height: 48, alt: '', loading: 'lazy', class: 'ks-suggest__img'
+              }}
+            {%- endif -%}
+          </span>
+          <span class="ks-suggest__text">
+            <span class="ks-suggest__title">{{ product.title | escape }}</span>
+            {%- if ks_meta != '' -%}
+              <span class="ks-suggest__meta">{{ ks_meta | escape }}</span>
+            {%- endif -%}
+          </span>
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak sökförslag",
+  "settings": []
+}
+{% endschema %}

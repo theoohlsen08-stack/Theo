@@ -4,6 +4,8 @@
   Utan JavaScript är miniatyrerna och förstoringslänken vanliga länkar till bilden i full storlek.
   Med JavaScript (ks-product.js) byter miniatyrerna huvudbild och förstoringen öppnas i en dialogruta (Esc stänger).
   Parametrar: product, variant (vald variant; dess bild visas först om den har en), uid (sektionens id).
+  Huvudbilden (med alt-text) syns för skärmläsare. Länken runt den har tabindex="-1" så att tangentbordet
+  använder den synliga länken "Klicka för förstoring" i stället.
 {%- endcomment -%}
 {%- liquid
   assign images = product.media | where: 'media_type', 'image'
@@ -34,7 +36,7 @@
       {%- endfor -%}
       {%- if src_w > 1400 -%}{{ main.preview_image | image_url: width: 1400 }} 1400w{%- else -%}{{ main.preview_image | image_url: width: src_w }} {{ src_w }}w{%- endif -%}
     {%- endcapture -%}
-    <a href="{{ main_full }}" class="ks-gallery__main" data-ks-zoom tabindex="-1" aria-hidden="true">
+    <a href="{{ main_full }}" class="ks-gallery__main" data-ks-zoom tabindex="-1">
       <img
         src="{{ main.preview_image | image_url: width: 1000 }}"
         srcset="{{ main_srcset }}"

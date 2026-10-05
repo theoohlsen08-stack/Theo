@@ -256,9 +256,13 @@ button.ks-button:disabled {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin: 0 0 16px;
   font-size: 16px;
   line-height: 1.5;
+}
+/* Två klasser (0,2,0): .ks-shop p (0,1,1) nollställer annars marginalen. 14 px ger referensens ≈21 px
+   mellan lagerraden och priset (mobilblocket nedan ändrar bara riktning, avstånd och textstorlek). */
+.ks-product-card--grid .ks-product-card__meta {
+  margin: 0 0 14px;
 }
 .ks-product-card__meta .ks-product-card__sku {
   margin: 0;

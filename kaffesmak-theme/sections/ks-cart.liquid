@@ -3,9 +3,10 @@
   grå ruta när varukorgen är tom och en rad med "‹ Fortsätt handla" till vänster och kassaknappen till höger.
 
   Fylld varukorg: ett vanligt Shopify-formulär (POST till /cart) med en tabell över raderna:
-  bild, produktnamn (länk), variant och artikelnummer (bara när SKU finns), styckpris, antal (updates[]),
-  radsumma och "Ta bort" (item.url_to_remove). "Uppdatera varukorg" skickar formuläret; ks-cart.js
-  skickar det automatiskt en kort stund efter att antalet ändrats och döljer då knappen.
+  bild, produktnamn (länk), variant och artikelnummer (bara när SKU finns), styckpris och jämförpris
+  (bara när butiken har angett ett), antal (updates[]), radsumma och "Ta bort" (item.url_to_remove).
+  "Uppdatera varukorg" skickar formuläret; ks-cart.js skickar det automatiskt en kort stund efter att
+  antalet ändrats (aldrig med tomt fält eller 0), döljer då knappen och sätter tillbaka fokus efter omladdningen.
   "Gå vidare till kassan" är en vanlig submit-knapp med name="checkout" (Shopifys kassa).
 
   Medvetet utelämnat: rabattkodsfält, ordermeddelande, snabbkassaknappar (Shopify Pay m.fl.) och
@@ -44,6 +45,8 @@
       <div class="ks-empty-box ks-cart__empty">
         <p>{{ s.empty_text | default: 'Din varukorg är tom.' }}</p>
       </div>
+      {%- comment -%} Läser upp "Produkten är borttagen …" när sista raden just tagits bort (ks-cart.js). {%- endcomment -%}
+      <div class="ks-visually-hidden" role="status" aria-live="polite" data-ks-cart-status></div>
       <div class="ks-cart__actions">
         {{ continue_link }}
         {%- if s.show_disabled_checkout -%}
@@ -72,6 +75,7 @@
                   assign line_name = line_name | append: ' – ' | append: item.variant.title
                 endunless
                 assign qty_id = form_id | append: '-qty-' | append: forloop.index
+                # Utan JavaScript tar 0 + "Uppdatera varukorg" bort raden. ks-cart.js höjer min till 1 (raden tas bort med "Ta bort").
                 assign qty_min = 0
                 assign qty_step = 1
                 assign qty_max = ''
@@ -82,7 +86,7 @@
                   assign qty_max = item.variant.quantity_rule.max
                 endif
               -%}
-              <tr class="ks-cart__row" data-ks-cart-line="{{ forloop.index }}">
+              <tr class="ks-cart__row" data-ks-cart-line="{{ forloop.index }}" data-ks-cart-key="{{ item.key | escape }}">
                 <td class="ks-cart__media">
                   {%- if item.image != blank -%}
                     <a href="{{ item.url }}" class="ks-cart__media-link" tabindex="-1" aria-hidden="true">
@@ -95,7 +99,7 @@
                   {%- endif -%}
                 </td>
                 <td class="ks-cart__details">
-                  <a href="{{ item.url }}" class="ks-cart__name">{{ item.product.title }}</a>
+                  <a href="{{ item.url }}" class="ks-cart__name" data-ks-cart-control="name">{{ item.product.title }}</a>
                   {%- unless item.product.has_only_default_variant -%}
                     {%- for option in item.options_with_values -%}
                       <p class="ks-cart__meta">{{ option.name | strip }}: {{ option.value }}</p>
@@ -126,13 +130,17 @@
                       <s class="ks-cart__was"><span class="ks-visually-hidden">Ordinarie pris </span>{{ item.original_price | money }}</s>
                     {%- endif -%}
                     {% render 'ks-price', price: item.final_price %}
+                    {%- comment -%} Jämförpris (enhetspris) bara när butiken har angett det för varianten. {%- endcomment -%}
+                    {%- if item.unit_price_measurement and item.unit_price > 0 -%}
+                      <span class="ks-cart__unit-price">Jämförpris {{ item.unit_price | money }}/{% if item.unit_price_measurement.reference_value != 1 %}{{ item.unit_price_measurement.reference_value }}{% endif %}{{ item.unit_price_measurement.reference_unit }}</span>
+                    {%- endif -%}
                   {%- endif -%}
                 </td>
                 <td class="ks-cart__qty">
                   <div class="ks-cart__qty-wrap">
                     <label for="{{ qty_id }}" class="ks-visually-hidden">Antal av {{ line_name | escape }}</label>
                     <div class="ks-qty ks-cart__stepper">
-                      <button type="button" class="ks-qty__button" data-ks-qty-step="-1" aria-controls="{{ qty_id }}" aria-label="Minska antal av {{ line_name | escape }}" hidden>
+                      <button type="button" class="ks-qty__button" data-ks-qty-step="-1" data-ks-cart-control="minus" aria-controls="{{ qty_id }}" aria-label="Minska antal av {{ line_name | escape }}" hidden>
                         <svg width="14" height="2" viewBox="0 0 14 2" aria-hidden="true" focusable="false"><path d="M0 1h14" stroke="currentColor" stroke-width="2"/></svg>
                       </button>
                       <input
@@ -148,12 +156,13 @@
                         {% endif %}
                         inputmode="numeric"
                         data-ks-qty-input
+                        data-ks-cart-control="qty"
                       >
-                      <button type="button" class="ks-qty__button" data-ks-qty-step="1" aria-controls="{{ qty_id }}" aria-label="Öka antal av {{ line_name | escape }}" hidden>
+                      <button type="button" class="ks-qty__button" data-ks-qty-step="1" data-ks-cart-control="plus" aria-controls="{{ qty_id }}" aria-label="Öka antal av {{ line_name | escape }}" hidden>
                         <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M0 7h14M7 0v14" stroke="currentColor" stroke-width="2"/></svg>
                       </button>
                     </div>
-                    <a href="{{ item.url_to_remove }}" class="ks-cart__remove" aria-label="Ta bort {{ line_name | escape }} från varukorgen">Ta bort</a>
+                    <a href="{{ item.url_to_remove }}" class="ks-cart__remove" data-ks-cart-control="remove" data-ks-cart-remove aria-label="Ta bort {{ line_name | escape }} från varukorgen">Ta bort</a>
                   </div>
                 </td>
                 <td class="ks-cart__total">

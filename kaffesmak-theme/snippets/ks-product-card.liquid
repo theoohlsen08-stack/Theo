@@ -7,8 +7,8 @@
   - buy_label: knapptext (standard "Visa produkt")
   - show_sku, show_stock: false döljer raden (standard visas de när verkliga uppgifter finns)
   - sizes: bildens sizes-attribut
-  Dataregler (etapp 4): artikelnummer bara när varianten har SKU; lagerstatus bara när lagret spåras och produkten har pris;
-  pris bara när det är större än 0 kr. Knappen öppnar alltid produktsidan.
+  Dataregler (etapp 4): artikelnummer bara när varianten har SKU; lagerstatus bara när lagret spåras och produkten har pris
+  ("I lager" kräver dessutom saldo över 0); pris bara när det är större än 0 kr. Knappen öppnar alltid produktsidan.
 {%- endcomment -%}
 {%- liquid
   assign variant = product.selected_or_first_available_variant
@@ -24,12 +24,14 @@
     endif
   endunless
 
+  # "I lager" bara när det spårade saldot är större än 0. En variant med lagerpolicyn "continue" (fortsätt sälja)
+  # är köpbar även med saldo 0 eller lägre; då visas ingen lagerrad i stället för ett påhittat "I lager".
   assign ks_stock = ''
   unless show_stock == false
     if variant.inventory_management == 'shopify' and product.price > 0
-      if product.available
+      if variant.available and variant.inventory_quantity > 0
         assign ks_stock = 'in'
-      else
+      elsif variant.available == false
         assign ks_stock = 'out'
       endif
     endif

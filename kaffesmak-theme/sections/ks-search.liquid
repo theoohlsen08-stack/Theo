@@ -2,6 +2,7 @@
   KaffeSmak – sökresultat som referensens resultatsida: grått titelband (utan brödsmulor) med H1 "Sökresultat"
   och "Sökte efter: <sökord>", därunder samma filter, antal, sortering och produktrutnät som på kategorisidorna.
   - Bara produkter visas (search.results filtreras på object_type 'product'); sökfältet i sidhuvudet skickar type=product.
+    Söks det utan type=product räknas bara produkterna (inte sidor och artiklar) och bara sidor/artiklar ger "Inga träffar".
   - Filter och sortering kommer från Shopify (search.filters / search.sort_options, standard "Relevans").
   - Inga träffar: tom ruta "Inga träffar för "…"." med ett nytt sökfält och länken "Fortsätt handla".
   - Tom sökning (inget sökord): H1 "Sök" och ett sökfält.
@@ -59,15 +60,35 @@
       endcapture
       assign ks_active_count = ks_active_count | strip | plus: 0
 
+      # Samma sökning utan filter och bara bland produkter ("Rensa alla filter" och "Visa alla produktträffar").
       assign ks_q = ks_terms | url_encode
       assign ks_clear_url = routes.search_url | append: '?q=' | append: ks_q | append: '&type=product&options%5Bprefix%5D=last'
       if search.sort_by != blank and search.sort_by != search.default_sort_by
         assign ks_clear_url = ks_clear_url | append: '&sort_by=' | append: search.sort_by
       endif
 
+      # Utan type=product i adressen (t.ex. en äldre länk till /search?q=…) söker Shopify även bland sidor och artiklar,
+      # och search.results_count räknar då alla typer. Antalet produkter tas då från sidan när allt ryms på en sida;
+      # annars visas länken "Visa alla produktträffar" i stället för ett antal som inte stämmer.
+      assign ks_only_products = false
+      if search.types.size == 1 and search.types.first == 'product'
+        assign ks_only_products = true
+      endif
+      assign ks_count = search.results_count
+      assign ks_count_url = ''
+      unless ks_only_products
+        if paginate.pages > 1
+          assign ks_count_url = ks_clear_url
+        else
+          assign ks_count = ks_products.size
+        endif
+      endunless
+
       assign ks_no_hits = false
-      if search.results_count == 0 and ks_active_count == 0
-        assign ks_no_hits = true
+      if ks_products.size == 0 and ks_active_count == 0 and paginate.current_page == 1
+        if ks_only_products or paginate.pages <= 1
+          assign ks_no_hits = true
+        endif
       endif
     -%}
 
@@ -119,8 +140,9 @@
               {% render 'ks-facets',
                 part: 'toolbar',
                 id: section.id,
-                count: search.results_count,
+                count: ks_count,
                 count_suffix: ' hittades',
+                count_url: ks_count_url,
                 sort_options: search.sort_options,
                 sort_by: ks_sort_by,
                 show_sorting: section.settings.show_sorting
@@ -129,13 +151,22 @@
 
               {%- if ks_products.size == 0 -%}
                 <div class="ks-collection__no-match">
-                  <p class="ks-empty-box">{{ section.settings.filtered_empty_text }}</p>
                   {%- if ks_active_count > 0 -%}
+                    <p class="ks-empty-box">{{ section.settings.filtered_empty_text }}</p>
                     <p class="ks-collection__no-match-action">
                       <a href="{{ ks_clear_url }}" class="ks-link">Rensa alla filter</a>
                     </p>
+                  {%- else -%}
+                    {%- comment -%} Sida 2 eller senare utan produkter (blandade träffar eller en sida efter den sista). {%- endcomment -%}
+                    <p class="ks-empty-box">Inga produkter på den här sidan.</p>
+                    {%- if ks_count_url == blank -%}
+                      <p class="ks-collection__no-match-action">
+                        <a href="{{ ks_clear_url }}" class="ks-link">Visa alla produktträffar</a>
+                      </p>
+                    {%- endif -%}
                   {%- endif -%}
                 </div>
+                {% render 'ks-pagination', paginate: paginate %}
               {%- else -%}
                 <h2 class="ks-visually-hidden">Produkter som matchar sökningen</h2>
                 <ul class="ks-product-grid ks-collection__grid" role="list">

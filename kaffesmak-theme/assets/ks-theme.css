@@ -190,7 +190,8 @@
   appearance: none;
 }
 .ks-search__input::placeholder {
-  color: #8a8a8a;
+  /* #707070 ger 4,9:1 mot vitt; platshållaren är fältets enda synliga etikett. */
+  color: #707070;
   font-style: italic;
 }
 .ks-search__input::-webkit-search-cancel-button {
@@ -219,6 +220,87 @@
 .ks-search__button:focus-visible {
   outline: 2px solid #ffffff;
   outline-offset: -5px;
+}
+
+/* ---------- Etapp 4: sökförslag under sökfältet (sections/ks-predictive-search.liquid, ks-header.js) ----------
+   Vit lista med tunn ram och lätt skugga; rad med bild 48 px, röd produktrubrik och grå rad "Art.nr … · typ".
+   Valt förslag (pilar eller muspekare) får grå bakgrund och samma blå fokusram som övriga kontroller. */
+.ks-search {
+  position: relative;
+}
+.ks-suggest {
+  position: absolute;
+  top: 100%;
+  inset-inline: 0;
+  z-index: 40;
+  max-height: min(70vh, 460px);
+  overflow-y: auto;
+  border: 1px solid var(--ks-hairline);
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  color: #333333;
+  font-family: var(--ks-font-body);
+  text-align: start;
+}
+.ks-suggest__list {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+.ks-suggest__link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  color: inherit;
+  text-decoration: none;
+}
+.ks-suggest__link:hover,
+.ks-suggest__option--active .ks-suggest__link {
+  background: var(--ks-grey-band);
+}
+.ks-suggest__option--active .ks-suggest__link {
+  outline: 2px solid #1a73e8;
+  outline-offset: -2px;
+}
+.ks-suggest__media {
+  display: flex;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+}
+.ks-suggest__img {
+  width: auto;
+  max-width: 48px;
+  height: auto;
+  max-height: 48px;
+  object-fit: contain;
+}
+.ks-suggest__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ks-suggest__title {
+  color: var(--ks-red-dark);
+  font-size: 16px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.ks-suggest__meta {
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.ks-suggest__empty {
+  margin: 0;
+  padding: 12px 14px;
+  color: #666666;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.5;
 }
 
 .ks-header__actions {
@@ -1889,5 +1971,31 @@ button.ks-button {
   }
   .ks-testimonial__quote {
     font-size: 18px;
+  }
+}
+
+/* ---------- Etapp 4: tvingade färger (t.ex. Windows kontrastteman) ----------
+   Fokusmarkeringarna i ks-filerna är box-shadow (som tas bort i tvingade färger) och kryssrutorna i filtren
+   ritar bocken som röd bakgrund (som ersätts). Här får fokus en kontur i systemets textfärg och kryssrutorna
+   webbläsarens egna utseende. !important behövs eftersom reglerna i ks-shop.css och ks-collection.css
+   (t.ex. .ks-shop a:focus-visible, 0,2,1, och kryssrutorna, 0,3,1) är mer specifika. */
+@media (forced-colors: active) {
+  .ks-shop :focus-visible,
+  .ks-section :focus-visible,
+  .ks-header :focus-visible,
+  .ks-footer :focus-visible,
+  .ks-button:focus-visible,
+  .ks-lightbox :focus-visible {
+    outline: 2px solid CanvasText !important;
+    outline-offset: 2px !important;
+  }
+  .ks-facets input.ks-facet__checkbox,
+  .ks-facets input.ks-facet__checkbox:checked {
+    -webkit-appearance: auto !important;
+    appearance: auto !important;
+    background: none !important;
+  }
+  .ks-suggest__option--active .ks-suggest__link {
+    outline-color: Highlight;
   }
 }

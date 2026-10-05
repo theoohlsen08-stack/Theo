@@ -37,12 +37,18 @@
       endif
     -%}
 
+    {%- liquid
+      assign ks_show_description = false
+      if section.settings.show_description and collection.description != blank
+        assign ks_show_description = true
+      endif
+    -%}
     <div class="ks-shop ks-collection">
-      <div class="ks-title-band">
+      <div class="ks-title-band{% if ks_show_description %} ks-title-band--with-text{% endif %}">
         <div class="ks-container">
           {% render 'ks-breadcrumb', current: collection.title %}
           <h1 class="ks-page-title">{{ collection.title | escape }}</h1>
-          {%- if section.settings.show_description and collection.description != blank -%}
+          {%- if ks_show_description -%}
             <div class="ks-title-band__text">{{ collection.description }}</div>
           {%- endif -%}
         </div>
@@ -98,13 +104,17 @@
 
               {%- if collection.products_count == 0 or collection.products.size == 0 -%}
                 <div class="ks-collection__no-match">
-                  <p class="ks-empty-box">{{ section.settings.filtered_empty_text }}</p>
                   {%- if ks_active_count > 0 -%}
+                    <p class="ks-empty-box">{{ section.settings.filtered_empty_text }}</p>
                     <p class="ks-collection__no-match-action">
                       <a href="{{ ks_clear_url }}" class="ks-link">Rensa alla filter</a>
                     </p>
+                  {%- else -%}
+                    {%- comment -%} En sida efter den sista (t.ex. ?page=99) utan filter: inga filter att rensa. {%- endcomment -%}
+                    <p class="ks-empty-box">Inga produkter på den här sidan.</p>
                   {%- endif -%}
                 </div>
+                {% render 'ks-pagination', paginate: paginate %}
               {%- else -%}
                 <h2 class="ks-visually-hidden">Produkter i {{ collection.title | escape }}</h2>
                 <ul class="ks-product-grid ks-collection__grid" role="list">

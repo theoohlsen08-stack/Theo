@@ -70,7 +70,18 @@
         {%- endif -%}
       </a>
 
-      <form action="{{ routes.search_url }}" method="get" role="search" class="ks-search">
+      {%- comment -%}
+        Sökförslag (etapp 4): ks-header.js hämtar sektionen ks-predictive-search från data-ks-suggest-url när minst
+        två tecken skrivits och visar förslagen i listan nedan (kombinationsruta med pilar, Enter och Escape).
+        Formuläret skickas som tidigare med type=product till sökresultatsidan.
+      {%- endcomment -%}
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        role="search"
+        class="ks-search"
+        data-ks-suggest-url="{{ routes.predictive_search_url }}"
+      >
         <label for="KsSearch-{{ section.id }}" class="ks-visually-hidden">{{ section.settings.search_placeholder }}</label>
         <input
           id="KsSearch-{{ section.id }}"
@@ -87,6 +98,11 @@
           <span class="ks-visually-hidden">Sök</span>
           <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 22 22"><circle cx="9" cy="9" r="6.6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 14l6 6" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
         </button>
+        <div class="ks-suggest" data-ks-suggest-panel hidden>
+          <ul class="ks-suggest__list" id="KsSuggest-{{ section.id }}" role="listbox" aria-label="Sökförslag"></ul>
+          <p class="ks-suggest__empty" data-ks-suggest-empty hidden></p>
+        </div>
+        <p class="ks-visually-hidden" role="status" data-ks-suggest-status></p>
       </form>
 
       <div class="ks-header__actions">

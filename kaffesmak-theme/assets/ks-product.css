@@ -56,7 +56,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 360px;
+  height: 320px;
   cursor: zoom-in;
 }
 .ks-gallery__main--empty {
@@ -77,8 +77,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px 24px;
-  margin: 36px 0 0;
+  gap: 16px 32px;
+  margin: 38px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -234,6 +234,20 @@
   display: none;
 }
 
+/* Kort utdrag (beskrivningens första stycke) och länken till fliken Beskrivning */
+.ks-shop .ks-product__excerpt {
+  margin-block-start: 27px;
+  color: #444444;
+  font-size: 16px;
+  line-height: 2;
+}
+.ks-shop .ks-product__read-more {
+  display: inline-block;
+  margin-block-start: 21px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
 .ks-product__review-note {
   margin-block-start: 28px;
   padding: 14px 18px;
@@ -288,8 +302,8 @@
   line-height: 1;
 }
 .ks-product__price .ks-price__dec {
-  top: -0.05em;
-  font-size: 0.42em;
+  top: -0.02em;
+  font-size: 0.5em;
 }
 .ks-product__tax-note {
   padding-block-start: 4px;
@@ -298,6 +312,16 @@
   line-height: 1.35;
 }
 .ks-product__tax-note[hidden] {
+  display: none;
+}
+/* Jämförpris: som momsnoten */
+.ks-product__unit-price {
+  padding-block-start: 4px;
+  color: var(--ks-muted);
+  font-size: 15px;
+  line-height: 1.35;
+}
+.ks-product__unit-price[hidden] {
   display: none;
 }
 .ks-product__price-missing {
@@ -590,7 +614,7 @@
     gap: 32px;
   }
   .ks-gallery__main {
-    height: 340px;
+    height: 320px;
   }
   .ks-shop h1.ks-product__title {
     font-size: 38px;
@@ -638,6 +662,16 @@
   .ks-shop h1.ks-product__title {
     font-size: 30px;
     line-height: 1.1;
+  }
+  .ks-shop .ks-product__excerpt {
+    margin-block-start: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .ks-shop .ks-product__read-more {
+    margin-block-start: 6px;
+    padding-block: 10px;
+    line-height: 24px;
   }
   .ks-product__rows {
     grid-template-columns: 90px minmax(0, 1fr);

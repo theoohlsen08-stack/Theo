@@ -11,6 +11,10 @@
 .ks-shop .ks-cart__title {
   margin: 0 0 48px;
 }
+/* ks-cart.js flyttar fokus hit när raden som ändrades inte finns kvar efter omladdningen (rubriken är ingen kontroll). */
+.ks-shop .ks-cart__title[tabindex='-1']:focus {
+  outline: none;
+}
 /* Tom varukorg: referensens ≈88 px mellan H1 och den grå rutan. */
 .ks-shop.ks-cart--empty .ks-cart__title {
   margin-block-end: 88px;
@@ -160,6 +164,15 @@
   color: var(--ks-muted);
   font-size: 14px;
   font-weight: 400;
+}
+/* Jämförpris under styckpriset (bara när butiken har angett ett). */
+.ks-cart__unit-price {
+  display: block;
+  margin-block-start: 2px;
+  color: var(--ks-muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
 }
 .ks-cart__cell-label {
   display: none;

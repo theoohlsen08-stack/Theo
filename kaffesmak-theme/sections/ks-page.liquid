@@ -4,7 +4,8 @@
   Används för Om oss (templates/page.om-oss.json) och för 404-sidan (templates/404.json).
 
   - Bild: visas bara när en godkänd bild har valts. Ingen bild = ingen banner (aldrig en bildbank-bild).
-  - Rubrik: sektionens rubrik, annars sidans titel.
+  - Rubrik: sektionens rubrik, annars sidans titel (på 404-sidan "Sidan hittades inte").
+    Sektionen kan bara läggas till på sidmallar och 404-mallen (enabled_on), så H1 finns alltid.
   - Text: sidans innehåll (page.content) när det finns, annars sektionens text.
   - Block: "Faktaruta" (beige kort med rubrik och text, t.ex. företagsuppgifter) och
     "Knapp/länk" (grön knapp). Blocken visas centrerat under texten.
@@ -19,6 +20,9 @@
   assign heading = s.heading
   if heading == blank and page != blank
     assign heading = page.title
+  endif
+  if heading == blank and template.name == '404'
+    assign heading = 'Sidan hittades inte'
   endif
   assign body = ''
   if page != blank and page.content != blank
@@ -77,13 +81,15 @@
     </div>
   {%- endif -%}
 
-  <section class="ks-page__main" aria-labelledby="{{ title_id }}">
+  <section class="ks-page__main"{% if heading != blank %} aria-labelledby="{{ title_id }}"{% endif %}>
     <div class="ks-container">
       {%- if request.design_mode and s.editor_note != blank -%}
         <div class="ks-editor-note">{{ s.editor_note }}</div>
       {%- endif -%}
 
-      <h1 class="ks-page-title ks-page__title" id="{{ title_id }}">{{ heading | default: 'Sidan' }}</h1>
+      {%- if heading != blank -%}
+        <h1 class="ks-page-title ks-page__title" id="{{ title_id }}">{{ heading }}</h1>
+      {%- endif -%}
 
       {%- if body != '' -%}
         <div class="ks-page__body{% if s.center_text %} ks-page__body--center{% endif %}">{{ body }}</div>
@@ -104,6 +110,7 @@
 {
   "name": "KaffeSmak innehållssida",
   "class": "ks-page-section",
+  "enabled_on": { "templates": ["page", "404"] },
   "max_blocks": 8,
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Bred bild överst", "info": "Valfri. Använd bara bilder som kunden har godkänt. Utan bild visas ingen banner." },

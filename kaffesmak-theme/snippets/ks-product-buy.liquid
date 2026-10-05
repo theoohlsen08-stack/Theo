@@ -7,7 +7,10 @@
   - quote_enabled: "Begär offert" (länk till kontaktsidan med ?produkt=).
   - stock_on: lagerstatus får visas (köp aktiverat). Visas ändå bara när lagret spåras och priset är över 0 kr.
   - taxes_included: cart.taxes_included ("inkl. moms" visas bara när priserna är inklusive moms).
-  Variantdata (pris, artikelnummer, lager, tillgänglighet) bäddas in som JSON för ks-product.js.
+  Variantdata (pris, jämförpris, artikelnummer, lager, tillgänglighet) bäddas in som JSON för ks-product.js.
+  Lager: "I lager" bara när varianten kan köpas och lagersaldot är över 0. En variant som säljs vidare vid
+  slutsålt lager (inventory_policy continue) med saldo 0 får ingen lagerrad.
+  Utan JavaScript går slutsålda varianter och varianter utan pris inte att välja i köpformuläret (disabled).
 {%- endcomment -%}
 {%- liquid
   assign multi = true
@@ -22,10 +25,10 @@
 
   assign v_stock = ''
   if stock_on and variant.inventory_management == 'shopify' and v_price_ok
-    if variant.available
-      assign v_stock = 'in'
-    else
+    if variant.available == false
       assign v_stock = 'out'
+    elsif variant.inventory_quantity > 0
+      assign v_stock = 'in'
     endif
   endif
 
@@ -41,10 +44,10 @@
     {%- liquid
       assign vs = ''
       if stock_on and v.inventory_management == 'shopify' and v.price > 0
-        if v.available
-          assign vs = 'in'
-        else
+        if v.available == false
           assign vs = 'out'
+        elsif v.inventory_quantity > 0
+          assign vs = 'in'
         endif
       endif
       assign v_media = ''
@@ -53,11 +56,17 @@
       endif
     -%}
     {%- capture v_price_html -%}{%- if v.price > 0 -%}{% render 'ks-price', price: v.price, class: 'ks-product__price' %}{%- endif -%}{%- endcapture -%}
+    {%- capture v_unit_html -%}
+      {%- if v.price > 0 and v.unit_price_measurement -%}
+        Jämförpris {{ v.unit_price | money }}/{% if v.unit_price_measurement.reference_value != 1 %}{{ v.unit_price_measurement.reference_value }}{% endif %}{{ v.unit_price_measurement.reference_unit }}
+      {%- endif -%}
+    {%- endcapture -%}
     {
       "id": {{ v.id | json }},
       "available": {{ v.available | json }},
       "price": {{ v.price | json }},
       "priceHtml": {{ v_price_html | strip | json }},
+      "unitPriceHtml": {{ v_unit_html | strip | json }},
       "sku": {{ v.sku | default: '' | json }},
       "stock": {{ vs | json }},
       "mediaId": {{ v_media | json }}
@@ -87,6 +96,14 @@
       {%- if taxes_included -%}
         <span class="ks-product__tax-note" data-ks-tax-note{% unless v_price_ok %} hidden{% endunless %}>inkl. moms</span>
       {%- endif -%}
+      {%- comment -%} Jämförpris (enhetspris) bara när butiken har angett det för varianten. {%- endcomment -%}
+      {%- capture unit_html -%}
+        {%- if v_price_ok and variant.unit_price_measurement -%}
+          Jämförpris {{ variant.unit_price | money }}/{% if variant.unit_price_measurement.reference_value != 1 %}{{ variant.unit_price_measurement.reference_value }}{% endif %}{{ variant.unit_price_measurement.reference_unit }}
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- assign unit_html = unit_html | strip -%}
+      <span class="ks-product__unit-price" data-ks-unit-price{% if unit_html == '' %} hidden{% endif %}>{{ unit_html }}</span>
     </div>
   </div>
 
@@ -113,10 +130,15 @@
           {% if show_form %}name="id"{% endif %}
           data-ks-variant-select
         >
+          {%- comment -%}
+            I köpformuläret är slutsålda varianter och varianter utan pris inaktiva, så att de inte kan skickas till
+            /cart/add utan JavaScript. ks-product.js gör slutsålda varianter (med pris) valbara igen och visar då
+            "Slut i lager" med inaktiv köpknapp. Varianter utan pris förblir inaktiva.
+          {%- endcomment -%}
           {%- for v in product.variants -%}
-            <option value="{{ v.id }}"{% if v.id == variant.id %} selected="selected"{% endif %}>
+            <option value="{{ v.id }}"{% if v.id == variant.id %} selected="selected"{% endif %}{% if show_form %}{% if v.available == false or v.price <= 0 %} disabled{% endif %}{% endif %}>
               {{- v.title | escape -}}
-              {%- if stock_on and v.available == false and v.inventory_management == 'shopify' and v.price > 0 %} – slut i lager{% endif -%}
+              {%- if show_form and v.price <= 0 %} – inget pris{% elsif stock_on and v.available == false and v.inventory_management == 'shopify' and v.price > 0 %} – slut i lager{% endif -%}
             </option>
           {%- endfor -%}
         </select>

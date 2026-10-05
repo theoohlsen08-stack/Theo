@@ -4,7 +4,8 @@
   aria_label (valfri), new_tab (true/false).
   Etapp 4:
   - tag: 'button' ger en <button> (type anges med button_type, standard 'submit'; name och form_id valfria).
-  - disabled: true ger referensens gråa, inaktiva knapp. En inaktiv länk blir en <span> som inte går att klicka på.
+  - disabled: true ger referensens gråa, inaktiva knapp. En inaktiv länk blir en inaktiv <button type="button" disabled>
+    utan name, form och href, så att skärmläsare hör en inaktiv knapp och inget kan skickas eller öppnas.
 {%- endcomment -%}
 {%- liquid
   assign classes = 'ks-button ks-button--arrow'
@@ -46,7 +47,7 @@
     {{- ks_button_inner -}}
   </button>
 {%- elsif disabled and label != blank -%}
-  <span class="{{ classes }}" aria-disabled="true">{{- ks_button_inner -}}</span>
+  <button type="button" class="{{ classes }}" disabled aria-disabled="true">{{- ks_button_inner -}}</button>
 {%- elsif label != blank and url != blank -%}
   <a
     href="{{ url }}"

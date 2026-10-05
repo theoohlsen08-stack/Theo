@@ -10,9 +10,14 @@
   Parametrar: product, uid (sektionens id), show_category_fields, design_mode (request.design_mode).
 {%- endcomment -%}
 
+{%- comment -%}
+  Tillverkarens text behåller originalspråket (tyska, engelska …). Språkkoden (t.ex. de, en) läses från
+  metafältet custom.beskrivning_sprak och sätts som lang på texten. Utan värde ärvs sidans språk (sv).
+{%- endcomment -%}
 {%- capture tab_description -%}
   {%- if product.description != blank -%}
-    <div class="ks-product__rte">{{ product.description }}</div>
+    {%- assign ks_desc_lang = product.metafields.custom.beskrivning_sprak.value | default: '' | strip -%}
+    <div class="ks-product__rte"{% if ks_desc_lang != '' %} lang="{{ ks_desc_lang | escape }}"{% endif %}>{{ product.description }}</div>
   {%- endif -%}
 {%- endcapture -%}
 

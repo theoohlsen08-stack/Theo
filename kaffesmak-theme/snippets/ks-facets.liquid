@@ -13,6 +13,7 @@
   - filters: collection.filters / search.filters
   - id: unikt prefix för id-attribut (section.id)
   - count: antal produkter (toolbar), count_suffix: text efter antalet, t.ex. ' hittades' (toolbar)
+  - count_url: valfri; visar länken "Visa alla produktträffar" i stället för antalet när antalet inte är känt (toolbar)
   - sort_options, sort_by, show_sorting (toolbar)
   - clear_url: adress utan filter (active)
 {%- endcomment -%}
@@ -38,8 +39,12 @@
   {%- when 'toolbar' -%}
     <div class="ks-toolbar">
       <p class="ks-toolbar__count">
-        {%- if count == 1 -%}1 produkt{%- else -%}{{ count }} produkter{%- endif -%}
-        {{- count_suffix -}}
+        {%- if count_url != blank -%}
+          <a href="{{ count_url }}" class="ks-link">Visa alla produktträffar</a>
+        {%- else -%}
+          {%- if count == 1 -%}1 produkt{%- else -%}{{ count }} produkter{%- endif -%}
+          {{- count_suffix -}}
+        {%- endif -%}
       </p>
       {%- if show_sorting and sort_options.size > 0 -%}
         <div class="ks-toolbar__sort">

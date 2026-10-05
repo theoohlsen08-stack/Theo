@@ -17,6 +17,12 @@
   - "Köp och offertförfrågan": båda.
   - "Granskningsläge" visar köp och offert som inaktiva element med en tydlig ruta, så att kunden kan granska
     utseendet utan att något kan köpas eller skickas.
+  - Spärr: i standardmallen (product.json, utan mallsuffix) får produkttyperna i "Produkttyper utan köp i
+    standardmallen" (som standard Espressomaskin och Kaffekvarn) varken köp eller offert, oavsett inställningen.
+    Maskiner säljs först när de har tilldelats mallen "maskin" med ett valt försäljningsläge.
+
+  Kort utdrag i köprutan: första stycket (<p>) i beskrivningen, ordagrant och oavkortat, med länken
+  "Läs fullständig beskrivning" till fliken Beskrivning. Språk (lang) från metafältet custom.beskrivning_sprak.
 {%- endcomment -%}
 
 {{ 'ks-shop.css' | asset_url | stylesheet_tag }}
@@ -26,6 +32,22 @@
 {%- liquid
   assign s = section.settings
   assign mode = s.sales_mode | default: 'none'
+
+  assign type_guard = false
+  if template.suffix == blank and product.type != blank
+    assign ks_type = product.type | strip | downcase
+    assign guard_types = s.catalog_only_types | default: '' | split: ','
+    for t in guard_types
+      assign t_clean = t | strip | downcase
+      if t_clean != '' and t_clean == ks_type
+        assign type_guard = true
+      endif
+    endfor
+  endif
+  if type_guard
+    assign mode = 'none'
+  endif
+
   assign review = s.review_preview
   assign variant = product.selected_or_first_available_variant
 
@@ -89,23 +111,12 @@
   assign form_id = 'KsProductForm-' | append: uid
 -%}
 
+{%- comment -%}
+  Strukturerad data bara när produkten har ett pris. Utan pris skrivs ingen strukturerad data ut: ett Product
+  utan offers, review eller aggregateRating är ogiltigt för Google, och ett pris på 0 kr får inte publiceras.
+{%- endcomment -%}
 {%- if product.price > 0 -%}
   <script type="application/ld+json">{{ product | structured_data }}</script>
-{%- else -%}
-  {%- comment -%} Utan fastställt pris: strukturerad data utan erbjudande, så att inget pris på 0 kr publiceras. {%- endcomment -%}
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/",
-      "@type": "Product",
-      "name": {{ product.title | json }},
-      "url": {{ request.origin | append: product.url | json }},
-      {%- if product.featured_image != blank %}
-        "image": {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},
-      {%- endif %}
-      "description": {{ product.description | strip_html | strip | json }},
-      "brand": { "@type": "Brand", "name": {{ product.vendor | json }} }
-    }
-  </script>
 {%- endif -%}
 
 <div class="ks-shop ks-product" data-ks-product data-section-id="{{ uid }}" data-buy-label="{{ buy_label | escape }}">
@@ -131,6 +142,18 @@
           Artikelnummer <span data-ks-sku-value>{{ variant.sku | escape }}</span>
         </p>
 
+        {%- comment -%} Kort utdrag: beskrivningens första stycke, ordagrant och oavkortat (hela texten finns i fliken Beskrivning). {%- endcomment -%}
+        {%- liquid
+          assign ks_excerpt = product.description | replace: '<br>', ' ' | replace: '<br/>', ' ' | replace: '<br />', ' ' | split: '<p>' | slice: 1 | first | split: '</p>' | first | strip_html | replace: '&nbsp;', ' ' | strip
+          assign ks_desc_lang = product.metafields.custom.beskrivning_sprak.value | default: '' | strip
+        -%}
+        {%- if ks_excerpt != blank -%}
+          <p class="ks-product__excerpt"{% if ks_desc_lang != '' %} lang="{{ ks_desc_lang | escape }}"{% endif %}>{{ ks_excerpt }}</p>
+          <a class="ks-link ks-product__read-more" href="#KsPanel-{{ uid }}-beskrivning" data-ks-show-panel>
+            <span aria-hidden="true">› </span>Läs fullständig beskrivning
+          </a>
+        {%- endif -%}
+
         {% render 'ks-product-buy',
           product: product,
           variant: variant,
@@ -152,10 +175,12 @@
         {%- if request.design_mode -%}
           {%- if review -%}
             <div class="ks-editor-note">Granskningsläge är på: köp och offertförfrågan visas som inaktiva element. Mallen ska inte tilldelas produkter; den granskas med ?view= i adressen.</div>
+          {%- elsif type_guard -%}
+            <div class="ks-editor-note">Produkttypen är undantagen från köp i standardmallen. Tilldela mallen 'maskin' och välj försäljningsläge där.</div>
           {%- elsif mode == 'none' -%}
             <div class="ks-editor-note">Köp och offertförfrågan är förberedda men avstängda tills kunden har bestämt hur maskinerna ska säljas. Ändra "Försäljning" i sektionens inställningar för att aktivera Köp, Offertförfrågan eller båda.</div>
           {%- elsif buy_enabled and sellable == false and quote_enabled == false -%}
-            <div class="ks-editor-note">Köpknappen visas inte eftersom produkten saknar pris (0 kr). Lägg in ett fastställt pris i Shopify för att produkten ska kunna köpas.</div>
+            <div class="ks-editor-note">Köpknappen visas inte eftersom produkten saknar pris (0 kr).</div>
           {%- endif -%}
         {%- endif -%}
       </div>
@@ -216,6 +241,13 @@
       ],
       "default": "none",
       "info": "Köpknappen visas bara för produkter med ett pris över 0 kr."
+    },
+    {
+      "type": "text",
+      "id": "catalog_only_types",
+      "label": "Produkttyper utan köp i standardmallen",
+      "default": "Espressomaskin,Kaffekvarn",
+      "info": "Kommaseparerade produkttyper. I standardmallen får de varken köp eller offert, oavsett Försäljning ovan, tills produkten tilldelas en mall 'maskin' med valt försäljningsläge."
     },
     {
       "type": "text",
