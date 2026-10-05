@@ -118,6 +118,18 @@
         </button>
       {%- endform -%}
     </div>
+    {%- comment -%} Etapp 4: "Begär offert" på produktsidan länkar hit med ?produkt=<namn>; fyll i ett tomt meddelandefält (som text, aldrig HTML). {%- endcomment -%}
+    <script>
+      (function () {
+        try {
+          var namn = new URLSearchParams(window.location.search).get('produkt');
+          var falt = document.getElementById({{ form_id | append: '-body' | json }});
+          if (namn && falt && falt.value.trim() === '') {
+            falt.value = 'Offertförfrågan: ' + namn.trim().slice(0, 200);
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     {%- capture visit_text -%}
       {%- if s.company_name != blank -%}<p><strong>{{ s.company_name }}</strong></p>{%- endif -%}

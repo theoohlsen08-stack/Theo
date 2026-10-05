@@ -1,0 +1,614 @@
+/* KaffeSmak – etapp 4: kategorisidor, sökresultat och kategoriöversikt.
+   Bygger på ks-shop.css (titelband, tom ruta, kontrollfält, produktrutnät, sidnumrering) och tokens i ks-theme.css.
+   Allt är avgränsat under .ks-collection så att Horizons egna sidor och startsidan inte påverkas. */
+
+/* ---------- Ram ---------- */
+.ks-collection__container {
+  padding-block: 24px 88px;
+}
+
+/* Sökresultat: inga brödsmulor, så rubriken sitter längre ned i bandet (referensen: sokresultat.jpg). */
+.ks-title-band.ks-title-band--search {
+  padding-block: 62px 20px;
+}
+.ks-search-page__terms {
+  margin-block-start: 26px;
+}
+.ks-search-page__term {
+  color: var(--ks-link);
+}
+
+/* ---------- Två spalter: filter 25 % | produkter 75 % ---------- */
+.ks-collection__body {
+  display: grid;
+  grid-template-columns: 25% minmax(0, 1fr);
+  align-items: stretch;
+  margin: 0;
+}
+.ks-collection__body--full {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ks-collection__main {
+  min-width: 0;
+  padding-inline-start: 17px;
+}
+.ks-collection__body--full .ks-collection__main {
+  padding-inline-start: 0;
+}
+.ks-collection__body--full .ks-collection__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.ks-collection__body.is-loading .ks-collection__main {
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+
+/* ---------- Filterspalten ---------- */
+.ks-facets {
+  min-width: 0;
+  padding: 8px 16px 40px 0;
+  border-inline-end: 1px solid var(--ks-hairline);
+}
+.ks-facets__toggle {
+  display: none;
+}
+.ks-facets summary::-webkit-details-marker {
+  display: none;
+}
+.ks-facets summary::marker {
+  content: '';
+}
+.ks-facet {
+  margin: 0 0 44px;
+}
+.ks-facet:last-child {
+  margin-block-end: 8px;
+}
+.ks-facets .ks-facet__summary,
+.ks-facets .ks-facet__summary:hover {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 0;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  list-style: none;
+  cursor: pointer;
+}
+.ks-facet__chevron {
+  flex: 0 0 auto;
+  margin-inline-end: 4px;
+  color: var(--ks-red-dark);
+  transition: transform 0.2s ease;
+}
+.ks-facet:not([open]) .ks-facet__chevron {
+  transform: rotate(180deg);
+}
+.ks-facet:not([open]) > .ks-facet__summary {
+  margin-block-end: 0;
+}
+.ks-facet__fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ks-facet__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-facets--js .ks-facet__list:not(.is-expanded) .ks-facet__item--extra {
+  display: none;
+}
+/* Horizons base.css har label:has(input[type='checkbox']) { display: inline-flex } (0,1,2) – därför högre specificitet här. */
+.ks-facets label.ks-facet__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  color: #555555;
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.ks-facet__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ks-facet__count {
+  color: #555555;
+}
+.ks-facets input.ks-facet__checkbox,
+.ks-facets input.ks-facet__checkbox:hover {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #666666;
+  border-radius: 2px;
+  background: #ffffff;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.ks-facets input.ks-facet__checkbox:checked {
+  border-color: var(--ks-red-dark);
+  background: var(--ks-red-dark) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1.5' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") center / 10px 8px no-repeat;
+}
+.ks-facets input.ks-facet__checkbox:focus-visible {
+  outline: none;
+  box-shadow: var(--ks-focus);
+}
+.ks-facet__option:hover .ks-facet__label {
+  color: #333333;
+}
+.ks-facets button.ks-facet__more {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin: 2px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ks-link);
+  font-family: var(--ks-font-body);
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.ks-facets button.ks-facet__more[hidden] {
+  display: none;
+}
+.ks-facets button.ks-facet__more:hover {
+  text-decoration: underline;
+}
+
+/* Prisintervall */
+.ks-facet__price {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.ks-facet__price-field {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.ks-facet__price-label {
+  display: block;
+  margin-block-end: 2px;
+  color: #555555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ks-facet__price-wrap {
+  position: relative;
+  display: block;
+}
+.ks-shop input.ks-facet__price-input {
+  width: 100%;
+  padding-inline: 10px 34px;
+  -moz-appearance: textfield;
+}
+.ks-shop input.ks-facet__price-input::placeholder,
+.ks-shop input.ks-search-form__input::placeholder {
+  color: #767676;
+  opacity: 1;
+}
+.ks-facet__price-input::-webkit-outer-spin-button,
+.ks-facet__price-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.ks-facet__unit {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 10px;
+  display: flex;
+  align-items: center;
+  color: #555555;
+  font-size: 15px;
+  pointer-events: none;
+}
+.ks-facet__price-sep {
+  padding-block-end: 6px;
+  color: #555555;
+}
+.ks-facets__apply {
+  margin-block-start: 8px;
+}
+
+/* ---------- Verktygsrad: antal | sortering ---------- */
+.ks-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin: 0 0 32px;
+  padding-block: 0 20px;
+  border-bottom: 1px solid var(--ks-hairline);
+}
+.ks-shop .ks-toolbar__count {
+  margin: 0;
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.ks-toolbar__sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-inline-start: auto;
+}
+.ks-toolbar__sort-label {
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.ks-shop select.ks-toolbar__select {
+  width: 361px;
+  max-width: 100%;
+  color: #555555;
+}
+.ks-toolbar__apply {
+  height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--ks-green);
+  color: #ffffff;
+  font-family: var(--ks-font-nav);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* ---------- Valda filter ---------- */
+.ks-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: -12px 0 32px;
+}
+.ks-active-filters__label {
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ks-active-filters__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-shop a.ks-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 4px 12px;
+  border: 1px solid #d6d6d6;
+  border-radius: 2px;
+  background: var(--ks-grey-band);
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.3;
+  text-decoration: none;
+}
+.ks-shop a.ks-chip:hover {
+  border-color: var(--ks-red-dark);
+  color: var(--ks-red-dark);
+}
+.ks-chip__icon {
+  flex: 0 0 auto;
+  color: var(--ks-red-dark);
+}
+.ks-shop a.ks-active-filters__clear {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  font-size: 15px;
+}
+
+/* ---------- Tomma lägen ---------- */
+.ks-collection__empty {
+  padding-block: 32px 8px;
+}
+.ks-collection__empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 32px;
+  margin-block-start: 36px;
+}
+.ks-collection__empty-actions:empty {
+  display: none;
+}
+.ks-shop a.ks-collection__more-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.ks-collection__no-match-action {
+  margin-block-start: 16px;
+  text-align: center;
+}
+.ks-shop .ks-collection__no-match-action a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.ks-shop a.ks-continue-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ks-link);
+  font-family: var(--ks-font-nav);
+  font-size: 20px;
+  line-height: 1;
+  text-decoration: none;
+}
+.ks-shop a.ks-continue-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Sökfält på söksidan ---------- */
+.ks-search-page__retry,
+.ks-search-page__start {
+  max-width: 640px;
+  margin: 36px auto 0;
+}
+.ks-search-page__start {
+  margin-block-start: 16px;
+}
+.ks-search-form {
+  margin: 0;
+}
+.ks-search-form__label {
+  display: block;
+  margin-block-end: 8px;
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.ks-search-form__row {
+  display: flex;
+  gap: 12px;
+}
+.ks-shop input.ks-search-form__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+}
+.ks-search-form__input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+.ks-search-form__button {
+  flex: 0 0 auto;
+}
+
+/* ---------- Sidnumrering: pilar ---------- */
+.ks-collection .ks-pagination__link--arrow {
+  color: var(--ks-red-dark);
+}
+
+/* ---------- Kategoriöversikt (/collections) ---------- */
+.ks-cat-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 56px 24px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-cat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+.ks-cat-tile__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 230px;
+  margin-block-end: 20px;
+}
+.ks-cat-tile__img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 230px;
+  object-fit: contain;
+}
+.ks-cat-tile__img--placeholder {
+  width: 200px;
+  height: 200px;
+  fill: #d9d9d9;
+  background: #f4f4f4;
+}
+.ks-collection .ks-cat-tile__title {
+  margin: 0 0 6px;
+  font-family: var(--ks-font-heading);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ks-collection .ks-cat-tile__title a {
+  color: var(--ks-red-dark);
+  text-decoration: none;
+}
+.ks-collection .ks-cat-tile__title a:hover {
+  text-decoration: underline;
+}
+.ks-shop .ks-cat-tile__count {
+  margin: 0 0 18px;
+  color: #555555;
+}
+
+/* ---------- Surfplatta: filter bakom en knapp ---------- */
+@media screen and (max-width: 989px) {
+  .ks-title-band.ks-title-band--search {
+    padding-block: 40px 20px;
+  }
+  .ks-collection__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ks-collection__main {
+    padding-inline-start: 0;
+  }
+  .ks-collection__body--full .ks-collection__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ks-facets {
+    margin-block-end: 20px;
+    padding: 0;
+    border: 0;
+  }
+  .ks-facets .ks-facets__toggle,
+  .ks-facets .ks-facets__toggle:hover {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-bottom: 1px solid #868686;
+    border-radius: 2px;
+    background: var(--ks-control-bg);
+    color: #333333;
+    font-family: var(--ks-font-nav);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1;
+    list-style: none;
+    cursor: pointer;
+  }
+  .ks-facets__toggle-count {
+    color: var(--ks-red-dark);
+  }
+  .ks-facets__toggle-chevron {
+    margin-inline-start: auto;
+    transition: transform 0.2s ease;
+  }
+  .ks-facets__drawer[open] .ks-facets__toggle-chevron {
+    transform: rotate(180deg);
+  }
+  .ks-facets__panel {
+    padding: 20px 16px 12px;
+    border: 1px solid var(--ks-hairline);
+    border-top: 0;
+  }
+  .ks-facet {
+    margin-block-end: 24px;
+  }
+  /* Pekskärm: klickytor minst 44 px */
+  .ks-facets .ks-facet__summary,
+  .ks-facets .ks-facet__summary:hover {
+    min-height: 44px;
+    margin-block-end: 4px;
+  }
+  .ks-facets label.ks-facet__option {
+    min-height: 44px;
+  }
+  .ks-facets button.ks-facet__more {
+    min-height: 44px;
+  }
+  .ks-shop input.ks-facet__price-input,
+  .ks-shop select.ks-toolbar__select,
+  .ks-toolbar__apply {
+    height: 44px;
+  }
+  .ks-collection .ks-product-card__buy,
+  .ks-collection .ks-collection__empty-actions .ks-button,
+  .ks-collection .ks-search-form__button,
+  .ks-collection .ks-cat-tile .ks-button {
+    min-height: 44px;
+  }
+  .ks-cat-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Mobil ---------- */
+@media screen and (max-width: 749px) {
+  .ks-collection__container {
+    padding-block: 20px 64px;
+  }
+  .ks-title-band.ks-title-band--search {
+    padding-block: 32px 20px;
+  }
+  .ks-search-page__terms {
+    margin-block-start: 16px;
+  }
+  .ks-collection__body--full .ks-collection__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ks-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-block-end: 24px;
+    padding-block-end: 16px;
+  }
+  .ks-toolbar__sort {
+    flex-wrap: wrap;
+    margin-inline-start: 0;
+  }
+  .ks-toolbar__sort-label {
+    flex: 1 1 100%;
+  }
+  .ks-shop select.ks-toolbar__select {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  .ks-active-filters {
+    margin-block-start: -8px;
+  }
+  .ks-shop a.ks-chip,
+  .ks-shop a.ks-active-filters__clear {
+    min-height: 44px;
+  }
+  .ks-collection .ks-pagination__link,
+  .ks-collection .ks-pagination__current,
+  .ks-collection .ks-pagination__gap {
+    min-width: 44px;
+    height: 44px;
+  }
+  .ks-collection__empty-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ks-cat-tiles {
+    gap: 40px 12px;
+  }
+  .ks-cat-tile__media {
+    height: 150px;
+  }
+  .ks-cat-tile__img {
+    max-height: 150px;
+  }
+  .ks-cat-tile__img--placeholder {
+    width: 130px;
+    height: 130px;
+  }
+  .ks-collection .ks-cat-tile__title {
+    font-size: 22px;
+  }
+}

@@ -61,6 +61,8 @@
             src="{{ section.settings.logo_asset | asset_url }}"
             alt="{{ logo_alt | escape }}"
             class="ks-header__logo-img"
+            width="571"
+            height="480"
             fetchpriority="high"
           >
         {%- else -%}
@@ -79,6 +81,7 @@
           placeholder="{{ section.settings.search_placeholder | escape }}"
           autocomplete="off"
         >
+        <input type="hidden" name="type" value="product">
         <input type="hidden" name="options[prefix]" value="last">
         <button type="submit" class="ks-search__button">
           <span class="ks-visually-hidden">Sök</span>

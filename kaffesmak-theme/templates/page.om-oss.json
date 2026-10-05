@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-page",
+      "blocks": {
+        "facts": {
+          "type": "facts",
+          "settings": {
+            "heading": "Företagsuppgifter",
+            "text": "<p>Kaffe smak rosteri sweden AB<br/>Org.nr 559237-4747<br/>Storgatan 55, 881 30 Sollefteå<br/>Telefon <a href=\"tel:+46762708927\">076-270 89 27</a></p>"
+          }
+        },
+        "button_contact": {
+          "type": "button",
+          "settings": {
+            "label": "Kontakt och hitta hit",
+            "url": "/pages/contact"
+          }
+        },
+        "button_company": {
+          "type": "button",
+          "settings": {
+            "label": "Företagsuppgifter",
+            "url": "/policies/contact-information"
+          }
+        }
+      },
+      "block_order": [
+        "facts",
+        "button_contact",
+        "button_company"
+      ],
+      "settings": {
+        "banner_height": 300,
+        "banner_height_mobile": 180,
+        "heading": "Om Kaffe Smak Rosteri",
+        "text": "<p>Välkommen till Kaffe Smak Rosteri i Sollefteå. Utforska vårt sortiment av kaffe, kaffemaskiner och tillbehör, eller besök vår kaffebar på Storgatan 55.</p>",
+        "center_text": false,
+        "editor_note": "Företagets historia och godkända foton saknas ännu (kunden lämnar underlag). Lägg bara till verifierade uppgifter: inga påhittade årtal, ägare, utmärkelser, öppettider eller löften. Sidan Om oss finns inte i Shopify ännu; mallen granskas via /pages/contact?view=om-oss."
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,190 @@
+{%- comment -%}
+  KaffeSmak – produktsidans köpruta (rader med etikett och värde som referensen):
+  Pris, Lager, variantval, Antal och knapparna Köp / Begär offert.
+  Anropas från sections/ks-product.liquid som räknar ut försäljningsläget:
+  - buy_active: köpformuläret visas och kan skickas (/cart/add, fungerar utan JavaScript).
+  - review: granskningsläge – allt visas men inaktivt, utan formulär och utan fungerande länkar.
+  - quote_enabled: "Begär offert" (länk till kontaktsidan med ?produkt=).
+  - stock_on: lagerstatus får visas (köp aktiverat). Visas ändå bara när lagret spåras och priset är över 0 kr.
+  - taxes_included: cart.taxes_included ("inkl. moms" visas bara när priserna är inklusive moms).
+  Variantdata (pris, artikelnummer, lager, tillgänglighet) bäddas in som JSON för ks-product.js.
+{%- endcomment -%}
+{%- liquid
+  assign multi = true
+  if product.has_only_default_variant or product.variants.size < 2
+    assign multi = false
+  endif
+
+  assign v_price_ok = false
+  if variant.price > 0
+    assign v_price_ok = true
+  endif
+
+  assign v_stock = ''
+  if stock_on and variant.inventory_management == 'shopify' and v_price_ok
+    if variant.available
+      assign v_stock = 'in'
+    else
+      assign v_stock = 'out'
+    endif
+  endif
+
+  assign show_form = false
+  if buy_active
+    assign show_form = true
+  endif
+-%}
+
+{%- capture variants_json -%}
+  [
+  {%- for v in product.variants -%}
+    {%- liquid
+      assign vs = ''
+      if stock_on and v.inventory_management == 'shopify' and v.price > 0
+        if v.available
+          assign vs = 'in'
+        else
+          assign vs = 'out'
+        endif
+      endif
+      assign v_media = ''
+      if v.featured_media != blank
+        assign v_media = v.featured_media.id
+      endif
+    -%}
+    {%- capture v_price_html -%}{%- if v.price > 0 -%}{% render 'ks-price', price: v.price, class: 'ks-product__price' %}{%- endif -%}{%- endcapture -%}
+    {
+      "id": {{ v.id | json }},
+      "available": {{ v.available | json }},
+      "price": {{ v.price | json }},
+      "priceHtml": {{ v_price_html | strip | json }},
+      "sku": {{ v.sku | default: '' | json }},
+      "stock": {{ vs | json }},
+      "mediaId": {{ v_media | json }}
+    }{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+  ]
+{%- endcapture -%}
+
+{%- if review -%}
+  <div class="ks-product__review-note" role="note">
+    <p><strong>Granskningsläge:</strong> köp och offertförfrågan är förberedda men inte aktiverade. Knapparna fungerar inte.</p>
+  </div>
+{%- endif -%}
+
+{%- capture rows -%}
+  {%- comment -%} Pris {%- endcomment -%}
+  <div class="ks-product__row ks-product__row--price" data-ks-price-row{% unless v_price_ok or review %} hidden{% endunless %}>
+    <span class="ks-product__label">Pris</span>
+    <div class="ks-product__value ks-product__price-wrap">
+      <span data-ks-price>
+        {%- if v_price_ok -%}
+          {% render 'ks-price', price: variant.price, class: 'ks-product__price' %}
+        {%- elsif review -%}
+          <span class="ks-product__price-missing">Inget pris angivet ännu</span>
+        {%- endif -%}
+      </span>
+      {%- if taxes_included -%}
+        <span class="ks-product__tax-note" data-ks-tax-note{% unless v_price_ok %} hidden{% endunless %}>inkl. moms</span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} Lager (bara när köp är aktiverat, lagret spåras och priset är över 0 kr) {%- endcomment -%}
+  {%- if stock_on -%}
+    <div class="ks-product__row" data-ks-stock-row{% if v_stock == '' %} hidden{% endif %}>
+      <span class="ks-product__label">Lager</span>
+      <div class="ks-product__value">
+        <span class="ks-stock {% if v_stock == 'in' %}ks-stock--in{% else %}ks-stock--out{% endif %}" data-ks-stock>
+          {%- if v_stock == 'in' -%}I lager{%- elsif v_stock == 'out' -%}Slut i lager{%- endif -%}
+        </span>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Variantval {%- endcomment -%}
+  {%- if multi -%}
+    <div class="ks-product__row ks-product__row--variant">
+      <label class="ks-product__label" for="KsVariant-{{ uid }}">{{ option_label | escape }}</label>
+      <div class="ks-product__value">
+        <select
+          id="KsVariant-{{ uid }}"
+          class="ks-control ks-product__select"
+          {% if show_form %}name="id"{% endif %}
+          data-ks-variant-select
+        >
+          {%- for v in product.variants -%}
+            <option value="{{ v.id }}"{% if v.id == variant.id %} selected="selected"{% endif %}>
+              {{- v.title | escape -}}
+              {%- if stock_on and v.available == false and v.inventory_management == 'shopify' and v.price > 0 %} – slut i lager{% endif -%}
+            </option>
+          {%- endfor -%}
+        </select>
+      </div>
+    </div>
+  {%- elsif show_form -%}
+    <input type="hidden" name="id" value="{{ variant.id }}">
+  {%- endif -%}
+
+  {%- comment -%} Antal och Köp {%- endcomment -%}
+  {%- if show_form or review -%}
+    <div class="ks-product__row ks-product__row--qty" data-ks-buy-row{% if show_form and v_price_ok == false %} hidden{% endif %}>
+      <label class="ks-product__label" for="KsQty-{{ uid }}">Antal</label>
+      <div class="ks-product__value">
+        <div class="ks-qty" data-ks-qty>
+          <button type="button" class="ks-qty__button" data-ks-qty-minus aria-label="Minska antal" aria-controls="KsQty-{{ uid }}" hidden{% if review %} disabled{% endif %}>−</button>
+          <input
+            type="number"
+            id="KsQty-{{ uid }}"
+            class="ks-control ks-qty__input"
+            {% if show_form %}name="quantity"{% endif %}
+            value="1"
+            min="1"
+            step="1"
+            inputmode="numeric"
+            {% if review %}disabled{% endif %}
+          >
+          <button type="button" class="ks-qty__button" data-ks-qty-plus aria-label="Öka antal" aria-controls="KsQty-{{ uid }}" hidden{% if review %} disabled{% endif %}>+</button>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture actions -%}
+  {%- if show_form -%}
+    <div class="ks-product__buy" data-ks-buy-row{% if v_price_ok == false %} hidden{% endif %}>
+      {%- if variant.available -%}
+        {% render 'ks-button', label: buy_label, tag: 'button', button_type: 'submit', name: 'add', class: 'ks-product__buy-button' %}
+      {%- else -%}
+        {% render 'ks-button', label: 'Slut i lager', tag: 'button', button_type: 'submit', name: 'add', class: 'ks-product__buy-button', disabled: true %}
+      {%- endif -%}
+      {%- if quote_enabled -%}
+        <a href="{{ quote_url }}" class="ks-link ks-product__quote-link"><span aria-hidden="true">› </span>{{ quote_label }}</a>
+      {%- endif -%}
+    </div>
+  {%- elsif review -%}
+    <div class="ks-product__buy">
+      {% render 'ks-button', label: buy_label, tag: 'button', button_type: 'button', class: 'ks-product__buy-button', disabled: true %}
+      {% render 'ks-button', label: quote_label, disabled: true, class: 'ks-product__quote-button' %}
+    </div>
+  {%- elsif quote_enabled -%}
+    <div class="ks-product__buy">
+      {% render 'ks-button', label: quote_label, url: quote_url, class: 'ks-product__quote-button' %}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+<div class="ks-product__buybox">
+  {%- if show_form -%}
+    {%- form 'product', product, id: form_id, class: 'ks-product__form' -%}
+      <div class="ks-product__rows">{{ rows }}</div>
+      {{ actions }}
+    {%- endform -%}
+  {%- else -%}
+    <div class="ks-product__rows">{{ rows }}</div>
+    {{ actions }}
+  {%- endif -%}
+  <script type="application/json" data-ks-variants>{{ variants_json | strip }}</script>
+  <p class="ks-visually-hidden" aria-live="polite" data-ks-live></p>
+</div>

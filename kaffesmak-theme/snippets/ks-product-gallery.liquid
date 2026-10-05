@@ -1,0 +1,139 @@
+{%- comment -%}
+  KaffeSmak – produktens bildgalleri (referensens galleri): en stor bild (hela bilden syns, centrerad),
+  miniatyrer under när produkten har fler än en bild och länken "Klicka för förstoring".
+  Utan JavaScript är miniatyrerna och förstoringslänken vanliga länkar till bilden i full storlek.
+  Med JavaScript (ks-product.js) byter miniatyrerna huvudbild och förstoringen öppnas i en dialogruta (Esc stänger).
+  Parametrar: product, variant (vald variant; dess bild visas först om den har en), uid (sektionens id).
+{%- endcomment -%}
+{%- liquid
+  assign images = product.media | where: 'media_type', 'image'
+  assign image_count = images.size
+  assign start_index = 0
+  if variant.featured_media != blank
+    for m in images
+      if m.id == variant.featured_media.id
+        assign start_index = forloop.index0
+      endif
+    endfor
+  endif
+  assign main = images[start_index]
+  assign srcset_widths = '500,800,1000' | split: ','
+-%}
+<div class="ks-gallery" data-ks-gallery data-start="{{ start_index }}">
+  {%- if image_count > 0 -%}
+    {%- liquid
+      assign main_alt = main.alt | default: product.title
+      assign main_full = main.preview_image | image_url: width: 2000
+    -%}
+    {%- comment -%} srcset bara med bredder som bilden faktiskt har (Shopify förstorar inte bilder). {%- endcomment -%}
+    {%- capture main_srcset -%}
+      {%- assign src_w = main.preview_image.width | default: 1400 -%}
+      {%- for w in srcset_widths -%}
+        {%- assign wn = w | plus: 0 -%}
+        {%- if wn < src_w -%}{{ main.preview_image | image_url: width: wn }} {{ wn }}w, {% endif -%}
+      {%- endfor -%}
+      {%- if src_w > 1400 -%}{{ main.preview_image | image_url: width: 1400 }} 1400w{%- else -%}{{ main.preview_image | image_url: width: src_w }} {{ src_w }}w{%- endif -%}
+    {%- endcapture -%}
+    <a href="{{ main_full }}" class="ks-gallery__main" data-ks-zoom tabindex="-1" aria-hidden="true">
+      <img
+        src="{{ main.preview_image | image_url: width: 1000 }}"
+        srcset="{{ main_srcset }}"
+        sizes="(min-width: 990px) 600px, 100vw"
+        width="{{ main.preview_image.width }}"
+        height="{{ main.preview_image.height }}"
+        alt="{{ main_alt | escape }}"
+        class="ks-gallery__img"
+        fetchpriority="high"
+        data-ks-main-img
+      >
+    </a>
+
+    {%- if image_count > 1 -%}
+      <ul class="ks-gallery__thumbs" role="list" aria-label="Produktbilder">
+        {%- for m in images -%}
+          {%- liquid
+            assign m_alt = m.alt | default: product.title
+            assign m_label = 'Visa bild ' | append: forloop.index | append: ' av ' | append: image_count
+          -%}
+          {%- capture m_srcset -%}
+            {%- assign src_w = m.preview_image.width | default: 1400 -%}
+            {%- for w in srcset_widths -%}
+              {%- assign wn = w | plus: 0 -%}
+              {%- if wn < src_w -%}{{ m.preview_image | image_url: width: wn }} {{ wn }}w, {% endif -%}
+            {%- endfor -%}
+            {%- if src_w > 1400 -%}{{ m.preview_image | image_url: width: 1400 }} 1400w{%- else -%}{{ m.preview_image | image_url: width: src_w }} {{ src_w }}w{%- endif -%}
+          {%- endcapture -%}
+          <li>
+            <a
+              href="{{ m.preview_image | image_url: width: 2000 }}"
+              class="ks-gallery__thumb"
+              aria-label="{{ m_label }}"
+              {% if forloop.index0 == start_index %}aria-current="true"{% endif %}
+              data-ks-thumb
+              data-index="{{ forloop.index0 }}"
+              data-media-id="{{ m.id }}"
+              data-src="{{ m.preview_image | image_url: width: 1000 }}"
+              data-srcset="{{ m_srcset }}"
+              data-full="{{ m.preview_image | image_url: width: 2000 }}"
+              data-alt="{{ m_alt | escape }}"
+              data-width="{{ m.preview_image.width }}"
+              data-height="{{ m.preview_image.height }}"
+            >
+              <img
+                src="{{ m.preview_image | image_url: width: 200 }}"
+                alt=""
+                width="84"
+                height="84"
+                loading="lazy"
+                class="ks-gallery__thumb-img"
+              >
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <p class="ks-gallery__zoom">
+      <a href="{{ main_full }}" class="ks-link" data-ks-zoom>
+        <span aria-hidden="true">+ </span>Klicka för förstoring
+      </a>
+    </p>
+
+    <dialog class="ks-lightbox" data-ks-lightbox aria-label="Förstorad produktbild">
+      <div class="ks-lightbox__inner">
+        <button type="button" class="ks-lightbox__close" data-ks-lightbox-close>
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 3l14 14M17 3L3 17" stroke="currentColor" stroke-width="2.2" fill="none"/></svg>
+          <span>Stäng</span>
+        </button>
+        <figure class="ks-lightbox__figure">
+          <img
+            src="{{ main.preview_image | image_url: width: 2000 }}"
+            alt="{{ main_alt | escape }}"
+            width="{{ main.preview_image.width }}"
+            height="{{ main.preview_image.height }}"
+            loading="lazy"
+            class="ks-lightbox__img"
+            data-ks-lightbox-img
+          >
+          {%- if image_count > 1 -%}
+            <figcaption class="ks-lightbox__count" data-ks-lightbox-count aria-live="polite"></figcaption>
+          {%- endif -%}
+        </figure>
+        {%- if image_count > 1 -%}
+          <button type="button" class="ks-lightbox__nav ks-lightbox__nav--prev" data-ks-lightbox-prev>
+            <span class="ks-visually-hidden">Föregående bild</span>
+            {% render 'ks-icon', icon: 'chevron-left', size: 28 %}
+          </button>
+          <button type="button" class="ks-lightbox__nav ks-lightbox__nav--next" data-ks-lightbox-next>
+            <span class="ks-visually-hidden">Nästa bild</span>
+            {% render 'ks-icon', icon: 'chevron-right', size: 28 %}
+          </button>
+        {%- endif -%}
+      </div>
+    </dialog>
+  {%- else -%}
+    <div class="ks-gallery__main ks-gallery__main--empty">
+      {{ 'product-1' | placeholder_svg_tag: 'ks-gallery__placeholder' }}
+    </div>
+  {%- endif -%}
+</div>

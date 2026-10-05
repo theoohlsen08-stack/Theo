@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-cart",
+      "settings": {
+        "heading": "Varukorg",
+        "empty_text": "Din varukorg är tom.",
+        "continue_label": "Fortsätt handla",
+        "continue_url": "/collections/all",
+        "checkout_label": "Gå vidare till kassan",
+        "update_label": "Uppdatera varukorg",
+        "show_sku": true,
+        "show_disabled_checkout": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,206 @@
+{%- comment -%}
+  KaffeSmak – sökresultat som referensens resultatsida: grått titelband (utan brödsmulor) med H1 "Sökresultat"
+  och "Sökte efter: <sökord>", därunder samma filter, antal, sortering och produktrutnät som på kategorisidorna.
+  - Bara produkter visas (search.results filtreras på object_type 'product'); sökfältet i sidhuvudet skickar type=product.
+  - Filter och sortering kommer från Shopify (search.filters / search.sort_options, standard "Relevans").
+  - Inga träffar: tom ruta "Inga träffar för "…"." med ett nytt sökfält och länken "Fortsätt handla".
+  - Tom sökning (inget sökord): H1 "Sök" och ett sökfält.
+{%- endcomment -%}
+
+{{ 'ks-shop.css' | asset_url | stylesheet_tag }}
+{{ 'ks-collection.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign ks_terms = search.terms | strip
+  assign ks_continue_url = section.settings.continue_link | default: routes.all_products_collection_url
+-%}
+
+{%- capture ks_search_form -%}
+  <form action="{{ routes.search_url }}" method="get" role="search" class="ks-search-form">
+    <label for="KsSearchPage-{{ section.id }}" class="ks-search-form__label">Sök bland produkterna</label>
+    <div class="ks-search-form__row">
+      <input
+        type="search"
+        id="KsSearchPage-{{ section.id }}"
+        class="ks-control ks-search-form__input"
+        name="q"
+        value="{{ ks_terms | escape }}"
+        placeholder="Skriv ett sökord"
+        autocomplete="off"
+      >
+      <input type="hidden" name="type" value="product">
+      <input type="hidden" name="options[prefix]" value="last">
+      {% render 'ks-button', label: 'Sök', tag: 'button', button_type: 'submit', class: 'ks-search-form__button' %}
+    </div>
+  </form>
+{%- endcapture -%}
+
+{%- capture ks_continue -%}
+  {%- if section.settings.continue_label != blank -%}
+    <a href="{{ ks_continue_url }}" class="ks-continue-link">
+      <svg width="8" height="12" viewBox="0 0 8 12" aria-hidden="true" focusable="false"><path d="M6.5 1.5L2 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      {{- section.settings.continue_label -}}
+    </a>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if search.performed and ks_terms != '' -%}
+  <script src="{{ 'ks-facets.js' | asset_url }}" defer></script>
+  {%- paginate search.results by section.settings.products_per_page -%}
+    {%- liquid
+      assign ks_products = search.results | where: 'object_type', 'product'
+      assign ks_sort_by = search.sort_by | default: search.default_sort_by
+      assign ks_filters = search.filters
+      unless section.settings.show_filters
+        assign ks_filters = ''
+      endunless
+      capture ks_active_count
+        render 'ks-facets', part: 'active_count', filters: search.filters
+      endcapture
+      assign ks_active_count = ks_active_count | strip | plus: 0
+
+      assign ks_q = ks_terms | url_encode
+      assign ks_clear_url = routes.search_url | append: '?q=' | append: ks_q | append: '&type=product&options%5Bprefix%5D=last'
+      if search.sort_by != blank and search.sort_by != search.default_sort_by
+        assign ks_clear_url = ks_clear_url | append: '&sort_by=' | append: search.sort_by
+      endif
+
+      assign ks_no_hits = false
+      if search.results_count == 0 and ks_active_count == 0
+        assign ks_no_hits = true
+      endif
+    -%}
+
+    <div class="ks-shop ks-collection ks-search-page">
+      <div class="ks-title-band ks-title-band--search">
+        <div class="ks-container">
+          <h1 class="ks-page-title">Sökresultat</h1>
+          <p class="ks-title-band__text ks-search-page__terms">
+            Sökte efter: <span class="ks-search-page__term">{{ ks_terms | escape }}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="ks-container ks-collection__container">
+        {%- if ks_no_hits -%}
+          <div class="ks-collection__empty">
+            {%- assign ks_term_html = ks_terms | escape -%}
+            <p class="ks-empty-box">{{ section.settings.no_results_text | replace: '[sökord]', ks_term_html }}</p>
+            <div class="ks-search-page__retry">
+              {{ ks_search_form }}
+            </div>
+            <div class="ks-collection__empty-actions">
+              {{ ks_continue }}
+            </div>
+          </div>
+        {%- else -%}
+          {%- capture ks_sidebar -%}
+            {%- if section.settings.show_filters -%}
+              {% render 'ks-facets', part: 'sidebar', filters: ks_filters, id: section.id %}
+            {%- endif -%}
+          {%- endcapture -%}
+
+          <form
+            action="{{ routes.search_url }}"
+            method="get"
+            id="KsFacetsForm-{{ section.id }}"
+            class="ks-collection__body{% if ks_sidebar == blank %} ks-collection__body--full{% endif %}"
+            data-ks-facets-form
+          >
+            <input type="hidden" name="q" value="{{ ks_terms | escape }}">
+            <input type="hidden" name="type" value="product">
+            <input type="hidden" name="options[prefix]" value="last">
+            {%- if section.settings.show_sorting == false and search.sort_by != blank -%}
+              <input type="hidden" name="sort_by" value="{{ search.sort_by | escape }}">
+            {%- endif -%}
+            {{ ks_sidebar }}
+
+            <div class="ks-collection__main">
+              {% render 'ks-facets',
+                part: 'toolbar',
+                id: section.id,
+                count: search.results_count,
+                count_suffix: ' hittades',
+                sort_options: search.sort_options,
+                sort_by: ks_sort_by,
+                show_sorting: section.settings.show_sorting
+              %}
+              {% render 'ks-facets', part: 'active', filters: search.filters, id: section.id, clear_url: ks_clear_url %}
+
+              {%- if ks_products.size == 0 -%}
+                <div class="ks-collection__no-match">
+                  <p class="ks-empty-box">{{ section.settings.filtered_empty_text }}</p>
+                  {%- if ks_active_count > 0 -%}
+                    <p class="ks-collection__no-match-action">
+                      <a href="{{ ks_clear_url }}" class="ks-link">Rensa alla filter</a>
+                    </p>
+                  {%- endif -%}
+                </div>
+              {%- else -%}
+                <h2 class="ks-visually-hidden">Produkter som matchar sökningen</h2>
+                <ul class="ks-product-grid ks-collection__grid" role="list">
+                  {%- for product in ks_products -%}
+                    <li>
+                      {% render 'ks-product-card',
+                        product: product,
+                        heading_tag: 'h3',
+                        buy_label: section.settings.buy_label,
+                        show_sku: section.settings.show_sku,
+                        show_stock: section.settings.show_stock,
+                        sizes: '(min-width: 990px) 300px, (min-width: 750px) 30vw, 45vw'
+                      %}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+                {% render 'ks-pagination', paginate: paginate %}
+              {%- endif -%}
+            </div>
+          </form>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endpaginate -%}
+
+{%- else -%}
+  <div class="ks-shop ks-collection ks-search-page ks-search-page--start">
+    <div class="ks-title-band ks-title-band--search">
+      <div class="ks-container">
+        <h1 class="ks-page-title">Sök</h1>
+        {%- if section.settings.empty_search_text != blank -%}
+          <p class="ks-title-band__text">{{ section.settings.empty_search_text }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="ks-container ks-collection__container">
+      <div class="ks-search-page__start">
+        {{ ks_search_form }}
+      </div>
+      <div class="ks-collection__empty-actions">
+        {{ ks_continue }}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak sökresultat",
+  "class": "ks-search-section",
+  "enabled_on": { "templates": ["search"] },
+  "settings": [
+    { "type": "header", "content": "Produkter" },
+    { "type": "range", "id": "products_per_page", "label": "Produkter per sida", "min": 6, "max": 48, "step": 3, "default": 24 },
+    { "type": "checkbox", "id": "show_filters", "label": "Visa filter", "default": true, "info": "Vilka filter som finns ställs in under Onlinebutik > Navigering > Filter (Search & Discovery)." },
+    { "type": "checkbox", "id": "show_sorting", "label": "Visa sortering", "default": true },
+    { "type": "checkbox", "id": "show_sku", "label": "Visa artikelnummer", "default": true, "info": "Visas bara när produkten har ett artikelnummer (SKU)." },
+    { "type": "checkbox", "id": "show_stock", "label": "Visa lagerstatus", "default": true, "info": "Visas bara när lagret spåras i Shopify och produkten har ett pris." },
+    { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan." },
+    { "type": "header", "content": "Tomma lägen" },
+    { "type": "text", "id": "no_results_text", "label": "Text när sökningen saknar träffar", "default": "Inga träffar för \"[sökord]\".", "info": "[sökord] ersätts med det besökaren sökte efter." },
+    { "type": "text", "id": "filtered_empty_text", "label": "Text när filtren ger noll träffar", "default": "Inga produkter matchar filtren." },
+    { "type": "text", "id": "empty_search_text", "label": "Text när inget sökord har angetts", "default": "Skriv vad du letar efter, till exempel ett kaffe eller en produkttyp." },
+    { "type": "text", "id": "continue_label", "label": "Text för länken tillbaka till butiken", "default": "Fortsätt handla" },
+    { "type": "url", "id": "continue_link", "label": "Länk tillbaka till butiken", "info": "Tomt fält länkar till alla produkter." }
+  ]
+}
+{% endschema %}

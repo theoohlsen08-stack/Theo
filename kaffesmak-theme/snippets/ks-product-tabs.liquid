@@ -1,0 +1,172 @@
+{%- comment -%}
+  KaffeSmak – produktflikar (referensens flikar): BESKRIVNING, SPECIFIKATIONER och RESERVDELAR.
+  En flik visas bara när den har verkliga uppgifter. Ingen flik för recensioner.
+  - Beskrivning: product.description, hel och ordagrant.
+  - Specifikationer: Shopifys kategorifält (bara när show_category_fields är på) och/eller metafältet
+    custom.specifikationer (flerradig text, en rad per uppgift "Etikett: Värde").
+  - Reservdelar: metafältet custom.reservdelar (lista med produktreferenser) som produktkort.
+  Utan JavaScript visas alla flikar under varandra med rubriker. ks-product.js gör om dem till flikar
+  (role=tablist/tab/tabpanel, piltangenter) på dator och surfplatta och till dragspel på mobil (högst 749 px).
+  Parametrar: product, uid (sektionens id), show_category_fields, design_mode (request.design_mode).
+{%- endcomment -%}
+
+{%- capture tab_description -%}
+  {%- if product.description != blank -%}
+    <div class="ks-product__rte">{{ product.description }}</div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture spec_rows -%}
+  {%- if show_category_fields -%}
+    {%- liquid
+      assign cat_keys = 'coffee-roast,flavor,coffee-product-form,caffeine-content' | split: ','
+      assign cat_labels = 'Kafferost,Smak,Kaffeproduktform,Koffeininnehåll' | split: ','
+    -%}
+    {%- for key in cat_keys -%}
+      {%- assign mf = product.metafields.shopify[key] -%}
+      {%- assign cat_label = cat_labels[forloop.index0] -%}
+      {%- if mf != blank and mf.value != blank -%}
+        {%- capture cat_value -%}
+          {%- for mo in mf.value -%}
+            {%- if mo.label != blank -%}{{ mo.label | escape }}{%- unless forloop.last -%}, {% endunless -%}{%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- assign cat_value = cat_value | strip -%}
+        {%- if cat_value != '' -%}
+          <tr>
+            <th scope="row">{{ cat_label }}</th>
+            <td>{{ cat_value }}</td>
+          </tr>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- assign spec_text = product.metafields.custom.specifikationer.value -%}
+  {%- if spec_text != blank -%}
+    {%- assign spec_lines = spec_text | newline_to_br | split: '<br />' -%}
+    {%- for raw_line in spec_lines -%}
+      {%- assign line = raw_line | strip -%}
+      {%- if line != '' -%}
+        {%- if line contains ':' -%}
+          {%- liquid
+            assign spec_label = line | split: ':' | first | strip
+            assign spec_value = line | remove_first: spec_label | strip | remove_first: ':' | strip
+          -%}
+          <tr>
+            <th scope="row">{{ spec_label | escape }}</th>
+            <td>{{ spec_value | escape }}</td>
+          </tr>
+        {%- else -%}
+          <tr>
+            <td colspan="2">{{ line | escape }}</td>
+          </tr>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture tab_specs -%}
+  {%- assign spec_rows_clean = spec_rows | strip -%}
+  {%- if spec_rows_clean != '' -%}
+    <table class="ks-spec-table">
+      <tbody>
+        {{ spec_rows_clean }}
+      </tbody>
+    </table>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture tab_parts -%}
+  {%- assign parts_ref = product.metafields.custom.reservdelar.value -%}
+  {%- if parts_ref != blank -%}
+    {%- capture part_items -%}
+      {%- for part in parts_ref limit: 24 -%}
+        {%- if part.url != blank -%}
+          <li>{% render 'ks-product-card', product: part, heading_tag: 'h3' %}</li>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign part_items = part_items | strip -%}
+    {%- if part_items != '' -%}
+      <ul class="ks-product-grid ks-product__parts" role="list">{{ part_items }}</ul>
+    {%- endif -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- liquid
+  assign tab_description = tab_description | strip
+  assign tab_specs = tab_specs | strip
+  assign tab_parts = tab_parts | strip
+  assign tab_keys = ''
+  if tab_description != ''
+    assign tab_keys = tab_keys | append: 'beskrivning,'
+  endif
+  if tab_specs != ''
+    assign tab_keys = tab_keys | append: 'specifikationer,'
+  endif
+  if tab_parts != ''
+    assign tab_keys = tab_keys | append: 'reservdelar,'
+  endif
+  assign tab_list = tab_keys | split: ','
+-%}
+
+{%- if tab_list.size > 0 -%}
+  <div class="ks-tabs" data-ks-tabs>
+    <div class="ks-tabs__list" role="tablist" aria-label="Produktinformation" data-ks-tablist hidden>
+      {%- for key in tab_list -%}
+        {%- liquid
+          case key
+            when 'beskrivning'
+              assign tab_label = 'Beskrivning'
+            when 'specifikationer'
+              assign tab_label = 'Specifikationer'
+            else
+              assign tab_label = 'Reservdelar'
+          endcase
+        -%}
+        <button
+          type="button"
+          role="tab"
+          class="ks-tabs__tab"
+          id="KsTab-{{ uid }}-{{ key }}"
+          aria-controls="KsPanel-{{ uid }}-{{ key }}"
+          aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+          tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+          data-ks-tab
+        >
+          <span class="ks-tabs__tab-text">{{ tab_label }}</span>
+        </button>
+      {%- endfor -%}
+    </div>
+
+    {%- for key in tab_list -%}
+      {%- liquid
+        case key
+          when 'beskrivning'
+            assign tab_label = 'Beskrivning'
+            assign tab_body = tab_description
+          when 'specifikationer'
+            assign tab_label = 'Specifikationer'
+            assign tab_body = tab_specs
+          else
+            assign tab_label = 'Reservdelar'
+            assign tab_body = tab_parts
+        endcase
+      -%}
+      <section class="ks-tabs__panel ks-tabs__panel--{{ key }}" id="KsPanel-{{ uid }}-{{ key }}" data-ks-panel aria-labelledby="KsHeading-{{ uid }}-{{ key }}">
+        <h2 class="ks-tabs__heading" id="KsHeading-{{ uid }}-{{ key }}" data-ks-heading data-label="{{ tab_label }}">{{ tab_label }}</h2>
+        <div class="ks-tabs__body" id="KsBody-{{ uid }}-{{ key }}" data-ks-body>
+          {{ tab_body }}
+        </div>
+      </section>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{%- if design_mode -%}
+  {%- if tab_specs == '' -%}
+    <div class="ks-editor-note">Fliken Specifikationer visas när produkten har uppgifter i metafältet custom.specifikationer{% unless show_category_fields %} eller när "Visa Shopifys kategorifält" är påslaget och fälten är ifyllda{% endunless %}. Besökare ser inte denna ruta.</div>
+  {%- endif -%}
+{%- endif -%}

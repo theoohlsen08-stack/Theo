@@ -1,0 +1,250 @@
+{%- comment -%}
+  KaffeSmak – filter och verktygsrad för kategorisidor och sökresultat (som referensens vänsterspalt och rad ovanför rutnätet).
+  Filtren kommer från Shopify (collection.filters eller search.filters). Vilka filter som finns styrs av butikens
+  inställningar för filter (Search & Discovery), inte av temat – snippeten visar det Shopify skickar:
+  listor och ja/nej-filter som kryssrutor "Etikett (antal)" och prisintervall som två fält Från/Till i kr.
+  Värden med antal 0 visas inte (utom när de är valda) och en grupp där inget värde återstår döljs.
+  Fälten ligger i ett vanligt GET-formulär som sektionen bygger runt sidan, så allt fungerar utan JavaScript.
+  ks-facets.js skickar formuläret direkt vid ändring.
+
+  Parametrar:
+  - part: 'sidebar' (filterspalten), 'toolbar' (antal och sortering), 'active' (valda filter med "Rensa alla")
+          eller 'active_count' (skriver bara ut antalet valda filtervärden, för sektionens logik).
+  - filters: collection.filters / search.filters
+  - id: unikt prefix för id-attribut (section.id)
+  - count: antal produkter (toolbar), count_suffix: text efter antalet, t.ex. ' hittades' (toolbar)
+  - sort_options, sort_by, show_sorting (toolbar)
+  - clear_url: adress utan filter (active)
+{%- endcomment -%}
+
+{%- liquid
+  assign ks_active = 0
+  for filter in filters
+    if filter.type == 'price_range'
+      if filter.min_value.value != nil or filter.max_value.value != nil
+        assign ks_active = ks_active | plus: 1
+      endif
+    else
+      assign ks_n = filter.active_values | size
+      assign ks_active = ks_active | plus: ks_n
+    endif
+  endfor
+-%}
+
+{%- case part -%}
+  {%- when 'active_count' -%}
+    {{- ks_active -}}
+
+  {%- when 'toolbar' -%}
+    <div class="ks-toolbar">
+      <p class="ks-toolbar__count">
+        {%- if count == 1 -%}1 produkt{%- else -%}{{ count }} produkter{%- endif -%}
+        {{- count_suffix -}}
+      </p>
+      {%- if show_sorting and sort_options.size > 0 -%}
+        <div class="ks-toolbar__sort">
+          <label for="KsSort-{{ id }}" class="ks-toolbar__sort-label">Sortera efter:</label>
+          <select id="KsSort-{{ id }}" name="sort_by" class="ks-control ks-toolbar__select" data-ks-sort>
+            {%- for option in sort_options -%}
+              <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>
+                {{- option.name | escape -}}
+              </option>
+            {%- endfor -%}
+          </select>
+          <noscript>
+            <button type="submit" class="ks-toolbar__apply">Sortera</button>
+          </noscript>
+        </div>
+      {%- endif -%}
+    </div>
+
+  {%- when 'active' -%}
+    {%- if ks_active > 0 -%}
+      <div class="ks-active-filters">
+        <span class="ks-active-filters__label" id="KsActiveFilters-{{ id }}">Valda filter:</span>
+        <ul class="ks-active-filters__list" role="list" aria-labelledby="KsActiveFilters-{{ id }}">
+          {%- for filter in filters -%}
+            {%- if filter.type == 'price_range' -%}
+              {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                {%- capture ks_price_label -%}
+                  {%- if filter.min_value.value != nil and filter.max_value.value != nil -%}
+                    {{ filter.min_value.value | money_without_trailing_zeros }} – {{ filter.max_value.value | money_without_trailing_zeros }}
+                  {%- elsif filter.min_value.value != nil -%}
+                    Från {{ filter.min_value.value | money_without_trailing_zeros }}
+                  {%- else -%}
+                    Till {{ filter.max_value.value | money_without_trailing_zeros }}
+                  {%- endif -%}
+                {%- endcapture -%}
+                <li>
+                  <a href="{{ filter.url_to_remove }}" class="ks-chip" aria-label="Ta bort filtret {{ filter.label | escape }}: {{ ks_price_label | strip | escape }}">
+                    <span class="ks-chip__text">{{ filter.label | escape }}: {{ ks_price_label | strip }}</span>
+                    <svg class="ks-chip__icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.6"/></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- else -%}
+              {%- for value in filter.active_values -%}
+                <li>
+                  <a href="{{ value.url_to_remove }}" class="ks-chip" aria-label="Ta bort filtret {{ filter.label | escape }}: {{ value.label | escape }}">
+                    <span class="ks-chip__text">{{ filter.label | escape }}: {{ value.label | escape }}</span>
+                    <svg class="ks-chip__icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.6"/></svg>
+                  </a>
+                </li>
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        <a href="{{ clear_url }}" class="ks-link ks-active-filters__clear">Rensa alla</a>
+      </div>
+    {%- endif -%}
+
+  {%- when 'sidebar' -%}
+    {%- capture ks_groups -%}
+      {%- for filter in filters -%}
+        {%- assign ks_group_index = forloop.index -%}
+        {%- assign ks_group_id = 'KsFacet-' | append: id | append: '-' | append: ks_group_index -%}
+
+        {%- if filter.type == 'price_range' -%}
+          {%- assign ks_price_active = false -%}
+          {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+            {%- assign ks_price_active = true -%}
+          {%- endif -%}
+          {%- assign ks_range_max = filter.range_max | default: 0 -%}
+          {%- if ks_range_max > 0 or ks_price_active -%}
+            {%- assign ks_max_kr = ks_range_max | divided_by: 100.0 | ceil -%}
+            <details class="ks-facet ks-facet--price" open>
+              <summary class="ks-facet__summary">
+                <span class="ks-facet__title">{{ filter.label | escape }}</span>
+                <svg class="ks-facet__chevron" width="12" height="8" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 7l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+              </summary>
+              <fieldset class="ks-facet__fieldset">
+                <legend class="ks-visually-hidden">{{ filter.label | escape }} i kronor</legend>
+                <div class="ks-facet__price">
+                  <div class="ks-facet__price-field">
+                    <label for="{{ ks_group_id }}-min" class="ks-facet__price-label">Från</label>
+                    <span class="ks-facet__price-wrap">
+                      <input
+                        type="number"
+                        id="{{ ks_group_id }}-min"
+                        class="ks-control ks-facet__price-input"
+                        name="{{ filter.min_value.param_name }}"
+                        {% if filter.min_value.value != nil -%}
+                          value="{{ filter.min_value.value | divided_by: 100.0 | floor }}"
+                        {%- endif %}
+                        min="0"
+                        max="{{ ks_max_kr }}"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        data-ks-price
+                      >
+                      <span class="ks-facet__unit" aria-hidden="true">kr</span>
+                    </span>
+                  </div>
+                  <span class="ks-facet__price-sep" aria-hidden="true">–</span>
+                  <div class="ks-facet__price-field">
+                    <label for="{{ ks_group_id }}-max" class="ks-facet__price-label">Till</label>
+                    <span class="ks-facet__price-wrap">
+                      <input
+                        type="number"
+                        id="{{ ks_group_id }}-max"
+                        class="ks-control ks-facet__price-input"
+                        name="{{ filter.max_value.param_name }}"
+                        {% if filter.max_value.value != nil -%}
+                          value="{{ filter.max_value.value | divided_by: 100.0 | ceil }}"
+                        {%- endif %}
+                        min="0"
+                        max="{{ ks_max_kr }}"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="{{ ks_max_kr }}"
+                        data-ks-price
+                      >
+                      <span class="ks-facet__unit" aria-hidden="true">kr</span>
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+            </details>
+          {%- endif -%}
+
+        {%- else -%}
+          {%- assign ks_visible = 0 -%}
+          {%- for value in filter.values -%}
+            {%- if value.count > 0 or value.active -%}
+              {%- assign ks_visible = ks_visible | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if ks_visible > 0 -%}
+            <details class="ks-facet" open>
+              <summary class="ks-facet__summary">
+                <span class="ks-facet__title">{{ filter.label | escape }}</span>
+                <svg class="ks-facet__chevron" width="12" height="8" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 7l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+              </summary>
+              <fieldset class="ks-facet__fieldset">
+                <legend class="ks-visually-hidden">{{ filter.label | escape }}</legend>
+                <ul class="ks-facet__list" id="{{ ks_group_id }}-list" role="list">
+                  {%- assign ks_shown = 0 -%}
+                  {%- for value in filter.values -%}
+                    {%- if value.count > 0 or value.active -%}
+                      {%- assign ks_shown = ks_shown | plus: 1 -%}
+                      <li class="ks-facet__item{% if ks_shown > 5 %} ks-facet__item--extra{% endif %}">
+                        <label class="ks-facet__option" for="{{ ks_group_id }}-{{ forloop.index }}">
+                          <input
+                            type="checkbox"
+                            class="ks-facet__checkbox"
+                            id="{{ ks_group_id }}-{{ forloop.index }}"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value | escape }}"
+                            {% if value.active %}
+                              checked
+                            {% endif %}
+                          >
+                          <span class="ks-facet__label">
+                            {{- value.label | escape }} <span class="ks-facet__count">({{ value.count }})</span>
+                          </span>
+                        </label>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+                {%- if ks_visible > 5 -%}
+                  <button type="button" class="ks-facet__more" aria-expanded="false" aria-controls="{{ ks_group_id }}-list" data-ks-more hidden>
+                    Visa alla…
+                  </button>
+                {%- endif -%}
+              </fieldset>
+            </details>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    {%- if ks_groups != blank -%}
+      <aside class="ks-facets" aria-labelledby="KsFacetsHeading-{{ id }}" data-ks-facets>
+        <h2 class="ks-visually-hidden" id="KsFacetsHeading-{{ id }}">Filtrera produkter</h2>
+        <details class="ks-facets__drawer" open data-ks-facets-drawer>
+          <summary class="ks-facets__toggle">
+            <svg class="ks-facets__toggle-icon" width="18" height="16" viewBox="0 0 18 16" aria-hidden="true" focusable="false"><path d="M1 2h16M4 8h10M7 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>Filtrera{% if ks_active > 0 %} <span class="ks-facets__toggle-count">({{ ks_active }} valda)</span>{% endif %}</span>
+            <svg class="ks-facets__toggle-chevron" width="12" height="8" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </summary>
+          <div class="ks-facets__panel">
+            {{ ks_groups }}
+            <noscript>
+              {% render 'ks-button', label: 'Visa produkter', tag: 'button', button_type: 'submit', size: 'small', class: 'ks-facets__apply' %}
+            </noscript>
+          </div>
+        </details>
+        <script>
+          (function (d) {
+            var mobile = window.matchMedia && window.matchMedia('(max-width: 989px)').matches;
+            if (!mobile || !d) return;
+            var keep = false;
+            try { keep = sessionStorage.getItem('ks-facets-open') === '1'; sessionStorage.removeItem('ks-facets-open'); } catch (e) {}
+            if (!keep) d.open = false;
+          })(document.currentScript && document.currentScript.parentNode.querySelector('[data-ks-facets-drawer]'));
+        </script>
+      </aside>
+    {%- endif -%}
+{%- endcase -%}

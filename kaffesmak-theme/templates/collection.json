@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-collection",
+      "settings": {
+        "products_per_page": 24,
+        "show_description": true,
+        "show_filters": true,
+        "show_sorting": true,
+        "show_sku": true,
+        "show_stock": true,
+        "buy_label": "Visa produkt",
+        "empty_text": "Det finns inga produkter i den här kategorin just nu.",
+        "empty_button_label": "Till startsidan",
+        "show_categories_link": true,
+        "filtered_empty_text": "Inga produkter matchar filtren."
+      }
+    }
+  },
+  "order": ["main"]
+}

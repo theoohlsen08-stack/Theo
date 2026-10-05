@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-collection",
+      "settings": {
+        "list_heading": "Kategorier",
+        "list_show_empty": false,
+        "list_button_label": "Visa produkter"
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,287 @@
+{%- comment -%}
+  KaffeSmak – produktsida (referensens produktsida): rad med "‹ Tillbaka till översikt" och brödsmulor,
+  bildgalleri till vänster och köpruta till höger (titel, artikelnummer, pris, lager, val, antal och Köp),
+  flikar under (Beskrivning, Specifikationer, Reservdelar) och "Fler produkter i samma kategori".
+
+  Dataregler (etapp 4):
+  - Artikelnummer visas bara när den valda varianten har SKU.
+  - Pris visas bara när det är större än 0 kr. "inkl. moms" bara när butiken visar priser inklusive moms.
+  - Lagerstatus visas bara när köp är aktiverat, lagret spåras och produkten har ett pris.
+  - Beskrivningen visas hel och ordagrant (product.description). Flikar utan verkliga uppgifter visas inte.
+  - Interna fält i custom-namnrymden (källor, saknade uppgifter m.m.) visas aldrig.
+
+  Försäljningsläge (inställningen "Försäljning"):
+  - "Köp": köpformulär som skickas till varukorgen (fungerar utan JavaScript).
+  - "Varken köp eller offert": ingen köpknapp, ingen offertknapp, ingen lagerrad (förberedd maskinmall).
+  - "Offertförfrågan": knappen "Begär offert" länkar till kontaktsidan med produktnamnet.
+  - "Köp och offertförfrågan": båda.
+  - "Granskningsläge" visar köp och offert som inaktiva element med en tydlig ruta, så att kunden kan granska
+    utseendet utan att något kan köpas eller skickas.
+{%- endcomment -%}
+
+{{ 'ks-shop.css' | asset_url | stylesheet_tag }}
+{{ 'ks-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ks-product.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign mode = s.sales_mode | default: 'none'
+  assign review = s.review_preview
+  assign variant = product.selected_or_first_available_variant
+
+  assign buy_enabled = false
+  if mode == 'buy' or mode == 'both'
+    assign buy_enabled = true
+  endif
+  assign quote_enabled = false
+  if mode == 'quote' or mode == 'both'
+    assign quote_enabled = true
+  endif
+
+  assign sellable = false
+  if product.price_max > 0 and product.variants.size > 0
+    assign sellable = true
+  endif
+
+  assign buy_active = false
+  if buy_enabled and review != true and sellable
+    assign buy_active = true
+  endif
+
+  assign stock_on = false
+  if buy_enabled and review != true
+    assign stock_on = true
+  endif
+
+  assign collection_first = product.collections.first
+  assign back_url = routes.all_products_collection_url
+  assign parent_title = ''
+  assign parent_url = ''
+  if collection_first != blank
+    assign back_url = collection_first.url
+    assign parent_title = collection_first.title
+    assign parent_url = collection_first.url
+  endif
+
+  assign quote_base = s.quote_link | default: '/pages/contact'
+  assign quote_sep = '?'
+  if quote_base contains '?'
+    assign quote_sep = '&'
+  endif
+  assign quote_url = product.title | url_encode | prepend: 'produkt=' | prepend: quote_sep | prepend: quote_base
+  assign quote_label = s.quote_label | default: 'Begär offert'
+  assign buy_label = s.buy_label | default: 'Köp'
+
+  assign option_label = ''
+  for option_name in product.options
+    assign clean_name = option_name | strip
+    if forloop.first
+      assign option_label = clean_name
+    else
+      assign option_label = option_label | append: ' / ' | append: clean_name
+    endif
+  endfor
+  if option_label == ''
+    assign option_label = 'Variant'
+  endif
+
+  assign uid = section.id
+  assign form_id = 'KsProductForm-' | append: uid
+-%}
+
+{%- if product.price > 0 -%}
+  <script type="application/ld+json">{{ product | structured_data }}</script>
+{%- else -%}
+  {%- comment -%} Utan fastställt pris: strukturerad data utan erbjudande, så att inget pris på 0 kr publiceras. {%- endcomment -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ request.origin | append: product.url | json }},
+      {%- if product.featured_image != blank %}
+        "image": {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},
+      {%- endif %}
+      "description": {{ product.description | strip_html | strip | json }},
+      "brand": { "@type": "Brand", "name": {{ product.vendor | json }} }
+    }
+  </script>
+{%- endif -%}
+
+<div class="ks-shop ks-product" data-ks-product data-section-id="{{ uid }}" data-buy-label="{{ buy_label | escape }}">
+  <div class="ks-container">
+    <div class="ks-product__topbar">
+      <a href="{{ back_url }}" class="ks-product__back">
+        <span class="ks-product__back-icon" aria-hidden="true">‹</span>
+        Tillbaka till översikt
+        {%- if parent_title != '' -%}<span class="ks-visually-hidden">: {{ parent_title | escape }}</span>{%- endif -%}
+      </a>
+      <span class="ks-product__topbar-divider" aria-hidden="true"></span>
+      {% render 'ks-breadcrumb', parent_title: parent_title, parent_url: parent_url, current: product.title %}
+    </div>
+
+    <div class="ks-product__main">
+      <div class="ks-product__media">
+        {% render 'ks-product-gallery', product: product, variant: variant, uid: uid %}
+      </div>
+
+      <div class="ks-product__info">
+        <h1 class="ks-product__title">{{ product.title }}</h1>
+        <p class="ks-product__sku" data-ks-sku{% if variant.sku == blank %} hidden{% endif %}>
+          Artikelnummer <span data-ks-sku-value>{{ variant.sku | escape }}</span>
+        </p>
+
+        {% render 'ks-product-buy',
+          product: product,
+          variant: variant,
+          uid: uid,
+          form_id: form_id,
+          review: review,
+          buy_enabled: buy_enabled,
+          buy_active: buy_active,
+          quote_enabled: quote_enabled,
+          sellable: sellable,
+          stock_on: stock_on,
+          option_label: option_label,
+          quote_url: quote_url,
+          quote_label: quote_label,
+          buy_label: buy_label,
+          taxes_included: cart.taxes_included
+        %}
+
+        {%- if request.design_mode -%}
+          {%- if review -%}
+            <div class="ks-editor-note">Granskningsläge är på: köp och offertförfrågan visas som inaktiva element. Mallen ska inte tilldelas produkter; den granskas med ?view= i adressen.</div>
+          {%- elsif mode == 'none' -%}
+            <div class="ks-editor-note">Köp och offertförfrågan är förberedda men avstängda tills kunden har bestämt hur maskinerna ska säljas. Ändra "Försäljning" i sektionens inställningar för att aktivera Köp, Offertförfrågan eller båda.</div>
+          {%- elsif buy_enabled and sellable == false and quote_enabled == false -%}
+            <div class="ks-editor-note">Köpknappen visas inte eftersom produkten saknar pris (0 kr). Lägg in ett fastställt pris i Shopify för att produkten ska kunna köpas.</div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {% render 'ks-product-tabs', product: product, uid: uid, show_category_fields: s.show_category_fields, design_mode: request.design_mode %}
+  </div>
+
+  {%- if s.show_related and collection_first != blank -%}
+    {%- liquid
+      assign related_limit = s.related_limit | default: 6
+      assign related_count = 0
+    -%}
+    {%- capture related_items -%}
+      {%- for item in collection_first.products -%}
+        {%- if item.id != product.id and related_count < related_limit -%}
+          {%- assign related_count = related_count | plus: 1 -%}
+          <li class="ks-product__related-item">{% render 'ks-product-card', product: item, heading_tag: 'h3' %}</li>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if related_count > 0 -%}
+      <section class="ks-product__related" aria-labelledby="KsRelated-{{ uid }}">
+        <div class="ks-container">
+          <h2 class="ks-section__heading ks-section__heading--red ks-section__heading--rule" id="KsRelated-{{ uid }}">
+            {{- s.related_heading | default: 'Fler produkter i samma kategori' -}}
+          </h2>
+          <ul class="ks-product__related-list" role="list">
+            {{ related_items }}
+          </ul>
+        </div>
+      </section>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "KaffeSmak produktsida",
+  "class": "ks-product-section",
+  "tag": "section",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Försäljning",
+      "info": "Kunden bestämmer om maskiner ska säljas med köpknapp, offertförfrågan eller båda. Aktivera inget förrän beslutet är fattat."
+    },
+    {
+      "type": "select",
+      "id": "sales_mode",
+      "label": "Försäljning",
+      "options": [
+        { "value": "buy", "label": "Köp" },
+        { "value": "none", "label": "Varken köp eller offert" },
+        { "value": "quote", "label": "Offertförfrågan" },
+        { "value": "both", "label": "Köp och offertförfrågan" }
+      ],
+      "default": "none",
+      "info": "Köpknappen visas bara för produkter med ett pris över 0 kr."
+    },
+    {
+      "type": "text",
+      "id": "buy_label",
+      "label": "Text på köpknappen",
+      "default": "Köp"
+    },
+    {
+      "type": "url",
+      "id": "quote_link",
+      "label": "Sida för offertförfrågan",
+      "info": "Tomt fält länkar till /pages/contact. Produktnamnet skickas med och fylls i kontaktformulärets meddelande."
+    },
+    {
+      "type": "text",
+      "id": "quote_label",
+      "label": "Text på offertknappen",
+      "default": "Begär offert"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_preview",
+      "label": "Granskningsläge: visa förberedda köp- och offertalternativ som inaktiva",
+      "info": "Visar en ruta om granskningsläget. Inget kan köpas eller skickas. Använd bara i mallar som inte är tilldelade produkter.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Flikar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_category_fields",
+      "label": "Visa Shopifys kategorifält",
+      "info": "Kafferost, Smak, Kaffeproduktform och Koffeininnehåll under Specifikationer. Värdena kan vara automatiskt ifyllda; kontrollera dem i produkten innan du slår på detta.",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Specifikationer kan också fyllas i produktens metafält custom.specifikationer (en rad per uppgift, \"Etikett: Värde\"). Fliken Reservdelar visas när metafältet custom.reservdelar (produktlista) har produkter."
+    },
+    {
+      "type": "header",
+      "content": "Fler produkter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related",
+      "label": "Visa fler produkter i samma kategori",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "label": "Rubrik",
+      "default": "Fler produkter i samma kategori"
+    },
+    {
+      "type": "range",
+      "id": "related_limit",
+      "label": "Antal produkter",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 6
+    }
+  ]
+}
+{% endschema %}

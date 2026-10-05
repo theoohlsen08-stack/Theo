@@ -1,0 +1,42 @@
+{%- comment -%}
+  KaffeSmak – sidnumrering för kategorisidor och sökresultat: siffror i Barlow Condensed, aktuell sida i rött
+  och pilar ‹ › med svenska etiketter. Shopifys sidadresser behåller sortering, filter och sökord.
+  Parameter: paginate (Shopifys paginate-objekt). Visas bara när det finns mer än en sida.
+{%- endcomment -%}
+{%- if paginate.pages > 1 -%}
+  {%- assign ks_current = paginate.current_page | append: '' -%}
+  <nav class="ks-pagination" aria-label="Sidnumrering">
+    <ul class="ks-pagination__list" role="list">
+      {%- if paginate.previous.is_link -%}
+        <li>
+          <a href="{{ paginate.previous.url }}" class="ks-pagination__link ks-pagination__link--arrow" aria-label="Föregående sida" rel="prev">
+            <svg width="9" height="14" viewBox="0 0 9 14" aria-hidden="true" focusable="false"><path d="M7.5 1.5L2 7l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- for part in paginate.parts -%}
+        {%- assign ks_title = part.title | append: '' -%}
+        {%- if part.is_link -%}
+          <li>
+            <a href="{{ part.url }}" class="ks-pagination__link" aria-label="Sida {{ ks_title }}">{{ ks_title }}</a>
+          </li>
+        {%- elsif ks_title == ks_current -%}
+          <li>
+            <span class="ks-pagination__current" aria-current="page"><span class="ks-visually-hidden">Sida </span>{{ ks_title }}</span>
+          </li>
+        {%- else -%}
+          <li>
+            <span class="ks-pagination__gap" aria-hidden="true">…</span>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if paginate.next.is_link -%}
+        <li>
+          <a href="{{ paginate.next.url }}" class="ks-pagination__link ks-pagination__link--arrow" aria-label="Nästa sida" rel="next">
+            <svg width="9" height="14" viewBox="0 0 9 14" aria-hidden="true" focusable="false"><path d="M1.5 1.5L7 7l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}

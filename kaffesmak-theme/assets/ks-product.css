@@ -1,0 +1,726 @@
+/* KaffeSmak – etapp 4: produktsida (sections/ks-product.liquid, snippets/ks-product-*.liquid).
+   Mått enligt referensens produktsida (monteriva-spec §4–6, §12). Gemensamma delar (pris, antal,
+   kontrollfält, knappar, produktkort) finns i ks-shop.css och ks-theme.css. */
+
+/* ---------- Översta raden: tillbaka-länk | brödsmulor ---------- */
+.ks-product__topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 0;
+  padding-block: 28px 0;
+  margin-block-end: 36px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ks-shop a.ks-product__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #333333;
+  text-decoration: none;
+}
+.ks-shop a.ks-product__back:hover {
+  text-decoration: underline;
+}
+.ks-product__back-icon {
+  color: var(--ks-link);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+.ks-product__topbar-divider {
+  width: 1px;
+  height: 24px;
+  margin-inline: 40px;
+  background: #e5e5e5;
+}
+
+/* ---------- Två kolumner ---------- */
+.ks-product__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+/* ---------- Galleri ---------- */
+.ks-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ks-gallery__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 360px;
+  cursor: zoom-in;
+}
+.ks-gallery__main--empty {
+  cursor: default;
+}
+.ks-shop .ks-gallery__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ks-gallery__placeholder {
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+}
+.ks-gallery__thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 24px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-shop .ks-gallery__thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  padding: 4px;
+  border: 1px solid #d2d2d2;
+  background: #ffffff;
+  cursor: pointer;
+}
+.ks-shop .ks-gallery__thumb:hover {
+  border-color: #8a8a8a;
+}
+.ks-shop .ks-gallery__thumb[aria-current='true'] {
+  border-color: #333333;
+  box-shadow: inset 0 0 0 1px #333333;
+}
+.ks-shop .ks-gallery__thumb-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ks-shop .ks-gallery__zoom {
+  margin-block-start: 28px;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Förstoring (dialogruta) */
+.ks-lightbox {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #ffffff;
+  color: #333333;
+}
+.ks-lightbox::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+.ks-lightbox[open] {
+  display: block;
+}
+.ks-lightbox__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 64px 72px 48px;
+  box-sizing: border-box;
+}
+.ks-lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+.ks-lightbox .ks-lightbox__img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100% - 40px);
+  object-fit: contain;
+}
+.ks-lightbox__count {
+  font-family: var(--ks-font-body);
+  font-size: 15px;
+  color: #555555;
+}
+.ks-lightbox button.ks-lightbox__close,
+.ks-lightbox button.ks-lightbox__nav {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: #333333;
+  font-family: var(--ks-font-nav);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ks-lightbox button.ks-lightbox__close {
+  top: 12px;
+  right: 16px;
+}
+.ks-lightbox button.ks-lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ks-red-dark);
+}
+.ks-lightbox__nav--prev {
+  left: 12px;
+}
+.ks-lightbox__nav--next {
+  right: 12px;
+}
+.ks-lightbox button:hover {
+  background: #f2f2f2;
+}
+.ks-lightbox button:focus-visible {
+  outline: none;
+  box-shadow: var(--ks-focus);
+}
+
+/* ---------- Köpruta ---------- */
+.ks-product__info {
+  min-width: 0;
+}
+.ks-shop h1.ks-product__title {
+  margin: 0;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-size: 46px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ks-shop .ks-product__sku {
+  margin-block-start: 10px;
+  color: var(--ks-muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ks-product__sku[hidden] {
+  display: none;
+}
+
+.ks-product__review-note {
+  margin-block-start: 28px;
+  padding: 14px 18px;
+  border: 1px solid #d2d2d2;
+  border-inline-start: 4px solid var(--ks-red-dark);
+  background: var(--ks-grey-band);
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.ks-product__review-note strong {
+  color: #222222;
+  font-weight: 600;
+}
+
+.ks-product__rows {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) minmax(0, 1fr);
+  align-items: center;
+  gap: 28px 24px;
+  margin-block-start: 32px;
+}
+.ks-product__rows:empty {
+  display: none;
+}
+.ks-product__row {
+  display: contents;
+}
+.ks-product__row[hidden] {
+  display: none;
+}
+.ks-product__label {
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.ks-product__value {
+  min-width: 0;
+  line-height: 1.4;
+}
+.ks-product__price-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px 24px;
+}
+.ks-product__price {
+  color: #000000;
+  font-family: var(--ks-font-nav);
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1;
+}
+.ks-product__price .ks-price__dec {
+  top: -0.05em;
+  font-size: 0.42em;
+}
+.ks-product__tax-note {
+  padding-block-start: 4px;
+  color: var(--ks-muted);
+  font-size: 15px;
+  line-height: 1.35;
+}
+.ks-product__tax-note[hidden] {
+  display: none;
+}
+.ks-product__price-missing {
+  color: var(--ks-muted);
+  font-size: 15px;
+  font-style: italic;
+}
+.ks-product__value .ks-stock {
+  font-size: 16px;
+}
+.ks-shop select.ks-product__select {
+  width: 100%;
+  max-width: 340px;
+}
+.ks-product__buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 32px;
+  margin-block-start: 36px;
+}
+.ks-product__buy[hidden] {
+  display: none;
+}
+.ks-product__buy .ks-button--arrow {
+  min-height: 43px;
+}
+.ks-shop a.ks-product__quote-link {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---------- Flikar ---------- */
+.ks-tabs {
+  margin-block-start: 72px;
+}
+.ks-tabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 46px;
+}
+.ks-tabs__list[hidden] {
+  display: none;
+}
+.ks-shop button.ks-tabs__tab {
+  margin: 0;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ks-muted);
+  font-family: var(--ks-font-nav);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ks-shop button.ks-tabs__tab:hover {
+  color: #333333;
+}
+.ks-tabs__tab-text {
+  display: inline-block;
+  padding-block-end: 4px;
+  border-block-end: 3px solid transparent;
+}
+.ks-shop button.ks-tabs__tab[aria-selected='true'] {
+  color: #333333;
+}
+.ks-tabs__tab[aria-selected='true'] .ks-tabs__tab-text {
+  border-block-end-color: var(--ks-red-dark);
+}
+
+/* Rubrik per flik: syns utan JavaScript och i dragspelet på mobil */
+.ks-shop h2.ks-tabs__heading {
+  display: block;
+  margin: 48px 0 20px;
+  color: #333333;
+  font-family: var(--ks-font-nav);
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: uppercase;
+}
+.ks-tabs__panel:first-of-type h2.ks-tabs__heading {
+  margin-block-start: 0;
+}
+.ks-tabs--tabs h2.ks-tabs__heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.ks-tabs--tabs .ks-tabs__panel {
+  margin-block-start: 30px;
+}
+.ks-tabs__panel[hidden],
+.ks-tabs__body[hidden] {
+  display: none;
+}
+.ks-tabs__panel:focus-visible {
+  outline: none;
+  box-shadow: var(--ks-focus);
+}
+.ks-tabs__body {
+  color: #444444;
+  font-size: 16px;
+  line-height: 2;
+}
+
+/* Dragspel (mobil, med JavaScript) */
+.ks-tabs--accordion .ks-tabs__panel {
+  border-block-end: 1px solid var(--ks-hairline);
+}
+.ks-tabs--accordion .ks-tabs__panel:first-of-type {
+  border-block-start: 1px solid var(--ks-hairline);
+}
+.ks-shop .ks-tabs--accordion h2.ks-tabs__heading {
+  margin: 0;
+  font-size: 22px;
+}
+.ks-shop button.ks-tabs__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 10px 2px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: #333333;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: start;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.ks-tabs__chevron {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 9px;
+  color: var(--ks-red-dark);
+  transition: transform 0.2s ease;
+}
+.ks-tabs__toggle[aria-expanded='true'] .ks-tabs__chevron {
+  transform: rotate(180deg);
+}
+.ks-tabs--accordion .ks-tabs__body {
+  padding-block: 4px 24px;
+}
+
+/* Beskrivningstext (tillverkarens text med rubriker, listor och tabeller) */
+.ks-shop .ks-product__rte p {
+  margin: 0 0 30px;
+}
+.ks-shop .ks-product__rte > :last-child {
+  margin-block-end: 0;
+}
+.ks-shop .ks-product__rte :is(h2, h3, h4, h5, h6) {
+  margin: 36px 0 12px;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ks-shop .ks-product__rte > :first-child {
+  margin-block-start: 0;
+}
+.ks-shop .ks-product__rte h2 {
+  font-size: 26px;
+}
+.ks-shop .ks-product__rte h3 {
+  font-size: 21px;
+}
+.ks-shop .ks-product__rte :is(h4, h5, h6) {
+  font-size: 18px;
+}
+.ks-shop .ks-product__rte ul,
+.ks-shop .ks-product__rte ol {
+  margin: 0 0 30px;
+  padding-inline-start: 24px;
+}
+.ks-shop .ks-product__rte ul {
+  list-style: disc;
+}
+.ks-shop .ks-product__rte ol {
+  list-style: decimal;
+}
+.ks-shop .ks-product__rte a {
+  color: var(--ks-link);
+  text-decoration: underline;
+}
+.ks-shop .ks-product__rte img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+.ks-shop .ks-product__rte table {
+  display: block;
+  max-width: 100%;
+  margin: 0 0 30px;
+  overflow-x: auto;
+  border-collapse: collapse;
+  line-height: 1.6;
+}
+.ks-shop .ks-product__rte :is(td, th) {
+  padding: 8px 16px;
+  border: 1px solid var(--ks-hairline);
+  text-align: start;
+  vertical-align: top;
+}
+
+/* Specifikationstabell (etikett / värde) */
+.ks-spec-table {
+  width: 100%;
+  max-width: 860px;
+  border-collapse: collapse;
+  line-height: 1.6;
+}
+.ks-spec-table tr {
+  border-block-end: 1px solid var(--ks-hairline);
+}
+.ks-spec-table tr:first-child {
+  border-block-start: 1px solid var(--ks-hairline);
+}
+.ks-spec-table th,
+.ks-spec-table td {
+  padding: 10px 16px;
+  text-align: start;
+  vertical-align: top;
+}
+.ks-spec-table th {
+  width: 35%;
+  color: #333333;
+  font-weight: 600;
+}
+.ks-spec-table td {
+  color: #444444;
+}
+.ks-product__parts {
+  padding-block-start: 8px;
+}
+
+/* ---------- Fler produkter i samma kategori ---------- */
+.ks-product__related {
+  padding-block: 80px 64px;
+}
+.ks-product__related .ks-section__heading {
+  margin-block-end: 40px;
+}
+.ks-product__related-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 48px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-product__related-item {
+  display: flex;
+  width: calc((100% - 5 * 24px) / 6);
+  min-width: 0;
+}
+.ks-product__related-item .ks-product-card--grid .ks-product-card__media {
+  height: 200px;
+}
+.ks-product__related-item .ks-product-card--grid .ks-product-card__img {
+  max-height: 200px;
+}
+
+/* ---------- Surfplatta ---------- */
+@media screen and (max-width: 989px) {
+  .ks-product__main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .ks-gallery__main {
+    height: 340px;
+  }
+  .ks-shop h1.ks-product__title {
+    font-size: 38px;
+    line-height: 1.05;
+  }
+  .ks-tabs {
+    margin-block-start: 56px;
+  }
+  .ks-product__related-item {
+    width: calc((100% - 2 * 24px) / 3);
+  }
+}
+
+/* ---------- Mobil ---------- */
+@media screen and (max-width: 749px) {
+  .ks-product__topbar {
+    padding-block-start: 16px;
+    margin-block-end: 20px;
+  }
+  .ks-product__topbar-divider {
+    display: none;
+  }
+  .ks-product__topbar .ks-breadcrumb {
+    flex-basis: 100%;
+  }
+  .ks-gallery__main {
+    height: 280px;
+  }
+  .ks-gallery__thumbs {
+    gap: 12px;
+    margin-block-start: 24px;
+  }
+  .ks-shop .ks-gallery__thumb {
+    width: 64px;
+    height: 64px;
+  }
+  .ks-shop .ks-gallery__zoom {
+    margin-block-start: 16px;
+  }
+  .ks-shop .ks-gallery__zoom a {
+    display: inline-block;
+    padding-block: 10px;
+    line-height: 24px;
+  }
+  .ks-shop h1.ks-product__title {
+    font-size: 30px;
+    line-height: 1.1;
+  }
+  .ks-product__rows {
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 20px 12px;
+    margin-block-start: 24px;
+  }
+  .ks-product__row--variant .ks-product__label,
+  .ks-product__row--variant .ks-product__value {
+    grid-column: 1 / -1;
+  }
+  .ks-product__row--variant .ks-product__label {
+    margin-block-end: -12px;
+  }
+  .ks-shop select.ks-product__select {
+    max-width: none;
+    height: 44px;
+  }
+  .ks-product__price {
+    font-size: 38px;
+  }
+  .ks-product__buy {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-block-start: 28px;
+  }
+  .ks-product__buy .ks-button {
+    width: 100%;
+  }
+  .ks-product__buy .ks-button__label {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  .ks-shop a.ks-product__quote-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .ks-tabs {
+    margin-block-start: 40px;
+  }
+  .ks-shop h2.ks-tabs__heading {
+    font-size: 22px;
+  }
+  .ks-tabs__list {
+    gap: 8px 24px;
+  }
+  .ks-shop button.ks-tabs__tab {
+    font-size: 22px;
+  }
+  .ks-tabs__body {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .ks-spec-table th {
+    width: 40%;
+  }
+  .ks-spec-table th,
+  .ks-spec-table td {
+    padding: 8px 10px;
+  }
+  .ks-lightbox__inner {
+    padding: 64px 12px 72px;
+  }
+  .ks-lightbox button.ks-lightbox__nav {
+    top: auto;
+    bottom: 12px;
+    transform: none;
+  }
+  .ks-product__related {
+    padding-block: 48px 40px;
+  }
+  .ks-product__related-list {
+    gap: 36px 12px;
+  }
+  .ks-product__related-item {
+    width: calc((100% - 12px) / 2);
+  }
+  .ks-product__related-item .ks-product-card--grid .ks-product-card__media {
+    height: 150px;
+  }
+  .ks-product__related-item .ks-product-card--grid .ks-product-card__img {
+    max-height: 150px;
+  }
+}

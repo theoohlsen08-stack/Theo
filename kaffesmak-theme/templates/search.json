@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-search",
+      "settings": {
+        "products_per_page": 24,
+        "show_filters": true,
+        "show_sorting": true,
+        "show_sku": true,
+        "show_stock": true,
+        "buy_label": "Visa produkt",
+        "no_results_text": "Inga träffar för \"[sökord]\".",
+        "filtered_empty_text": "Inga produkter matchar filtren.",
+        "empty_search_text": "Skriv vad du letar efter, till exempel ett kaffe eller en produkttyp.",
+        "continue_label": "Fortsätt handla"
+      }
+    }
+  },
+  "order": ["main"]
+}

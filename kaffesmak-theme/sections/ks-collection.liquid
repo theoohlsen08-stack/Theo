@@ -1,0 +1,230 @@
+{%- comment -%}
+  KaffeSmak – kategorisida (gemensam kollektionsmall) som referensens kategorisidor:
+  grått titelband med brödsmulor "Hem › Kategori", röd H1 och kategorins beskrivning (när den finns),
+  därunder filter i vänsterspalten (25 %) och antal produkter, sortering och ett rutnät med tre produktkort.
+  - Filtren är Shopifys egna (collection.filters) och byggs bara på verkliga produktdata. Spalten döljs när filter saknas.
+  - Produktkorten (snippet ks-product-card) visar artikelnummer, lagerstatus och pris bara när uppgifterna finns.
+  - Tom kategori (inga publicerade produkter): en lugn tom ruta med länk vidare, utan filter och sortering.
+  - Filter som ger noll träffar: "Inga produkter matchar filtren." och "Rensa alla filter".
+  - På sidan /collections (mallen list-collections) visar samma sektion en översikt över butikens kategorier.
+{%- endcomment -%}
+
+{{ 'ks-shop.css' | asset_url | stylesheet_tag }}
+{{ 'ks-collection.css' | asset_url | stylesheet_tag }}
+
+{%- if collection != blank and collection.handle != blank -%}
+  <script src="{{ 'ks-facets.js' | asset_url }}" defer></script>
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    {%- liquid
+      assign ks_sort_by = collection.sort_by | default: collection.default_sort_by
+      assign ks_filters = collection.filters
+      unless section.settings.show_filters
+        assign ks_filters = ''
+      endunless
+      capture ks_active_count
+        render 'ks-facets', part: 'active_count', filters: collection.filters
+      endcapture
+      assign ks_active_count = ks_active_count | strip | plus: 0
+
+      assign ks_clear_url = collection.url
+      if collection.sort_by != blank
+        assign ks_clear_url = ks_clear_url | append: '?sort_by=' | append: collection.sort_by
+      endif
+
+      assign ks_empty_category = false
+      if collection.all_products_count == 0 and ks_active_count == 0
+        assign ks_empty_category = true
+      endif
+    -%}
+
+    <div class="ks-shop ks-collection">
+      <div class="ks-title-band">
+        <div class="ks-container">
+          {% render 'ks-breadcrumb', current: collection.title %}
+          <h1 class="ks-page-title">{{ collection.title | escape }}</h1>
+          {%- if section.settings.show_description and collection.description != blank -%}
+            <div class="ks-title-band__text">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="ks-container ks-collection__container">
+        {%- if ks_empty_category -%}
+          <div class="ks-collection__empty">
+            <p class="ks-empty-box">{{ section.settings.empty_text }}</p>
+            <div class="ks-collection__empty-actions">
+              {%- assign ks_empty_url = section.settings.empty_button_link | default: routes.root_url -%}
+              {% render 'ks-button', label: section.settings.empty_button_label, url: ks_empty_url %}
+              {%- if section.settings.show_categories_link -%}
+                <a href="{{ routes.collections_url }}" class="ks-link ks-collection__more-link">Se alla kategorier</a>
+              {%- endif -%}
+            </div>
+          </div>
+          {%- if request.design_mode -%}
+            <div class="ks-editor-note">
+              KaffeSmak kategorisida: kategorin "{{ collection.title }}" har inga publicerade produkter i webbutiken. Besökare ser den tomma rutan ovan. Produkter som är utkast visas inte.
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          {%- capture ks_sidebar -%}
+            {%- if section.settings.show_filters -%}
+              {% render 'ks-facets', part: 'sidebar', filters: ks_filters, id: section.id %}
+            {%- endif -%}
+          {%- endcapture -%}
+
+          <form
+            action="{{ collection.url }}"
+            method="get"
+            id="KsFacetsForm-{{ section.id }}"
+            class="ks-collection__body{% if ks_sidebar == blank %} ks-collection__body--full{% endif %}"
+            data-ks-facets-form
+          >
+            {%- if section.settings.show_sorting == false and collection.sort_by != blank -%}
+              <input type="hidden" name="sort_by" value="{{ collection.sort_by | escape }}">
+            {%- endif -%}
+            {{ ks_sidebar }}
+
+            <div class="ks-collection__main">
+              {% render 'ks-facets',
+                part: 'toolbar',
+                id: section.id,
+                count: collection.products_count,
+                count_suffix: '',
+                sort_options: collection.sort_options,
+                sort_by: ks_sort_by,
+                show_sorting: section.settings.show_sorting
+              %}
+              {% render 'ks-facets', part: 'active', filters: collection.filters, id: section.id, clear_url: ks_clear_url %}
+
+              {%- if collection.products_count == 0 or collection.products.size == 0 -%}
+                <div class="ks-collection__no-match">
+                  <p class="ks-empty-box">{{ section.settings.filtered_empty_text }}</p>
+                  {%- if ks_active_count > 0 -%}
+                    <p class="ks-collection__no-match-action">
+                      <a href="{{ ks_clear_url }}" class="ks-link">Rensa alla filter</a>
+                    </p>
+                  {%- endif -%}
+                </div>
+              {%- else -%}
+                <h2 class="ks-visually-hidden">Produkter i {{ collection.title | escape }}</h2>
+                <ul class="ks-product-grid ks-collection__grid" role="list">
+                  {%- for product in collection.products -%}
+                    <li>
+                      {% render 'ks-product-card',
+                        product: product,
+                        heading_tag: 'h3',
+                        buy_label: section.settings.buy_label,
+                        show_sku: section.settings.show_sku,
+                        show_stock: section.settings.show_stock,
+                        sizes: '(min-width: 990px) 300px, (min-width: 750px) 30vw, 45vw'
+                      %}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+                {% render 'ks-pagination', paginate: paginate %}
+              {%- endif -%}
+            </div>
+          </form>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endpaginate -%}
+
+{%- else -%}
+  {%- comment -%} Översikt över kategorierna (/collections). {%- endcomment -%}
+  {%- liquid
+    assign ks_list = section.settings.list_collections
+    if ks_list == blank
+      assign ks_list = collections
+    endif
+  -%}
+  {%- capture ks_tiles -%}
+    {%- for c in ks_list -%}
+      {%- if c.handle == 'all' or c.handle == blank -%}
+        {%- continue -%}
+      {%- endif -%}
+      {%- if c.products_count == 0 and section.settings.list_show_empty == false -%}
+        {%- continue -%}
+      {%- endif -%}
+      <li class="ks-cat-tile">
+        <a href="{{ c.url }}" class="ks-cat-tile__media" tabindex="-1" aria-hidden="true">
+          {%- if c.featured_image != blank -%}
+            {{
+              c.featured_image
+              | image_url: width: 600
+              | image_tag:
+                widths: '300, 450, 600',
+                sizes: '(min-width: 990px) 400px, (min-width: 750px) 45vw, 90vw',
+                alt: '',
+                loading: 'lazy',
+                class: 'ks-cat-tile__img'
+            }}
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag: 'ks-cat-tile__img ks-cat-tile__img--placeholder' }}
+          {%- endif -%}
+        </a>
+        <h2 class="ks-cat-tile__title"><a href="{{ c.url }}">{{ c.title | escape }}</a></h2>
+        <p class="ks-cat-tile__count">
+          {%- if c.products_count == 1 -%}1 produkt{%- else -%}{{ c.products_count }} produkter{%- endif -%}
+        </p>
+        {%- assign ks_aria = section.settings.list_button_label | append: ' ' | append: c.title -%}
+        {% render 'ks-button', label: section.settings.list_button_label, url: c.url, size: 'small', aria_label: ks_aria %}
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  <div class="ks-shop ks-collection ks-collection--list">
+    <div class="ks-title-band">
+      <div class="ks-container">
+        {% render 'ks-breadcrumb', current: section.settings.list_heading %}
+        <h1 class="ks-page-title">{{ section.settings.list_heading | escape }}</h1>
+      </div>
+    </div>
+    <div class="ks-container ks-collection__container">
+      {%- if ks_tiles != blank -%}
+        <ul class="ks-cat-tiles" role="list">
+          {{ ks_tiles }}
+        </ul>
+      {%- else -%}
+        <div class="ks-collection__empty">
+          <p class="ks-empty-box">Det finns inga kategorier att visa just nu.</p>
+          <div class="ks-collection__empty-actions">
+            {% render 'ks-button', label: 'Till startsidan', url: routes.root_url %}
+          </div>
+        </div>
+      {%- endif -%}
+      {%- if request.design_mode -%}
+        <div class="ks-editor-note">KaffeSmak kategoriöversikt: kategorier utan publicerade produkter döljs (kan ändras under "Visa även tomma kategorier"). Välj kategorier och ordning under "Kategorier att visa", annars visas alla.</div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KaffeSmak kategorisida",
+  "class": "ks-collection-section",
+  "enabled_on": { "templates": ["collection", "list-collections"] },
+  "settings": [
+    { "type": "header", "content": "Produkter" },
+    { "type": "range", "id": "products_per_page", "label": "Produkter per sida", "min": 6, "max": 48, "step": 3, "default": 24 },
+    { "type": "checkbox", "id": "show_description", "label": "Visa kategorins beskrivning", "default": true, "info": "Beskrivningen skrivs under Produkter > Kollektioner i Shopify." },
+    { "type": "checkbox", "id": "show_filters", "label": "Visa filter", "default": true, "info": "Vilka filter som finns ställs in under Onlinebutik > Navigering > Filter (Search & Discovery). Spalten döljs när inga filter finns." },
+    { "type": "checkbox", "id": "show_sorting", "label": "Visa sortering", "default": true },
+    { "type": "checkbox", "id": "show_sku", "label": "Visa artikelnummer", "default": true, "info": "Visas bara när produkten har ett artikelnummer (SKU)." },
+    { "type": "checkbox", "id": "show_stock", "label": "Visa lagerstatus", "default": true, "info": "Visas bara när lagret spåras i Shopify och produkten har ett pris." },
+    { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan." },
+    { "type": "header", "content": "Tomma lägen" },
+    { "type": "text", "id": "empty_text", "label": "Text när kategorin saknar produkter", "default": "Det finns inga produkter i den här kategorin just nu." },
+    { "type": "text", "id": "empty_button_label", "label": "Knapptext när kategorin saknar produkter", "default": "Till startsidan" },
+    { "type": "url", "id": "empty_button_link", "label": "Knapplänk", "info": "Tomt fält länkar till startsidan." },
+    { "type": "checkbox", "id": "show_categories_link", "label": "Visa länken \"Se alla kategorier\"", "default": true },
+    { "type": "text", "id": "filtered_empty_text", "label": "Text när filtren ger noll träffar", "default": "Inga produkter matchar filtren." },
+    { "type": "header", "content": "Kategoriöversikt (/collections)" },
+    { "type": "text", "id": "list_heading", "label": "Rubrik", "default": "Kategorier" },
+    { "type": "collection_list", "id": "list_collections", "label": "Kategorier att visa", "info": "Tomt fält visar alla kategorier." },
+    { "type": "checkbox", "id": "list_show_empty", "label": "Visa även tomma kategorier", "default": false },
+    { "type": "text", "id": "list_button_label", "label": "Knapptext", "default": "Visa produkter" }
+  ]
+}
+{% endschema %}

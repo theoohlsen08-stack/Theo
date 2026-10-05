@@ -1,0 +1,191 @@
+/* KaffeSmak – etapp 4: innehållssidor (sections/ks-page.liquid): Om oss och 404.
+   Referensens Om oss: bred bild ≈297 px, centrerad H1 48 px #9F0922, textkolumn ≈850 px, 16 px / radavstånd 2,
+   första stycket mörkare (#222), övriga #444, ≈30 px mellan stycken. */
+
+.ks-page {
+  background: #ffffff;
+}
+.ks-page__banner {
+  height: var(--ks-page-banner, 300px);
+  overflow: hidden;
+  background: #f2f2f2;
+}
+.ks-page__banner-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ks-page__main {
+  padding-block: 48px 96px;
+}
+.ks-page--no-banner .ks-page__main {
+  padding-block-start: 56px;
+}
+.ks-shop .ks-page__title {
+  max-width: 1100px;
+  margin: 0 auto 44px;
+  text-align: center;
+}
+
+/* ---------- Textkolumn ---------- */
+.ks-page__body {
+  max-width: 850px;
+  margin-inline: auto;
+  color: #444444;
+  font-size: 16px;
+  line-height: 2;
+}
+.ks-page__body--center {
+  text-align: center;
+}
+.ks-shop .ks-page__body > * {
+  margin: 0;
+}
+.ks-shop .ks-page__body > * + * {
+  margin-block-start: 30px;
+}
+.ks-shop .ks-page__body > p:first-child {
+  color: #222222;
+}
+.ks-shop .ks-page__body :is(h2, h3, h4) {
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.3;
+  text-transform: none;
+}
+.ks-shop .ks-page__body h2 {
+  font-size: 32px;
+}
+.ks-shop .ks-page__body h3 {
+  font-size: 26px;
+}
+.ks-shop .ks-page__body h4 {
+  font-size: 22px;
+}
+.ks-shop .ks-page__body a,
+.ks-shop .ks-page__fact-text a {
+  color: var(--ks-link);
+  text-decoration: underline;
+  text-decoration-color: currentcolor;
+}
+.ks-shop .ks-page__body a:hover {
+  color: var(--ks-red-dark);
+}
+/* På beige räcker inte länkrött för kontrast 4.5:1 – använd den mörkröda. */
+.ks-shop .ks-page__fact-text a {
+  color: var(--ks-red-dark);
+}
+.ks-shop .ks-page__fact-text a:hover {
+  color: var(--ks-red-darker);
+}
+.ks-page__body ul,
+.ks-page__body ol {
+  padding-inline-start: 1.4em;
+}
+.ks-page__body img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- Faktaruta ---------- */
+.ks-page__facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  max-width: 850px;
+  margin: 56px auto 0;
+}
+.ks-page__fact {
+  flex: 1 1 320px;
+  max-width: 520px;
+  padding: 32px 36px 36px;
+  border-radius: 6px;
+  background: #e5e0db;
+  text-align: center;
+}
+.ks-shop .ks-page__fact-heading {
+  margin: 0 0 14px;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.25;
+  text-transform: none;
+}
+.ks-page__fact-text {
+  color: #333333;
+  font-size: 16px;
+  line-height: 2;
+}
+.ks-shop .ks-page__fact-text > * + * {
+  margin-block-start: 12px;
+}
+
+/* ---------- Knappar ---------- */
+.ks-page__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 32px;
+  margin-block-start: 48px;
+}
+
+/* ---------- Surfplatta ---------- */
+@media screen and (max-width: 989px) {
+  .ks-page__banner {
+    height: min(var(--ks-page-banner, 300px), 240px);
+  }
+  .ks-page__main {
+    padding-block: 40px 72px;
+  }
+  .ks-shop .ks-page__title {
+    margin-block-end: 32px;
+  }
+}
+
+/* ---------- Mobil ---------- */
+@media screen and (max-width: 749px) {
+  .ks-page__banner {
+    height: var(--ks-page-banner-mobile, 180px);
+  }
+  .ks-page__main,
+  .ks-page--no-banner .ks-page__main {
+    padding-block: 32px 56px;
+  }
+  .ks-shop .ks-page__title {
+    margin-block-end: 24px;
+  }
+  .ks-shop .ks-page__body > * + * {
+    margin-block-start: 22px;
+  }
+  .ks-page__facts {
+    margin-block-start: 40px;
+  }
+  .ks-page__fact {
+    padding: 26px 20px 28px;
+  }
+  .ks-shop .ks-page__fact-heading {
+    font-size: 26px;
+  }
+  .ks-page__buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-block-start: 36px;
+  }
+  .ks-page__button .ks-button {
+    width: 100%;
+    min-height: 48px;
+  }
+  .ks-page__button .ks-button__label {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}

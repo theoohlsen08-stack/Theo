@@ -81,7 +81,8 @@
   font-weight: 700;
 }
 .ks-breadcrumb__link {
-  color: var(--ks-muted);
+  /* #666 ger 5,1:1 mot det gråa bandet (#f2f2f2); #767676 räcker inte där. */
+  color: #666666;
   text-decoration: none;
 }
 .ks-breadcrumb__link:hover {
@@ -104,16 +105,18 @@
   text-align: center;
 }
 
-/* ---------- Inaktiv knapp (referensens gråa knappar) ---------- */
-.ks-button--disabled,
-.ks-button--disabled:hover {
+/* ---------- Inaktiv knapp (referensens gråa knappar) ----------
+   Dubbel klass: sidfoten länkar ks-theme.css en gång till (efter den här filen), så reglerna måste vara
+   mer specifika än .ks-button--arrow och .ks-button--arrow .ks-button__arrow för att knappen ska förbli grå. */
+.ks-button.ks-button--disabled,
+.ks-button.ks-button--disabled:hover {
   background: #d9d9d9;
   color: #727272;
   box-shadow: 0 1px 0 #989898;
   cursor: not-allowed;
   pointer-events: none;
 }
-.ks-button--disabled .ks-button__arrow {
+.ks-button.ks-button--disabled .ks-button__arrow {
   background: #dcdcdc;
   color: #8a8a8a;
 }
@@ -326,6 +329,10 @@ button.ks-button:disabled {
   }
   .ks-title-band .ks-breadcrumb {
     margin-block-end: 24px;
+  }
+  /* Pekskärm: små knappar får minst 44 px höjd. */
+  .ks-shop .ks-button--small {
+    min-height: 44px;
   }
 }
 

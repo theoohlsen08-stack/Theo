@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-page",
+      "blocks": {
+        "button_home": {
+          "type": "button",
+          "settings": {
+            "label": "Till startsidan",
+            "url": "/"
+          }
+        },
+        "button_products": {
+          "type": "button",
+          "settings": {
+            "label": "Se alla produkter",
+            "url": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "button_home",
+        "button_products"
+      ],
+      "settings": {
+        "banner_height": 300,
+        "banner_height_mobile": 180,
+        "heading": "Sidan hittades inte",
+        "text": "<p>Länken kan vara felaktig eller så har sidan flyttats.</p>",
+        "editor_note": "",
+        "center_text": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,137 @@
+{%- comment -%}
+  KaffeSmak – enkel innehållssida (referensens Om oss): valfri bred bild direkt under menyn,
+  centrerad röd H1 och en smal, centrerad textkolumn (första stycket mörkare som ingress).
+  Används för Om oss (templates/page.om-oss.json) och för 404-sidan (templates/404.json).
+
+  - Bild: visas bara när en godkänd bild har valts. Ingen bild = ingen banner (aldrig en bildbank-bild).
+  - Rubrik: sektionens rubrik, annars sidans titel.
+  - Text: sidans innehåll (page.content) när det finns, annars sektionens text.
+  - Block: "Faktaruta" (beige kort med rubrik och text, t.ex. företagsuppgifter) och
+    "Knapp/länk" (grön knapp). Blocken visas centrerat under texten.
+  Skriv bara verifierade uppgifter. Hitta inte på historia, grundandeår, ägare, utmärkelser eller löften.
+{%- endcomment -%}
+
+{{ 'ks-shop.css' | asset_url | stylesheet_tag }}
+{{ 'ks-pages.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = section.settings
+  assign heading = s.heading
+  if heading == blank and page != blank
+    assign heading = page.title
+  endif
+  assign body = ''
+  if page != blank and page.content != blank
+    assign body = page.content
+  elsif s.text != blank
+    assign body = s.text
+  endif
+  assign title_id = 'KsPageTitle-' | append: section.id
+-%}
+
+{%- capture facts -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'facts' -%}
+      {%- if block.settings.heading != blank or block.settings.text != blank -%}
+        <div class="ks-page__fact" {{ block.shopify_attributes }}>
+          {%- if block.settings.heading != blank -%}
+            <h2 class="ks-page__fact-heading">{{ block.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <div class="ks-page__fact-text">{{ block.settings.text }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture buttons -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'button' and block.settings.label != blank and block.settings.url != blank -%}
+      <div class="ks-page__button" {{ block.shopify_attributes }}>
+        {% render 'ks-button', label: block.settings.label, url: block.settings.url %}
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<div class="ks-shop ks-page{% if s.image == blank %} ks-page--no-banner{% endif %}" style="--ks-page-banner: {{ s.banner_height }}px; --ks-page-banner-mobile: {{ s.banner_height_mobile }}px;">
+  {%- if s.image != blank -%}
+    <div class="ks-page__banner">
+      {{
+        s.image
+        | image_url: width: 2400
+        | image_tag:
+          widths: '750, 1100, 1500, 1920, 2400',
+          sizes: '100vw',
+          alt: s.image.alt,
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'ks-page__banner-img'
+      }}
+    </div>
+  {%- elsif request.design_mode -%}
+    <div class="ks-container">
+      <div class="ks-editor-note">Ingen bild är vald, så bannern visas inte för besökare. Välj en bild som kunden har godkänt (ingen bildbank och inga bilder från referensen).</div>
+    </div>
+  {%- endif -%}
+
+  <section class="ks-page__main" aria-labelledby="{{ title_id }}">
+    <div class="ks-container">
+      {%- if request.design_mode and s.editor_note != blank -%}
+        <div class="ks-editor-note">{{ s.editor_note }}</div>
+      {%- endif -%}
+
+      <h1 class="ks-page-title ks-page__title" id="{{ title_id }}">{{ heading | default: 'Sidan' }}</h1>
+
+      {%- if body != '' -%}
+        <div class="ks-page__body{% if s.center_text %} ks-page__body--center{% endif %}">{{ body }}</div>
+      {%- endif -%}
+
+      {%- if facts != blank -%}
+        <div class="ks-page__facts">{{ facts }}</div>
+      {%- endif -%}
+
+      {%- if buttons != blank -%}
+        <div class="ks-page__buttons">{{ buttons }}</div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "KaffeSmak innehållssida",
+  "class": "ks-page-section",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Bred bild överst", "info": "Valfri. Använd bara bilder som kunden har godkänt. Utan bild visas ingen banner." },
+    { "type": "range", "id": "banner_height", "label": "Bildens höjd, dator", "min": 160, "max": 480, "step": 10, "unit": "px", "default": 300 },
+    { "type": "range", "id": "banner_height_mobile", "label": "Bildens höjd, mobil", "min": 120, "max": 320, "step": 10, "unit": "px", "default": 180 },
+    { "type": "text", "id": "heading", "label": "Rubrik", "info": "Tomt fält visar sidans titel." },
+    { "type": "richtext", "id": "text", "label": "Text", "info": "Visas när sidan i Shopify saknar eget innehåll. Första stycket visas som ingress." },
+    { "type": "checkbox", "id": "center_text", "label": "Centrera texten", "info": "Passar korta texter, t.ex. på 404-sidan.", "default": false },
+    { "type": "textarea", "id": "editor_note", "label": "Anteckning i temaredigeraren", "info": "Visas bara i temaredigeraren, aldrig för besökare." }
+  ],
+  "blocks": [
+    {
+      "type": "facts",
+      "name": "Faktaruta",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Rubrik", "default": "Företagsuppgifter" },
+        { "type": "richtext", "id": "text", "label": "Text", "info": "Bara verifierade uppgifter." }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Knapp/länk",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Knapptext", "default": "Kontakt och hitta hit" },
+        { "type": "url", "id": "url", "label": "Länk" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "KaffeSmak innehållssida" }]
+}
+{% endschema %}

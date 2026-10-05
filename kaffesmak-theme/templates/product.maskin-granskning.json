@@ -3,10 +3,10 @@
     "main": {
       "type": "ks-product",
       "settings": {
-        "sales_mode": "buy",
+        "sales_mode": "both",
         "buy_label": "Köp",
         "quote_label": "Begär offert",
-        "review_preview": false,
+        "review_preview": true,
         "show_category_fields": false,
         "show_related": true,
         "related_heading": "Fler produkter i samma kategori",
