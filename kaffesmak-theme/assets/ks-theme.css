@@ -12,6 +12,13 @@
   --ks-beige: #e2d8c8;
   --ks-brown: #653a2b;
   --ks-gold: #a38358;
+  /* Etapp 4: länkröd, lagergrön (mörkad för kontrast 4.7:1), grått titelband, kontrollfält och tunna linjer */
+  --ks-link: #dd052b;
+  --ks-stock: #3b831d;
+  --ks-grey-band: #f2f2f2;
+  --ks-control-bg: #e3e3e3;
+  --ks-hairline: #e9e9e9;
+  --ks-muted: #767676;
   --ks-container: 1320px;
   --ks-content: 1086px;
   --ks-gutter: 24px;

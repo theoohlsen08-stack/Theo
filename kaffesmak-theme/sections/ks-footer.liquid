@@ -36,7 +36,7 @@
           {%- assign logo_style = 'height: ' | append: s.logo_height | append: 'px;' -%}
           {{ s.logo | image_url: height: 280 | image_tag: alt: s.logo_alt, class: 'ks-footer__logo-img', loading: 'lazy', style: logo_style }}
         {%- elsif s.logo_asset != blank -%}
-          <img src="{{ s.logo_asset | asset_url }}" alt="{{ s.logo_alt | escape }}" class="ks-footer__logo-img" style="height: {{ s.logo_height }}px;" loading="lazy">
+          <img src="{{ s.logo_asset | asset_url }}" alt="{{ s.logo_alt | escape }}" class="ks-footer__logo-img" style="height: {{ s.logo_height }}px;" width="571" height="480" loading="lazy">
         {%- else -%}
           <span class="ks-footer__logo-text">{{ s.logo_alt }}</span>
         {%- endif -%}

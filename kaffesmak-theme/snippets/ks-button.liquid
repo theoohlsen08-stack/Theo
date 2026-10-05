@@ -2,11 +2,55 @@
   KaffeSmak – grön knapp med ljusare pilfält, som referensens knappar.
   Parametrar: label (text), url (länk), size ('small' eller tom), class (extra klasser),
   aria_label (valfri), new_tab (true/false).
+  Etapp 4:
+  - tag: 'button' ger en <button> (type anges med button_type, standard 'submit'; name och form_id valfria).
+  - disabled: true ger referensens gråa, inaktiva knapp. En inaktiv länk blir en <span> som inte går att klicka på.
 {%- endcomment -%}
-{%- if label != blank and url != blank -%}
+{%- liquid
+  assign classes = 'ks-button ks-button--arrow'
+  if disabled
+    assign classes = classes | append: ' ks-button--disabled'
+  else
+    assign classes = classes | append: ' ks-button--green'
+  endif
+  if size == 'small'
+    assign classes = classes | append: ' ks-button--small'
+  endif
+  if class != blank
+    assign classes = classes | append: ' ' | append: class
+  endif
+-%}
+{%- capture ks_button_inner -%}
+  <span class="ks-button__label">{{ label }}</span>
+  <span class="ks-button__arrow" aria-hidden="true">
+    <svg width="8" height="12" viewBox="0 0 8 12" focusable="false"><path d="M1.5 1.5L6 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+  </span>
+{%- endcapture -%}
+{%- if tag == 'button' and label != blank -%}
+  <button
+    type="{{ button_type | default: 'submit' }}"
+    class="{{ classes }}"
+    {% if name != blank %}
+      name="{{ name }}"
+    {% endif %}
+    {% if form_id != blank %}
+      form="{{ form_id }}"
+    {% endif %}
+    {% if aria_label != blank %}
+      aria-label="{{ aria_label | escape }}"
+    {% endif %}
+    {% if disabled %}
+      disabled aria-disabled="true"
+    {% endif %}
+  >
+    {{- ks_button_inner -}}
+  </button>
+{%- elsif disabled and label != blank -%}
+  <span class="{{ classes }}" aria-disabled="true">{{- ks_button_inner -}}</span>
+{%- elsif label != blank and url != blank -%}
   <a
     href="{{ url }}"
-    class="ks-button ks-button--green ks-button--arrow{% if size == 'small' %} ks-button--small{% endif %}{% if class != blank %} {{ class }}{% endif %}"
+    class="{{ classes }}"
     {% if aria_label != blank %}
       aria-label="{{ aria_label | escape }}"
     {% endif %}
@@ -14,9 +58,6 @@
       target="_blank" rel="noopener"
     {% endif %}
   >
-    <span class="ks-button__label">{{ label }}</span>
-    <span class="ks-button__arrow" aria-hidden="true">
-      <svg width="8" height="12" viewBox="0 0 8 12" focusable="false"><path d="M1.5 1.5L6 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-    </span>
+    {{- ks_button_inner -}}
   </a>
 {%- endif -%}

@@ -1,0 +1,77 @@
+{%- comment -%}
+  KaffeSmak – produktkort för rutnät (kategorisida, sökresultat, relaterade produkter), som referensens kort:
+  luftig bild, röd produkttitel, artikelnummer | lagerstatus, pris och en grön knapp som öppnar produktsidan.
+  Parametrar:
+  - product (obligatorisk)
+  - heading_tag: 'h2' eller 'h3' (standard 'h3')
+  - buy_label: knapptext (standard "Visa produkt")
+  - show_sku, show_stock: false döljer raden (standard visas de när verkliga uppgifter finns)
+  - sizes: bildens sizes-attribut
+  Dataregler (etapp 4): artikelnummer bara när varianten har SKU; lagerstatus bara när lagret spåras och produkten har pris;
+  pris bara när det är större än 0 kr. Knappen öppnar alltid produktsidan.
+{%- endcomment -%}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign ks_tag = heading_tag | default: 'h3'
+  assign ks_label = buy_label | default: 'Visa produkt'
+  assign ks_aria = ks_label | append: ' ' | append: product.title
+  assign ks_sizes = sizes | default: '(min-width: 990px) 300px, (min-width: 750px) 30vw, 45vw'
+
+  assign ks_sku = ''
+  unless show_sku == false
+    if variant.sku != blank
+      assign ks_sku = variant.sku
+    endif
+  endunless
+
+  assign ks_stock = ''
+  unless show_stock == false
+    if variant.inventory_management == 'shopify' and product.price > 0
+      if product.available
+        assign ks_stock = 'in'
+      else
+        assign ks_stock = 'out'
+      endif
+    endif
+  endunless
+-%}
+<article class="ks-product-card ks-product-card--grid">
+  <a href="{{ product.url }}" class="ks-product-card__media" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image != blank -%}
+      {%- assign img_alt = product.featured_image.alt | default: product.title -%}
+      {{
+        product.featured_image
+        | image_url: width: 600
+        | image_tag:
+          widths: '240, 360, 480, 600',
+          sizes: ks_sizes,
+          alt: img_alt,
+          loading: 'lazy',
+          class: 'ks-product-card__img'
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'ks-product-card__img ks-product-card__img--placeholder' }}
+    {%- endif -%}
+  </a>
+  <{{ ks_tag }} class="ks-product-card__title">
+    <a href="{{ product.url }}">{{ product.title }}</a>
+  </{{ ks_tag }}>
+  {%- if ks_sku != '' or ks_stock != '' -%}
+    <p class="ks-product-card__meta">
+      {%- if ks_sku != '' -%}
+        <span class="ks-product-card__sku"><span class="ks-visually-hidden">Artikelnummer:</span> {{ ks_sku }}</span>
+      {%- endif -%}
+      {%- if ks_stock == 'in' -%}
+        <span class="ks-product-card__stock ks-stock ks-stock--in">I lager</span>
+      {%- elsif ks_stock == 'out' -%}
+        <span class="ks-product-card__stock ks-stock ks-stock--out">Slut i lager</span>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+  {%- if product.price > 0 -%}
+    <p class="ks-product-card__price">
+      {% render 'ks-price', price: product.price, from: product.price_varies %}
+    </p>
+  {%- endif -%}
+  {% render 'ks-button', label: ks_label, url: product.url, size: 'small', aria_label: ks_aria, class: 'ks-product-card__buy' %}
+</article>

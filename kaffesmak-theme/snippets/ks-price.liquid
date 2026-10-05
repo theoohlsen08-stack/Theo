@@ -1,0 +1,23 @@
+{%- comment -%}
+  KaffeSmak – pris som referensen: heltal, ören upphöjda och "kr" ("120,⁰⁰ kr").
+  Parametrar: price (i ören, som Shopifys price), from (true visar "Från"), class (extra klass).
+  Skärmläsare får hela beloppet i klartext. Anroparen ansvarar för att inte visa 0 kr.
+{%- endcomment -%}
+{%- liquid
+  assign ks_full = price | money
+  assign ks_amount = price | money_without_currency
+  assign ks_parts = ks_amount | split: ','
+  assign ks_currency = ks_full | remove: ks_amount | strip
+-%}
+<span class="ks-price{% if class != blank %} {{ class }}{% endif %}">
+  <span class="ks-visually-hidden">{% if from %}Från {% endif %}{{ ks_full }}</span>
+  <span class="ks-price__visual" aria-hidden="true">
+    {%- if from -%}<span class="ks-price__from">Från </span>{%- endif -%}
+    {%- if ks_parts.size == 2 -%}
+      <span class="ks-price__int">{{ ks_parts[0] }},</span><sup class="ks-price__dec">{{ ks_parts[1] }}</sup>
+    {%- else -%}
+      <span class="ks-price__int">{{ ks_amount }}</span>
+    {%- endif -%}
+    {%- if ks_currency != blank %} <span class="ks-price__cur">{{ ks_currency }}</span>{%- endif -%}
+  </span>
+</span>

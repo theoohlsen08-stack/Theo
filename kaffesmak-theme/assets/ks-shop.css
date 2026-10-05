@@ -1,0 +1,371 @@
+/* KaffeSmak – etapp 4: gemensamma delar för butikens undersidor
+   (kategorisidor, sökresultat, produktsidor, varukorg och Om oss).
+   Färger och typsnitt kommer från ks-theme.css (:root och --ks-font-*). */
+
+/* ---------- Sidans ram ---------- */
+.ks-shop {
+  font-family: var(--ks-font-body);
+  color: #444444;
+  font-size: 16px;
+  line-height: 2;
+}
+.ks-shop *,
+.ks-shop *::before,
+.ks-shop *::after {
+  box-sizing: border-box;
+}
+.ks-shop p {
+  margin: 0;
+}
+.ks-link,
+.ks-shop a.ks-link {
+  color: var(--ks-link);
+  text-decoration: none;
+}
+.ks-link:hover,
+.ks-shop a.ks-link:hover {
+  text-decoration: underline;
+}
+.ks-shop a:focus-visible,
+.ks-shop button:focus-visible,
+.ks-shop select:focus-visible,
+.ks-shop input:focus-visible,
+.ks-shop summary:focus-visible {
+  outline: none;
+  box-shadow: var(--ks-focus);
+}
+
+/* ---------- Grått titelband med brödsmulor och H1 (kategori och sök) ---------- */
+.ks-title-band {
+  background: var(--ks-grey-band);
+  padding-block: 24px 36px;
+}
+.ks-title-band .ks-breadcrumb {
+  margin-block-end: 40px;
+}
+.ks-title-band .ks-page-title {
+  margin: 0;
+}
+.ks-title-band__text {
+  margin-block-start: 22px;
+  color: #333333;
+}
+.ks-title-band__text a {
+  color: var(--ks-link);
+}
+.ks-title-band__text p + p {
+  margin-block-start: 16px;
+}
+
+/* ---------- Brödsmulor ---------- */
+.ks-breadcrumb {
+  font-family: var(--ks-font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ks-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-breadcrumb__item {
+  color: #555555;
+}
+.ks-breadcrumb__item + .ks-breadcrumb__item::before {
+  content: '›';
+  margin-inline: 8px;
+  color: #333333;
+  font-weight: 700;
+}
+.ks-breadcrumb__link {
+  color: var(--ks-muted);
+  text-decoration: none;
+}
+.ks-breadcrumb__link:hover {
+  color: #333333;
+  text-decoration: underline;
+}
+
+/* ---------- Tom ruta (tom varukorg, inga träffar, tom kategori) ---------- */
+.ks-empty-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 14px 20px;
+  background: var(--ks-grey-band);
+  color: #666666;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* ---------- Inaktiv knapp (referensens gråa knappar) ---------- */
+.ks-button--disabled,
+.ks-button--disabled:hover {
+  background: #d9d9d9;
+  color: #727272;
+  box-shadow: 0 1px 0 #989898;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.ks-button--disabled .ks-button__arrow {
+  background: #dcdcdc;
+  color: #8a8a8a;
+}
+button.ks-button:disabled {
+  opacity: 1;
+}
+
+/* ---------- Kontrollfält (sortering, antal, val) ---------- */
+.ks-shop select.ks-control,
+.ks-shop input.ks-control {
+  height: 40px;
+  margin: 0;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 1px solid #868686;
+  border-radius: 2px;
+  background-color: var(--ks-control-bg);
+  color: #333333;
+  font-family: var(--ks-font-body);
+  font-size: 16px;
+  line-height: 1.2;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ks-shop select.ks-control {
+  padding-inline-end: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23333'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 10px 6px;
+  cursor: pointer;
+}
+.ks-shop input.ks-control:focus-visible,
+.ks-shop select.ks-control:focus-visible {
+  outline: none;
+  box-shadow: var(--ks-focus);
+}
+
+/* Antalsväljare: gröna minus/plus som referensen */
+.ks-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ks-qty__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--ks-green);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ks-qty__button:hover {
+  background: var(--ks-green-dark);
+}
+.ks-qty__button:disabled {
+  background: #d9d9d9;
+  color: #727272;
+  cursor: not-allowed;
+}
+.ks-shop input.ks-qty__input {
+  width: 62px;
+  height: 34px;
+  padding: 0 6px;
+  text-align: center;
+  color: #444444;
+  -moz-appearance: textfield;
+}
+.ks-qty__input::-webkit-outer-spin-button,
+.ks-qty__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ---------- Pris med upphöjda ören ---------- */
+.ks-price {
+  white-space: nowrap;
+}
+.ks-price__dec {
+  position: relative;
+  top: -0.1em;
+  margin-inline-start: 1px;
+  font-size: 0.56em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+/* ---------- Lagerstatus ---------- */
+.ks-stock--in {
+  color: var(--ks-stock);
+}
+.ks-stock--out {
+  color: #555555;
+}
+
+/* ---------- Produktrutnät och produktkort (rutnätsvarianten) ---------- */
+.ks-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-product-grid > li {
+  display: flex;
+  min-width: 0;
+}
+.ks-product-card.ks-product-card--grid {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 0 8px;
+  scroll-snap-align: none;
+}
+.ks-product-card--grid .ks-product-card__media {
+  height: 230px;
+  margin-block-end: 24px;
+}
+.ks-product-card--grid .ks-product-card__img {
+  max-height: 230px;
+}
+.ks-product-card--grid .ks-product-card__title {
+  margin: 0 0 20px;
+  line-height: 1.45;
+}
+.ks-product-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.ks-product-card__meta .ks-product-card__sku {
+  margin: 0;
+  color: var(--ks-muted);
+  font-size: 16px;
+}
+.ks-product-card__meta > * + *::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  margin-inline: 20px;
+  background: #e5e5e5;
+  vertical-align: middle;
+}
+.ks-product-card--grid .ks-product-card__price {
+  margin: 0 0 22px;
+  color: #555555;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ---------- Sidnumrering ---------- */
+.ks-pagination {
+  display: flex;
+  justify-content: center;
+  margin-block-start: 56px;
+}
+.ks-pagination__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--ks-font-nav);
+  font-size: 20px;
+  line-height: 1;
+}
+.ks-pagination__link,
+.ks-pagination__current,
+.ks-pagination__gap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  color: #333333;
+  text-decoration: none;
+}
+.ks-pagination__link:hover {
+  color: var(--ks-red-dark);
+  text-decoration: underline;
+}
+.ks-pagination__current {
+  color: var(--ks-red-dark);
+  font-weight: 600;
+  border-bottom: 3px solid var(--ks-red-dark);
+}
+
+/* ---------- Surfplatta ---------- */
+@media screen and (max-width: 989px) {
+  .ks-title-band {
+    padding-block: 20px 24px;
+  }
+  .ks-title-band .ks-breadcrumb {
+    margin-block-end: 24px;
+  }
+}
+
+/* ---------- Mobil ---------- */
+@media screen and (max-width: 749px) {
+  .ks-title-band__text {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .ks-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 12px;
+  }
+  .ks-product-card.ks-product-card--grid {
+    padding: 0;
+  }
+  .ks-product-card--grid .ks-product-card__media {
+    height: 150px;
+    margin-block-end: 16px;
+  }
+  .ks-product-card--grid .ks-product-card__img {
+    max-height: 150px;
+  }
+  .ks-product-card--grid .ks-product-card__title {
+    margin-block-end: 12px;
+    font-size: 16px;
+  }
+  .ks-product-card__meta {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 15px;
+  }
+  .ks-product-card__meta > * + *::before {
+    display: none;
+  }
+  .ks-qty__button {
+    width: 44px;
+    height: 44px;
+  }
+  .ks-shop input.ks-qty__input {
+    height: 44px;
+  }
+}

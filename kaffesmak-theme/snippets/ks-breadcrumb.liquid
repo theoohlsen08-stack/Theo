@@ -1,0 +1,15 @@
+{%- comment -%}
+  KaffeSmak – brödsmulor som referensen: "Hem › Kategori › Aktuell sida".
+  Parametrar: parent_title och parent_url (valfri mellannivå), current (aktuell sida, visas utan länk).
+{%- endcomment -%}
+<nav class="ks-breadcrumb" aria-label="Brödsmulor">
+  <ol class="ks-breadcrumb__list">
+    <li class="ks-breadcrumb__item"><a href="{{ routes.root_url }}" class="ks-breadcrumb__link">Hem</a></li>
+    {%- if parent_title != blank and parent_url != blank -%}
+      <li class="ks-breadcrumb__item"><a href="{{ parent_url }}" class="ks-breadcrumb__link">{{ parent_title | escape }}</a></li>
+    {%- endif -%}
+    {%- if current != blank -%}
+      <li class="ks-breadcrumb__item" aria-current="page">{{ current | escape }}</li>
+    {%- endif -%}
+  </ol>
+</nav>
