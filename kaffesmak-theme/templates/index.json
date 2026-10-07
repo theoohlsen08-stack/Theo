@@ -211,7 +211,7 @@
           "settings": {
             "icon": "play",
             "heading": "Följ oss på YouTube",
-            "text": "<p>Kaffe Smak Rosteri drivs av Adam. Följ kanalen Adam Kaffe på YouTube.</p>",
+            "text": "<p>Vår kanal på YouTube heter @Adamkaffe.</p>",
             "button_label": "Till YouTube",
             "link": "https://www.youtube.com/@Adamkaffe",
             "background": "#3B2A12"

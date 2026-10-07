@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-article",
+      "settings": {
+        "show_date": true
+      }
+    }
+  },
+  "order": ["main"]
+}

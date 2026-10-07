@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-page",
+      "settings": {
+        "heading": "",
+        "text": "",
+        "center_text": false,
+        "banner_height": 300,
+        "banner_height_mobile": 180,
+        "editor_note": "Standardmall för sidor: rubriken är sidans titel och texten sidans innehåll i Shopify (Onlinebutik > Sidor). Utan bild visas ingen banner."
+      }
+    }
+  },
+  "order": ["main"]
+}

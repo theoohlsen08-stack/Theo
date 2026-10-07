@@ -1,10 +1,15 @@
 {%- comment -%}
   KaffeSmak – brödsmulor som referensen: "Hem › Kategori › Aktuell sida".
-  Parametrar: parent_title och parent_url (valfri mellannivå), current (aktuell sida, visas utan länk).
+  Parametrar: ancestor_title och ancestor_url (valfri överkategori, etapp 5), parent_title och parent_url
+  (valfri mellannivå), current (aktuell sida, visas utan länk). Utan current slutar raden med en länk
+  (produktsidan: "Hem › Kaffemaskiner › Espressomaskiner" som referensen).
 {%- endcomment -%}
 <nav class="ks-breadcrumb" aria-label="Brödsmulor">
   <ol class="ks-breadcrumb__list">
     <li class="ks-breadcrumb__item"><a href="{{ routes.root_url }}" class="ks-breadcrumb__link">Hem</a></li>
+    {%- if ancestor_title != blank and ancestor_url != blank -%}
+      <li class="ks-breadcrumb__item"><a href="{{ ancestor_url }}" class="ks-breadcrumb__link">{{ ancestor_title | escape }}</a></li>
+    {%- endif -%}
     {%- if parent_title != blank and parent_url != blank -%}
       <li class="ks-breadcrumb__item"><a href="{{ parent_url }}" class="ks-breadcrumb__link">{{ parent_title | escape }}</a></li>
     {%- endif -%}

@@ -102,3 +102,46 @@ Varukorg och sidor:
 - `templates/page.om-oss.json` – Om oss med verifierade företagsuppgifter. Sidan Om oss finns inte i Shopify ännu,
   så mallen granskas via `/pages/contact?view=om-oss`.
 - `templates/404.json` – "Sidan hittades inte" med länkar till startsidan och produkterna.
+
+## Etapp 5 (slutgranskning)
+
+Justeringar efter genomgången mot Monteriva-referenserna. Inga köp- eller offertalternativ är aktiverade och inget
+innehåll är påhittat.
+
+Navigering och brödsmulor:
+
+- `sections/ks-header.liquid`, `snippets/ks-nav-children.liquid`, `snippets/ks-nav-current.liquid` – dator- och
+  mobilmenyn bygger undermenyn med samma regler: tomma länkar och `#`, länkar till opublicerade kategorier, produkter
+  och sidor och (med inställningen "Dölj undermenylänkar som går till samma sida som huvudlänken", på i
+  `sections/header-group.json`) platshållare till huvudpunktens egen sida visas inte. En huvudpunkt utan undermeny blir
+  en vanlig länk, och en huvudpunkt utan både undermeny och länk visas inte. Aktuell sida markeras på högst en rad, och
+  länkar med `?view=` (Om oss på `/pages/contact?view=om-oss`) markeras bara när den vyn visas.
+- `sections/ks-product.liquid`, `snippets/ks-breadcrumb.liquid` – produktsidans brödsmulor följer menyn i
+  "Meny för brödsmulor" ("Hem › Kaffemaskiner › Espressomaskiner" som referensen) och slutar med kategorin.
+  Samma kategori används för "Tillbaka till översikt" och "Fler produkter i samma kategori".
+- `sections/ks-collection.liquid`, `templates/collection.json` – brödsmulor med överkategori från menyn, rubriken
+  "Alla produkter" för `/collections/all` och kategorirutor som använder första produktens bild när kategorin saknar
+  egen bild (utan bild en grå yta, platshållarteckningen bara i temaredigeraren).
+
+Sidor:
+
+- `sections/ks-page.liquid`, `templates/page.om-oss.json`, `assets/ks-pages.css` – nya block "Bild och text" och
+  "Bildgalleri" för kundens historia och foton. Tomma block visas inte för besökare. Sidans eget innehåll visas bara
+  när sidan själv använder mallen (inte via `?view=`). Sidan Om oss finns i Shopify som opublicerad sida
+  `/pages/om-oss` med mallen `page.om-oss`.
+- `templates/page.json` – standardmallen för sidor använder `ks-page` (rubrik = sidans titel, text = sidans innehåll).
+- `sections/ks-article.liquid`, `templates/article.json` – bloggartikel i samma formgivning som Om oss (bloggen har
+  inga artiklar ännu).
+- `assets/ks-theme.css` – Shopifys policysidor (`/policies/…`) får centrerad röd H1, en textkolumn på 850 px och
+  röda underrubriker som Om oss.
+- `snippets/meta-tags.liquid` – sidtitlar på svenska för taggade kategorier och sidnummer.
+
+Övrigt:
+
+- `sections/ks-product-row.liquid`, `assets/ks-theme.css` – startsidans produktrad visar priset som kategorisidan
+  ("120,⁰⁰ kr"); prisreglerna ligger nu i `ks-theme.css`.
+- `assets/ks-theme.css` – fyra produktkort ryms på surfplatta (768 px), större tryckytor i infobandet på mobil och
+  aktuell sida i mobilmenyn.
+- `assets/ks-shop.css` – titelbandets nederkant och brödsmulornas sista länk som referensen.
+- `templates/index.json` – YouTube-kortet säger bara det som är verifierat: "Vår kanal på YouTube heter @Adamkaffe."
+- Horizons `templates/password.json` lämnas orörd (ingen egen lösenordssida).

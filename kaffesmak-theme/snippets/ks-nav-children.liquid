@@ -1,0 +1,86 @@
+{%- comment -%}
+  KaffeSmak – undermenyns rader (<li>) för en huvudpunkt i sidhuvudet (etapp 5). Används av både datormenyn och
+  mobilmenyn i sections/ks-header.liquid, så att de följer samma regler.
+  Parametrar:
+    link           – huvudpunkten (link-objekt)
+    top_url        – huvudpunktens användbara länk ('' när den är '#', tom eller pekar på en opublicerad resurs)
+    variant        – 'desktop' (rullgardin) eller 'mobile' (dragspel)
+    show_view_all  – visa "Visa alla …" först (bara när top_url finns)
+    view_all_label – texten före huvudpunktens namn ("Visa alla")
+    hide_same      – dölj undermenylänkar som går till samma sida som huvudpunkten
+    view_names     – menyns vy-namn (?view=X) som '|om-oss|' (beräknas i ks-header.liquid)
+    view_suffix    – template.suffix för sidan som visas
+  En undermenylänk hoppas över när
+  - länken är tom eller '#';
+  - den går till samma sida som huvudpunkten och hide_same är på ("Visa alla" leder redan dit);
+  - den pekar på en kategori, produkt, sida, blogg eller artikel som inte är publicerad (link.object saknas).
+  Aktuell sida (aria-current="page", se ks-nav-current): högst en rad per undermeny markeras, "Visa alla" först.
+  Skriver ingenting när ingen undermenylänk finns kvar; då visar sidhuvudet en vanlig länk eller ingen menypunkt.
+{%- endcomment -%}
+{%- liquid
+  if variant == 'mobile'
+    assign ks_link_class = 'ks-mobile-nav__link'
+  else
+    assign ks_link_class = 'ks-dropdown__link'
+  endif
+  assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
+
+  assign ks_show_all = false
+  if show_view_all and top_url != blank
+    assign ks_show_all = true
+  endif
+  assign ks_marked = false
+  assign ks_all_current = false
+  if ks_show_all
+    capture ks_cur
+      render 'ks-nav-current', link: link, view_names: view_names, view_suffix: view_suffix
+    endcapture
+    if ks_cur contains 'true'
+      assign ks_all_current = true
+      assign ks_marked = true
+    endif
+  endif
+-%}
+{%- capture ks_rows -%}
+  {%- for child in link.links -%}
+    {%- liquid
+      assign ks_skip = false
+      if child.url == blank or child.url == '#'
+        assign ks_skip = true
+      elsif hide_same and child.url == link.url
+        assign ks_skip = true
+      elsif ks_resource_types contains child.type and child.object == blank
+        assign ks_skip = true
+      endif
+    -%}
+    {%- if ks_skip -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign ks_is_current = false
+      unless ks_marked
+        capture ks_cur
+          render 'ks-nav-current', link: child, view_names: view_names, view_suffix: view_suffix
+        endcapture
+        if ks_cur contains 'true'
+          assign ks_is_current = true
+          assign ks_marked = true
+        endif
+      endunless
+    -%}
+    <li>
+      <a class="{{ ks_link_class }}" href="{{ child.url }}"{% if ks_is_current %} aria-current="page"{% endif %}>
+        {{- child.title -}}
+      </a>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign ks_rows = ks_rows | strip -%}
+{%- if ks_rows != '' -%}
+  {%- if ks_show_all -%}
+    <li>
+      <a class="{{ ks_link_class }} {{ ks_link_class }}--all" href="{{ top_url }}"{% if ks_all_current %} aria-current="page"{% endif %}>
+        {{- view_all_label }} {{ link.title | downcase -}}
+      </a>
+    </li>
+  {%- endif -%}
+  {{ ks_rows }}
+{%- endif -%}

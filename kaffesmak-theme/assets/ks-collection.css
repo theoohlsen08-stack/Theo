@@ -454,6 +454,13 @@
   fill: #d9d9d9;
   background: #f4f4f4;
 }
+/* Etapp 5: kategori utan bild (varken egen eller produktbild) – en grå yta för besökare i stället för platshållarteckningen. */
+.ks-cat-tile__img--empty {
+  display: block;
+  width: 200px;
+  height: 200px;
+  background: var(--ks-grey-band);
+}
 .ks-collection .ks-cat-tile__title {
   margin: 0 0 6px;
   font-family: var(--ks-font-heading);
@@ -621,7 +628,8 @@
   .ks-cat-tile__img {
     max-height: 150px;
   }
-  .ks-cat-tile__img--placeholder {
+  .ks-cat-tile__img--placeholder,
+  .ks-cat-tile__img--empty {
     width: 130px;
     height: 130px;
   }

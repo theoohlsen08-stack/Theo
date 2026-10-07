@@ -1,14 +1,23 @@
 {%- comment -%}
   KaffeSmak – enkel innehållssida (referensens Om oss): valfri bred bild direkt under menyn,
   centrerad röd H1 och en smal, centrerad textkolumn (första stycket mörkare som ingress).
-  Används för Om oss (templates/page.om-oss.json) och för 404-sidan (templates/404.json).
+  Används för Om oss (templates/page.om-oss.json), för 404-sidan (templates/404.json) och, från etapp 5,
+  som standardmall för sidor (templates/page.json: rubrik = sidans titel, text = sidans innehåll).
 
   - Bild: visas bara när en godkänd bild har valts. Ingen bild = ingen banner (aldrig en bildbank-bild).
   - Rubrik: sektionens rubrik, annars sidans titel (på 404-sidan "Sidan hittades inte").
     Sektionen kan bara läggas till på sidmallar och 404-mallen (enabled_on), så H1 finns alltid.
-  - Text: sidans innehåll (page.content) när det finns, annars sektionens text.
-  - Block: "Faktaruta" (beige kort med rubrik och text, t.ex. företagsuppgifter) och
-    "Knapp/länk" (grön knapp). Blocken visas centrerat under texten.
+  - Text: sidans innehåll (page.content) bara när sidan själv använder den här mallen
+    (page.template_suffix = template.suffix), annars sektionens text.
+    Granskningslänken /pages/contact?view=om-oss visar kontaktsidan med Om oss-mallen; där är
+    page = kontaktsidan, och dess innehåll får aldrig visas som Om oss-text.
+  - Block visas under texten i blockordningen:
+    "Bild och text" (kundens historia med foto; bild vänster eller höger, staplat på mobil),
+    "Bildgalleri" (upp till 6 foton med alt-text; 3/2/1 kolumner på dator/surfplatta/mobil),
+    "Faktaruta" (beige kort, t.ex. företagsuppgifter) och "Knapp/länk" (grön knapp).
+    Faktarutor respektive knappar som ligger direkt efter varandra visas i en gemensam rad.
+  - Tomma block visas inte för besökare (aldrig bildbank eller platshållarbild). I temaredigeraren
+    visas en kort anteckning om att kundens godkända bilder och historia behövs.
   Skriv bara verifierade uppgifter. Hitta inte på historia, grundandeår, ägare, utmärkelser eller löften.
 {%- endcomment -%}
 
@@ -24,39 +33,200 @@
   if heading == blank and template.name == '404'
     assign heading = 'Sidan hittades inte'
   endif
+
+  # Sidans eget innehåll bara när sidan har den här mallen (inte via ?view= från en annan sida).
+  # Tomt template.suffix = standardmallen page.json, som inte kan väljas med ?view=. Den används också när en sidas
+  # egen mall saknas i temat, så då visas alltid sidans innehåll.
+  assign own_page = false
+  if page != blank
+    assign page_suffix = page.template_suffix | default: ''
+    assign view_suffix = template.suffix | default: ''
+    if view_suffix == '' or page_suffix == view_suffix
+      assign own_page = true
+    endif
+  endif
   assign body = ''
-  if page != blank and page.content != blank
+  if own_page and page.content != blank
     assign body = page.content
   elsif s.text != blank
     assign body = s.text
   endif
   assign title_id = 'KsPageTitle-' | append: section.id
+
+  # Första passet: vad varje block visar.
+  # facts/buttons/media/gallery = synligt, note = tomt block med anteckning i temaredigeraren, - = dolt.
+  assign kinds = ''
+  for block in section.blocks
+    assign bs = block.settings
+    assign kind = '-'
+    case block.type
+      when 'facts'
+        if bs.heading != blank or bs.text != blank
+          assign kind = 'facts'
+        endif
+      when 'button'
+        if bs.label != blank and bs.url != blank
+          assign kind = 'buttons'
+        endif
+      when 'image_text'
+        if bs.image != blank or bs.text != blank
+          assign kind = 'media'
+        elsif request.design_mode
+          assign kind = 'note'
+        endif
+      when 'gallery'
+        for i in (1..6)
+          assign img_key = 'image_' | append: i
+          if bs[img_key] != blank
+            assign kind = 'gallery'
+          endif
+        endfor
+        if kind == '-' and request.design_mode
+          assign kind = 'note'
+        endif
+    endcase
+    assign kinds = kinds | append: kind | append: ','
+  endfor
+  assign kinds = kinds | split: ','
 -%}
 
-{%- capture facts -%}
+{%- capture blocks_html -%}
+  {%- assign last_kind = '' -%}
   {%- for block in section.blocks -%}
-    {%- if block.type == 'facts' -%}
-      {%- if block.settings.heading != blank or block.settings.text != blank -%}
-        <div class="ks-page__fact" {{ block.shopify_attributes }}>
-          {%- if block.settings.heading != blank -%}
-            <h2 class="ks-page__fact-heading">{{ block.settings.heading }}</h2>
+    {%- assign kind = kinds[forloop.index0] -%}
+    {%- if kind == '-' -%}{%- continue -%}{%- endif -%}
+    {%- assign bs = block.settings -%}
+    {%- case kind -%}
+      {%- when 'facts', 'buttons' -%}
+        {%- comment -%} Första blocket i en följd av samma slag: rendera hela följden i en rad. {%- endcomment -%}
+        {%- if kind != last_kind -%}
+          {%- assign run_start = forloop.index0 -%}
+          <div class="ks-page__{{ kind }}">
+            {%- for b in section.blocks offset: run_start -%}
+              {%- assign j = run_start | plus: forloop.index0 -%}
+              {%- assign b_kind = kinds[j] -%}
+              {%- if b_kind == '-' -%}{%- continue -%}{%- endif -%}
+              {%- if b_kind != kind -%}{%- break -%}{%- endif -%}
+              {%- if kind == 'facts' -%}
+                <div class="ks-page__fact" {{ b.shopify_attributes }}>
+                  {%- if b.settings.heading != blank -%}
+                    <h2 class="ks-page__fact-heading">{{ b.settings.heading }}</h2>
+                  {%- endif -%}
+                  {%- if b.settings.text != blank -%}
+                    <div class="ks-page__fact-text">{{ b.settings.text }}</div>
+                  {%- endif -%}
+                </div>
+              {%- else -%}
+                <div class="ks-page__button" {{ b.shopify_attributes }}>
+                  {% render 'ks-button', label: b.settings.label, url: b.settings.url %}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+      {%- when 'media' -%}
+        {%- liquid
+          assign has_image = false
+          if bs.image != blank
+            assign has_image = true
+          endif
+          assign has_copy = false
+          if bs.heading != blank or bs.text != blank
+            assign has_copy = true
+          endif
+          assign media_class = 'ks-page__media'
+          if has_image and has_copy
+            assign media_class = media_class | append: ' ks-page__media--split'
+            if bs.image_position == 'right'
+              assign media_class = media_class | append: ' ks-page__media--image-right'
+            endif
+          endif
+          assign media_alt = bs.image_alt | default: bs.image.alt | default: ''
+        -%}
+        <div class="{{ media_class }}" {{ block.shopify_attributes }}>
+          {%- if has_image -%}
+            <div class="ks-page__media-image">
+              {%- if has_copy -%}
+                {%- assign media_sizes = '(min-width: 1150px) 530px, (min-width: 750px) 50vw, 100vw' -%}
+              {%- else -%}
+                {%- assign media_sizes = '(min-width: 900px) 850px, 100vw' -%}
+              {%- endif -%}
+              {{
+                bs.image
+                | image_url: width: 1700
+                | image_tag:
+                  widths: '400, 600, 850, 1100, 1700',
+                  sizes: media_sizes,
+                  alt: media_alt,
+                  loading: 'lazy',
+                  class: 'ks-page__media-img'
+              }}
+              {%- if request.design_mode and media_alt == blank -%}
+                <div class="ks-editor-note">Bilden saknar alt-text. Skriv en kort beskrivning under "Alt-text för bilden".</div>
+              {%- endif -%}
+            </div>
           {%- endif -%}
-          {%- if block.settings.text != blank -%}
-            <div class="ks-page__fact-text">{{ block.settings.text }}</div>
+          {%- if has_copy -%}
+            <div class="ks-page__media-text">
+              {%- if bs.heading != blank -%}
+                <h2 class="ks-page__media-heading">{{ bs.heading }}</h2>
+              {%- endif -%}
+              {%- if bs.text != blank -%}
+                <div class="ks-page__media-body">{{ bs.text }}</div>
+              {%- endif -%}
+            </div>
           {%- endif -%}
         </div>
-      {%- endif -%}
-    {%- endif -%}
-  {%- endfor -%}
-{%- endcapture -%}
 
-{%- capture buttons -%}
-  {%- for block in section.blocks -%}
-    {%- if block.type == 'button' and block.settings.label != blank and block.settings.url != blank -%}
-      <div class="ks-page__button" {{ block.shopify_attributes }}>
-        {% render 'ks-button', label: block.settings.label, url: block.settings.url %}
-      </div>
-    {%- endif -%}
+      {%- when 'gallery' -%}
+        <div class="ks-page__gallery" {{ block.shopify_attributes }}>
+          {%- if bs.heading != blank -%}
+            <h2 class="ks-page__gallery-heading">{{ bs.heading }}</h2>
+          {%- endif -%}
+          {%- assign missing_alt = '' -%}
+          <ul class="ks-page__gallery-list" role="list">
+            {%- for i in (1..6) -%}
+              {%- liquid
+                assign img_key = 'image_' | append: i
+                assign alt_key = 'alt_' | append: i
+                assign img = bs[img_key]
+              -%}
+              {%- if img != blank -%}
+                {%- assign img_alt = bs[alt_key] | default: img.alt | default: '' -%}
+                {%- if img_alt == blank -%}
+                  {%- assign missing_alt = missing_alt | append: ' ' | append: i -%}
+                {%- endif -%}
+                <li class="ks-page__gallery-item">
+                  {{
+                    img
+                    | image_url: width: 1200
+                    | image_tag:
+                      widths: '400, 600, 800, 1200',
+                      sizes: '(min-width: 1150px) 350px, (min-width: 990px) 31vw, (min-width: 750px) 48vw, 100vw',
+                      alt: img_alt,
+                      loading: 'lazy',
+                      class: 'ks-page__gallery-img'
+                  }}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+          {%- if request.design_mode and missing_alt != blank -%}
+            <div class="ks-editor-note">Alt-text saknas för bild{{ missing_alt }}. Skriv en kort beskrivning av varje foto.</div>
+          {%- endif -%}
+        </div>
+
+      {%- when 'note' -%}
+        <div class="ks-editor-note ks-page__block-note" {{ block.shopify_attributes }}>
+          {%- if block.type == 'gallery' -%}
+            Bildgalleriet visas inte för besökare förrän minst en bild är vald. Välj upp till 6 foton som kunden har godkänt (ingen bildbank och inga bilder från referensen).
+          {%- else -%}
+            Blocket Bild och text visas inte för besökare förrän det har en bild eller en text. Lägg till kundens egen historia och foton som kunden har godkänt (ingen bildbank).
+          {%- endif -%}
+        </div>
+    {%- endcase -%}
+    {%- assign last_kind = kind -%}
   {%- endfor -%}
 {%- endcapture -%}
 
@@ -95,13 +265,7 @@
         <div class="ks-page__body{% if s.center_text %} ks-page__body--center{% endif %}">{{ body }}</div>
       {%- endif -%}
 
-      {%- if facts != blank -%}
-        <div class="ks-page__facts">{{ facts }}</div>
-      {%- endif -%}
-
-      {%- if buttons != blank -%}
-        <div class="ks-page__buttons">{{ buttons }}</div>
-      {%- endif -%}
+      {{ blocks_html }}
     </div>
   </section>
 </div>
@@ -111,7 +275,7 @@
   "name": "KaffeSmak innehållssida",
   "class": "ks-page-section",
   "enabled_on": { "templates": ["page", "404"] },
-  "max_blocks": 8,
+  "max_blocks": 12,
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Bred bild överst", "info": "Valfri. Använd bara bilder som kunden har godkänt. Utan bild visas ingen banner." },
     { "type": "range", "id": "banner_height", "label": "Bildens höjd, dator", "min": 160, "max": 480, "step": 10, "unit": "px", "default": 300 },
@@ -122,6 +286,47 @@
     { "type": "textarea", "id": "editor_note", "label": "Anteckning i temaredigeraren", "info": "Visas bara i temaredigeraren, aldrig för besökare." }
   ],
   "blocks": [
+    {
+      "type": "image_text",
+      "name": "Bild och text",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Bild", "info": "Bara foton som kunden har godkänt (ingen bildbank)." },
+        { "type": "text", "id": "image_alt", "label": "Alt-text för bilden", "info": "Kort beskrivning för skärmläsare. Tomt fält använder bildens egen alt-text." },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Bildens placering på dator och surfplatta",
+          "options": [
+            { "value": "left", "label": "Vänster" },
+            { "value": "right", "label": "Höger" }
+          ],
+          "default": "left",
+          "info": "På mobil visas bilden alltid överst."
+        },
+        { "type": "text", "id": "heading", "label": "Rubrik (valfri)" },
+        { "type": "richtext", "id": "text", "label": "Text", "info": "Kundens egen text. Blocket döljs när både bild och text saknas." }
+      ]
+    },
+    {
+      "type": "gallery",
+      "name": "Bildgalleri",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Rubrik (valfri)" },
+        { "type": "paragraph", "content": "Upp till 6 foton som kunden har godkänt. Galleriet döljs när inga bilder är valda. Alt-text: kort beskrivning för skärmläsare; tomt fält använder bildens egen alt-text." },
+        { "type": "image_picker", "id": "image_1", "label": "Bild 1" },
+        { "type": "text", "id": "alt_1", "label": "Alt-text, bild 1" },
+        { "type": "image_picker", "id": "image_2", "label": "Bild 2" },
+        { "type": "text", "id": "alt_2", "label": "Alt-text, bild 2" },
+        { "type": "image_picker", "id": "image_3", "label": "Bild 3" },
+        { "type": "text", "id": "alt_3", "label": "Alt-text, bild 3" },
+        { "type": "image_picker", "id": "image_4", "label": "Bild 4" },
+        { "type": "text", "id": "alt_4", "label": "Alt-text, bild 4" },
+        { "type": "image_picker", "id": "image_5", "label": "Bild 5" },
+        { "type": "text", "id": "alt_5", "label": "Alt-text, bild 5" },
+        { "type": "image_picker", "id": "image_6", "label": "Bild 6" },
+        { "type": "text", "id": "alt_6", "label": "Alt-text, bild 6" }
+      ]
+    },
     {
       "type": "facts",
       "name": "Faktaruta",

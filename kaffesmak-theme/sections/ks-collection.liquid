@@ -42,12 +42,48 @@
       if section.settings.show_description and collection.description != blank
         assign ks_show_description = true
       endif
+
+      # Etapp 5: Shopifys sida med alla produkter (/collections/all) har en engelsk standardtitel när butiken
+      # saknar en egen kategori med handtaget all. Rubriken och brödsmulan använder då inställningen nedan.
+      assign ks_title = collection.title
+      if collection.handle == 'all' and section.settings.all_heading != blank
+        assign ks_title = section.settings.all_heading
+      endif
+
+      # Etapp 5: överkategori i brödsmulorna ("Hem › Tillbehör › Presskanna") från menyn i "Meny för brödsmulor".
+      # Kategorin måste vara en kategorilänk (collection_link) under en huvudpunkt med en egen länk. Huvudpunkter
+      # utan länk (#) eller till en opublicerad resurs och platshållare som pekar på samma kategori som huvudpunkten
+      # ger ingen extra nivå.
+      assign ks_parent_title = ''
+      assign ks_parent_url = ''
+      assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
+      assign ks_crumb_menu = linklists[section.settings.breadcrumb_menu]
+      if section.settings.breadcrumb_menu != blank and ks_crumb_menu != blank
+        for top in ks_crumb_menu.links
+          if top.url == blank or top.url == '#' or top.url == collection.url
+            continue
+          endif
+          if ks_resource_types contains top.type and top.object == blank
+            continue
+          endif
+          for child in top.links
+            if child.type == 'collection_link' and child.object != blank and child.object.handle == collection.handle
+              assign ks_parent_title = top.title
+              assign ks_parent_url = top.url
+              break
+            endif
+          endfor
+          if ks_parent_url != ''
+            break
+          endif
+        endfor
+      endif
     -%}
     <div class="ks-shop ks-collection">
       <div class="ks-title-band{% if ks_show_description %} ks-title-band--with-text{% endif %}">
         <div class="ks-container">
-          {% render 'ks-breadcrumb', current: collection.title %}
-          <h1 class="ks-page-title">{{ collection.title | escape }}</h1>
+          {% render 'ks-breadcrumb', parent_title: ks_parent_title, parent_url: ks_parent_url, current: ks_title %}
+          <h1 class="ks-page-title">{{ ks_title | escape }}</h1>
           {%- if ks_show_description -%}
             <div class="ks-title-band__text">{{ collection.description }}</div>
           {%- endif -%}
@@ -116,7 +152,7 @@
                 </div>
                 {% render 'ks-pagination', paginate: paginate %}
               {%- else -%}
-                <h2 class="ks-visually-hidden">Produkter i {{ collection.title | escape }}</h2>
+                <h2 class="ks-visually-hidden">Produkter i {{ ks_title | escape }}</h2>
                 <ul class="ks-product-grid ks-collection__grid" role="list">
                   {%- for product in collection.products -%}
                     <li>
@@ -156,11 +192,16 @@
       {%- if c.products_count == 0 and section.settings.list_show_empty == false -%}
         {%- continue -%}
       {%- endif -%}
+      {%- comment -%}
+        Etapp 5: kategorins bild, annars första produktens bild. Utan bild: Shopifys platshållarteckning bara i
+        temaredigeraren; besökare ser en lugn grå yta (som startsidans kategorikort).
+      {%- endcomment -%}
+      {%- assign ks_tile_image = c.featured_image | default: c.products.first.featured_image -%}
       <li class="ks-cat-tile">
         <a href="{{ c.url }}" class="ks-cat-tile__media" tabindex="-1" aria-hidden="true">
-          {%- if c.featured_image != blank -%}
+          {%- if ks_tile_image != blank -%}
             {{
-              c.featured_image
+              ks_tile_image
               | image_url: width: 600
               | image_tag:
                 widths: '300, 450, 600',
@@ -169,8 +210,10 @@
                 loading: 'lazy',
                 class: 'ks-cat-tile__img'
             }}
-          {%- else -%}
+          {%- elsif request.design_mode -%}
             {{ 'collection-1' | placeholder_svg_tag: 'ks-cat-tile__img ks-cat-tile__img--placeholder' }}
+          {%- else -%}
+            <span class="ks-cat-tile__img ks-cat-tile__img--empty"></span>
           {%- endif -%}
         </a>
         <h2 class="ks-cat-tile__title"><a href="{{ c.url }}">{{ c.title | escape }}</a></h2>
@@ -224,6 +267,9 @@
     { "type": "checkbox", "id": "show_sku", "label": "Visa artikelnummer", "default": true, "info": "Visas bara när produkten har ett artikelnummer (SKU)." },
     { "type": "checkbox", "id": "show_stock", "label": "Visa lagerstatus", "default": true, "info": "Visas bara när lagret spåras i Shopify och produkten har ett pris." },
     { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan." },
+    { "type": "header", "content": "Rubrik och brödsmulor" },
+    { "type": "text", "id": "all_heading", "label": "Rubrik för alla produkter (/collections/all)", "default": "Alla produkter", "info": "Ersätter Shopifys engelska standardtitel på sidan med alla produkter. Tomt fält visar kategorins egen titel." },
+    { "type": "link_list", "id": "breadcrumb_menu", "label": "Meny för brödsmulor", "info": "Kategorier som ligger under en huvudpunkt i menyn får huvudpunkten i brödsmulorna, t.ex. Hem › Tillbehör › Presskanna. Använd samma meny som sidhuvudet." },
     { "type": "header", "content": "Tomma lägen" },
     { "type": "text", "id": "empty_text", "label": "Text när kategorin saknar produkter", "default": "Det finns inga produkter i den här kategorin just nu." },
     { "type": "text", "id": "empty_button_label", "label": "Knapptext när kategorin saknar produkter", "default": "Till startsidan" },

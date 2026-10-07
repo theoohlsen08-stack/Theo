@@ -3,6 +3,16 @@
     "main": {
       "type": "ks-page",
       "blocks": {
+        "story": {
+          "type": "image_text",
+          "settings": {
+            "image_position": "left"
+          }
+        },
+        "gallery": {
+          "type": "gallery",
+          "settings": {}
+        },
         "facts": {
           "type": "facts",
           "settings": {
@@ -26,6 +36,8 @@
         }
       },
       "block_order": [
+        "story",
+        "gallery",
         "facts",
         "button_contact",
         "button_company"
@@ -36,7 +48,7 @@
         "heading": "Om Kaffe Smak Rosteri",
         "text": "<p>Välkommen till Kaffe Smak Rosteri i Sollefteå. Utforska vårt sortiment av kaffe, kaffemaskiner och tillbehör, eller besök vår kaffebar på Storgatan 55.</p>",
         "center_text": false,
-        "editor_note": "Företagets historia och godkända foton saknas ännu (kunden lämnar underlag). Lägg bara till verifierade uppgifter: inga påhittade årtal, ägare, utmärkelser, öppettider eller löften. Sidan Om oss finns inte i Shopify ännu; mallen granskas via /pages/contact?view=om-oss."
+        "editor_note": "Företagets historia och godkända foton saknas ännu (kunden lämnar underlag). Sidan Om oss finns nu i Shopify som opublicerad sida /pages/om-oss. Den publiceras först när kunden har lämnat historia och bilder och Theo har gett klartecken. Historien skrivs i sidans innehåll (Shopify › Sidor › Om oss) eller i blocket Bild och text; foton läggs i Bild och text och Bildgalleri. Sidans innehåll syns bara på /pages/om-oss, inte på granskningslänken /pages/contact?view=om-oss (där visas sektionens text). Lägg bara till verifierade uppgifter: inga påhittade årtal, ägare, utmärkelser, öppettider eller löften."
       }
     }
   },

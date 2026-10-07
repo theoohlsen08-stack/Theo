@@ -10,6 +10,8 @@
         "show_sku": true,
         "show_stock": true,
         "buy_label": "Visa produkt",
+        "all_heading": "Alla produkter",
+        "breadcrumb_menu": "monteriva-utkast-huvudmeny",
         "empty_text": "Det finns inga produkter i den här kategorin just nu.",
         "empty_button_label": "Till startsidan",
         "show_categories_link": true,

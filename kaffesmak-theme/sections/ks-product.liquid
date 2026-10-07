@@ -21,6 +21,8 @@
     standardmallen" (som standard Espressomaskin och Kaffekvarn) varken köp eller offert, oavsett inställningen.
     Maskiner säljs först när de har tilldelats mallen "maskin" med ett valt försäljningsläge.
 
+  Brödsmulor (etapp 5): kategorikedjan från menyn i "Meny för brödsmulor" (se nedan), utan produktnamnet som referensen.
+
   Kort utdrag i köprutan: första stycket (<p>) i beskrivningen, ordagrant och oavkortat, med länken
   "Läs fullständig beskrivning" till fliken Beskrivning. Språk (lang) från metafältet custom.beskrivning_sprak.
 {%- endcomment -%}
@@ -75,14 +77,116 @@
     assign stock_on = true
   endif
 
-  assign collection_first = product.collections.first
+  # Etapp 5: kategorin för brödsmulorna, "Tillbaka till översikt" och "Fler produkter i samma kategori":
+  # 1. produkten öppnad inom en kategori (/collections/x/products/y, inte /collections/all): den kategorin;
+  # 2. annars menyn i "Meny för brödsmulor": en kategorilänk under en huvudpunkt, där produkten ligger i kategorin
+  #    (Hem › Kaffemaskiner › Espressomaskiner);
+  # 3. annars en huvudpunkt som är en kategori som produkten ligger i eller som har en länk till produkten (Hem › Kaffe);
+  # 4. annars produktens första kategori (som i etapp 4).
+  # Huvudpunkter utan egen länk (#) eller till en opublicerad resurs ger ingen överkategori, och platshållare som
+  # pekar på huvudpunktens kategori räknas inte. Opublicerade kategorier (link.object saknas) hoppas över.
+  assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
+  assign ks_handles = product.collections | map: 'handle'
+  assign crumb_handle = ''
+  assign crumb_object = nil
+  assign ancestor_title = ''
+  assign ancestor_url = ''
+  if collection != blank and collection.handle != 'all'
+    assign crumb_handle = collection.handle
+  endif
+  assign ks_crumb_menu = linklists[s.breadcrumb_menu]
+  if s.breadcrumb_menu != blank and ks_crumb_menu != blank
+    assign ks_found = false
+    for top in ks_crumb_menu.links
+      for child in top.links
+        if child.type != 'collection_link' or child.object == blank or child.url == top.url
+          continue
+        endif
+        if crumb_handle != ''
+          if child.object.handle == crumb_handle
+            assign ks_found = true
+          endif
+        elsif ks_handles contains child.object.handle
+          assign ks_found = true
+        endif
+        if ks_found
+          assign crumb_handle = child.object.handle
+          assign crumb_object = child.object
+          assign ks_top_ok = true
+          if top.url == blank or top.url == '#'
+            assign ks_top_ok = false
+          elsif ks_resource_types contains top.type and top.object == blank
+            assign ks_top_ok = false
+          endif
+          if ks_top_ok
+            assign ancestor_title = top.title
+            assign ancestor_url = top.url
+          endif
+          break
+        endif
+      endfor
+      if ks_found
+        break
+      endif
+    endfor
+    if ks_found == false and crumb_handle == ''
+      for top in ks_crumb_menu.links
+        if top.type != 'collection_link' or top.object == blank
+          continue
+        endif
+        if ks_handles contains top.object.handle
+          assign ks_found = true
+        else
+          for child in top.links
+            if child.type == 'product_link' and child.object != blank and child.object.id == product.id
+              assign ks_found = true
+              break
+            endif
+          endfor
+        endif
+        if ks_found
+          assign crumb_handle = top.object.handle
+          assign crumb_object = top.object
+          break
+        endif
+      endfor
+    endif
+  endif
+  if crumb_handle == '' and product.collections.first != blank
+    assign crumb_handle = product.collections.first.handle
+  endif
+
+  # Kategoriobjektet: produktens egen kategori (eller sidans) med samma handtag, annars menyns.
+  assign crumb_collection = nil
+  if collection != blank and collection.handle == crumb_handle
+    assign crumb_collection = collection
+  else
+    for pc in product.collections
+      if pc.handle == crumb_handle
+        assign crumb_collection = pc
+        break
+      endif
+    endfor
+  endif
+  if crumb_collection == blank and crumb_object != blank
+    assign crumb_collection = crumb_object
+  endif
+
   assign back_url = routes.all_products_collection_url
   assign parent_title = ''
   assign parent_url = ''
-  if collection_first != blank
-    assign back_url = collection_first.url
-    assign parent_title = collection_first.title
-    assign parent_url = collection_first.url
+  if crumb_collection != blank
+    assign back_url = crumb_collection.url
+    assign parent_title = crumb_collection.title
+    assign parent_url = crumb_collection.url
+  else
+    assign ancestor_title = ''
+    assign ancestor_url = ''
+  endif
+  # Referensen slutar med kategorin (produktnamnet står i H1). Utan kategori visas produktnamnet.
+  assign crumb_current = ''
+  if s.breadcrumb_show_title or parent_url == ''
+    assign crumb_current = product.title
   endif
 
   assign quote_base = s.quote_link | default: '/pages/contact'
@@ -128,7 +232,13 @@
         {%- if parent_title != '' -%}<span class="ks-visually-hidden">: {{ parent_title | escape }}</span>{%- endif -%}
       </a>
       <span class="ks-product__topbar-divider" aria-hidden="true"></span>
-      {% render 'ks-breadcrumb', parent_title: parent_title, parent_url: parent_url, current: product.title %}
+      {% render 'ks-breadcrumb',
+        ancestor_title: ancestor_title,
+        ancestor_url: ancestor_url,
+        parent_title: parent_title,
+        parent_url: parent_url,
+        current: crumb_current
+      %}
     </div>
 
     <div class="ks-product__main">
@@ -189,13 +299,13 @@
     {% render 'ks-product-tabs', product: product, uid: uid, show_category_fields: s.show_category_fields, design_mode: request.design_mode %}
   </div>
 
-  {%- if s.show_related and collection_first != blank -%}
+  {%- if s.show_related and crumb_collection != blank -%}
     {%- liquid
       assign related_limit = s.related_limit | default: 6
       assign related_count = 0
     -%}
     {%- capture related_items -%}
-      {%- for item in collection_first.products -%}
+      {%- for item in crumb_collection.products -%}
         {%- if item.id != product.id and related_count < related_limit -%}
           {%- assign related_count = related_count | plus: 1 -%}
           <li class="ks-product__related-item">{% render 'ks-product-card', product: item, heading_tag: 'h3' %}</li>
@@ -288,6 +398,23 @@
     {
       "type": "paragraph",
       "content": "Specifikationer kan också fyllas i produktens metafält custom.specifikationer (en rad per uppgift, \"Etikett: Värde\"). Fliken Reservdelar visas när metafältet custom.reservdelar (produktlista) har produkter."
+    },
+    {
+      "type": "header",
+      "content": "Brödsmulor"
+    },
+    {
+      "type": "link_list",
+      "id": "breadcrumb_menu",
+      "label": "Meny för brödsmulor",
+      "info": "Kategorin hämtas från menyn, t.ex. Hem › Kaffemaskiner › Espressomaskiner. Används också för \"Tillbaka till översikt\" och fler produkter. Använd sidhuvudets meny."
+    },
+    {
+      "type": "checkbox",
+      "id": "breadcrumb_show_title",
+      "label": "Visa produktnamnet sist i brödsmulorna",
+      "info": "Referensen slutar med kategorin; produktnamnet står i rubriken.",
+      "default": false
     },
     {
       "type": "header",

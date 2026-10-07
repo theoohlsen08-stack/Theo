@@ -574,7 +574,8 @@
     text-decoration: none;
     cursor: pointer;
   }
-  .ks-mobile-nav__top[aria-expanded='true'] {
+  .ks-mobile-nav__top[aria-expanded='true'],
+  .ks-mobile-nav__item--current > .ks-mobile-nav__top {
     background: var(--ks-red-dark);
   }
   .ks-mobile-nav__top:focus-visible,
@@ -606,6 +607,10 @@
   }
   .ks-mobile-nav__link--all {
     font-weight: 600;
+  }
+  /* Etapp 5: aktuell sida i mobilmenyn, som datormenyns rullgardin. */
+  .ks-mobile-nav__link[aria-current='page'] {
+    background: var(--ks-red-darker);
   }
   .ks-mobile-nav__footer {
     padding: 16px var(--ks-gutter) 20px;
@@ -750,13 +755,20 @@
   outline-offset: 2px;
 }
 
+/* Mobil (etapp 5): länkarna staplas, så varje länk får minst 24px tryckyta (WCAG 2.5.8) och adress- och
+   telefonlänken ligger inte tätt intill varandra. */
 @media screen and (max-width: 749px) {
   .ks-band__list {
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
+    padding-block: 4px;
   }
   .ks-band__item {
     font-size: 14px;
+  }
+  .ks-band__item a {
+    display: inline-block;
+    padding-block: 6px;
   }
   .ks-band__item + .ks-band__item::before {
     content: none;
@@ -1019,7 +1031,10 @@
   position: relative;
   display: block;
 }
+/* position: relative (etapp 5): skärmläsartexter i korten (.ks-visually-hidden, t.ex. hela priset) är absolut
+   positionerade; med spåret som referens stannar de inom det rullbara spåret och ger ingen vågrät rullning på sidan. */
 .ks-carousel__track {
+  position: relative;
   display: flex;
   gap: 0;
   margin: 0;
@@ -1143,6 +1158,21 @@
 }
 .ks-product-card__buy {
   margin-top: auto;
+}
+
+/* ---------- Pris med upphöjda ören (snippet ks-price) ----------
+   Etapp 5: flyttat hit från ks-shop.css så att startsidans produktrad (som inte laddar ks-shop.css) visar
+   "120,⁰⁰ kr" som kategorisidan och referensen. */
+.ks-price {
+  white-space: nowrap;
+}
+.ks-price__dec {
+  position: relative;
+  top: -0.1em;
+  margin-inline-start: 1px;
+  font-size: 0.56em;
+  vertical-align: super;
+  line-height: 0;
 }
 
 /* ---------- Recensioner ---------- */
@@ -1516,8 +1546,10 @@
   .ks-cat-card {
     flex-basis: calc((100% - 32px) / 2);
   }
+  /* min-width: 0 (etapp 5): med 190px rymdes inte fyra kort i 750–808px (t.ex. iPad 768), så det fjärde kortets knapp klipptes av spåret. */
   .ks-product-card {
     flex-basis: 25%;
+    min-width: 0;
   }
   .ks-review {
     flex-basis: calc((100% - 24px) / 2);
@@ -1641,6 +1673,92 @@
   line-height: 1.2;
   letter-spacing: normal;
   text-transform: none;
+}
+
+/* ---------- Policysidor (etapp 5) ----------
+   Shopifys inbyggda sidor /policies/… (Företagsuppgifter, Frakt, Återbetalning, Användarvillkor, Integritet) renderas
+   i temats layout utan egen mall. Samma formgivning som Om oss (ks-pages.css): centrerad röd H1 48 px och en
+   textkolumn på 850 px med radavstånd 2. Selektorerna är så specifika att de går före Horizons .shopify-policy__title-regler. */
+.content-for-layout .shopify-policy__container {
+  box-sizing: border-box;
+  /* Horizons main är en flexkolumn: utan width krymper behållaren till textens bredd. */
+  width: 100%;
+  max-width: calc(850px + 2 * var(--ks-gutter));
+  margin-inline: auto;
+  padding: 56px var(--ks-gutter) 96px;
+  color: #444444;
+  font-family: var(--ks-font-body);
+  font-size: 16px;
+  line-height: 2;
+}
+.content-for-layout .shopify-policy__container .shopify-policy__title {
+  margin-block-end: 44px;
+  text-align: center;
+}
+.content-for-layout .shopify-policy__container .shopify-policy__title h1 {
+  margin: 0;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.content-for-layout .shopify-policy__container .shopify-policy__body a {
+  color: var(--ks-link);
+}
+/* Underrubriker i policytexten som på Om oss (ks-pages.css), annars gäller Horizons stora rubrikregler. */
+.content-for-layout .shopify-policy__container .shopify-policy__body :is(h2, h3, h4) {
+  margin-block: 30px 12px;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.3;
+  text-transform: none;
+}
+.content-for-layout .shopify-policy__container .shopify-policy__body h2 {
+  font-size: 32px;
+}
+.content-for-layout .shopify-policy__container .shopify-policy__body h3 {
+  font-size: 26px;
+}
+.content-for-layout .shopify-policy__container .shopify-policy__body h4 {
+  font-size: 22px;
+}
+@media screen and (max-width: 989px) {
+  .content-for-layout .shopify-policy__container {
+    padding-block: 40px 72px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__title {
+    margin-block-end: 32px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__title h1 {
+    font-size: 40px;
+  }
+}
+@media screen and (max-width: 749px) {
+  .content-for-layout .shopify-policy__container {
+    padding-block: 32px 56px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__title {
+    margin-block-end: 24px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__title h1 {
+    font-size: 34px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__body h2 {
+    font-size: 26px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__body h3 {
+    font-size: 22px;
+  }
+  .content-for-layout .shopify-policy__container .shopify-policy__body h4 {
+    font-size: 19px;
+  }
 }
 
 /* ---------- Kontaktsida ---------- */

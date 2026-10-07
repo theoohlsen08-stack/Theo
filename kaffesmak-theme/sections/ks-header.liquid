@@ -2,10 +2,31 @@
   KaffeSmak – Monteriva-inspirerat sidhuvud.
   Svart toppfält (logga, sökfält, konto, varukorg, Kontakt-knapp) och röd huvudmeny
   med nedfällbara undermenyer som öppnas vid klick. Menyn hämtas från en Shopify-meny.
+  Etapp 5: undermenyernas rader byggs av snippet ks-nav-children (samma regler på dator och mobil): tomma länkar,
+  länkar till opublicerade resurser och platshållare till huvudpunktens sida visas inte, och aktuell sida markeras
+  med aria-current på högst en rad per undermeny (snippet ks-nav-current hanterar ?view=-länkar som Om oss).
 {%- endcomment -%}
 
 {%- liquid
   assign menu = linklists[section.settings.menu]
+
+  # Etapp 5: menyns vy-namn (länkar med ?view=X, t.ex. Om oss på /pages/contact?view=om-oss) som '|om-oss|'.
+  # Används för att markera rätt rad som aktuell sida (snippet ks-nav-current).
+  assign ks_view_names = '|'
+  for top in menu.links
+    if top.url contains '?view=' or top.url contains '&view='
+      assign ks_view = top.url | split: 'view=' | last | split: '&' | first | split: '#' | first
+      assign ks_view_names = ks_view_names | append: ks_view | append: '|'
+    endif
+    for child in top.links
+      if child.url contains '?view=' or child.url contains '&view='
+        assign ks_view = child.url | split: 'view=' | last | split: '&' | first | split: '#' | first
+        assign ks_view_names = ks_view_names | append: ks_view | append: '|'
+      endif
+    endfor
+  endfor
+  assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
+
   assign nav_font = section.settings.nav_font
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
@@ -128,9 +149,24 @@
       <div class="ks-container">
         <ul class="ks-nav__list" role="list">
           {%- for link in menu.links -%}
-            {%- assign item_id = 'KsNav-' | append: section.id | append: '-' | append: forloop.index -%}
-            <li class="ks-nav__item{% if link.links.size > 0 %} ks-nav__item--parent{% endif %}{% if link.active or link.child_active %} ks-nav__item--current{% endif %}">
-              {%- if link.links.size > 0 -%}
+            {%- liquid
+              assign item_id = 'KsNav-' | append: section.id | append: '-' | append: forloop.index
+              # Huvudpunktens länk används bara när den finns, inte är '#' och inte pekar på en opublicerad resurs.
+              assign top_url = link.url
+              if top_url == '#'
+                assign top_url = ''
+              elsif ks_resource_types contains link.type and link.object == blank
+                assign top_url = ''
+              endif
+              capture ks_children
+                render 'ks-nav-children', link: link, top_url: top_url, variant: 'desktop', show_view_all: section.settings.show_view_all, view_all_label: section.settings.view_all_label, hide_same: section.settings.hide_duplicate_links, view_names: ks_view_names, view_suffix: template.suffix
+              endcapture
+              assign ks_children = ks_children | strip
+            -%}
+            {%- comment -%} Ingen undermeny och ingen egen länk: menypunkten skrivs inte ut (aldrig en död länk till #). {%- endcomment -%}
+            {%- if ks_children == '' and top_url == blank -%}{%- continue -%}{%- endif -%}
+            <li class="ks-nav__item{% if ks_children != '' %} ks-nav__item--parent{% endif %}{% if link.active or link.child_active %} ks-nav__item--current{% endif %}">
+              {%- if ks_children != '' -%}
                 <button
                   type="button"
                   class="ks-nav__top"
@@ -142,32 +178,14 @@
                   <svg class="ks-nav__caret" aria-hidden="true" focusable="false" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
                 </button>
                 <ul class="ks-dropdown" id="{{ item_id }}" role="list" hidden>
-                  {%- if section.settings.show_view_all and link.url != '#' and link.url != blank -%}
-                    <li>
-                      <a class="ks-dropdown__link ks-dropdown__link--all" href="{{ link.url }}">
-                        {{- section.settings.view_all_label }} {{ link.title | downcase -}}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- for child in link.links -%}
-                    <li>
-                      <a
-                        class="ks-dropdown__link"
-                        href="{{ child.url }}"
-                        {% if child.current %}
-                          aria-current="page"
-                        {% endif %}
-                      >
-                        {{- child.title -}}
-                      </a>
-                    </li>
-                  {%- endfor -%}
+                  {{ ks_children }}
                 </ul>
               {%- else -%}
+                {%- capture ks_cur -%}{%- render 'ks-nav-current', link: link, view_names: ks_view_names, view_suffix: template.suffix -%}{%- endcapture -%}
                 <a
                   class="ks-nav__top"
-                  href="{{ link.url }}"
-                  {% if link.current %}
+                  href="{{ top_url }}"
+                  {% if ks_cur contains 'true' %}
                     aria-current="page"
                   {% endif %}
                 >
@@ -183,9 +201,22 @@
     <div class="ks-mobile-nav" id="KsMobileNav-{{ section.id }}" hidden>
       <ul class="ks-mobile-nav__list" role="list">
         {%- for link in menu.links -%}
-          {%- assign m_id = 'KsMobile-' | append: section.id | append: '-' | append: forloop.index -%}
-          <li class="ks-mobile-nav__item">
-            {%- if link.links.size > 0 -%}
+          {%- liquid
+            assign m_id = 'KsMobile-' | append: section.id | append: '-' | append: forloop.index
+            assign top_url = link.url
+            if top_url == '#'
+              assign top_url = ''
+            elsif ks_resource_types contains link.type and link.object == blank
+              assign top_url = ''
+            endif
+            capture ks_children
+              render 'ks-nav-children', link: link, top_url: top_url, variant: 'mobile', show_view_all: section.settings.show_view_all, view_all_label: section.settings.view_all_label, hide_same: section.settings.hide_duplicate_links, view_names: ks_view_names, view_suffix: template.suffix
+            endcapture
+            assign ks_children = ks_children | strip
+          -%}
+          {%- if ks_children == '' and top_url == blank -%}{%- continue -%}{%- endif -%}
+          <li class="ks-mobile-nav__item{% if link.active or link.child_active %} ks-mobile-nav__item--current{% endif %}">
+            {%- if ks_children != '' -%}
               <button
                 type="button"
                 class="ks-mobile-nav__top"
@@ -197,19 +228,11 @@
                 <svg class="ks-nav__caret" aria-hidden="true" focusable="false" width="12" height="8" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
               </button>
               <ul class="ks-mobile-nav__sub" id="{{ m_id }}" role="list" hidden>
-                {%- if section.settings.show_view_all and link.url != '#' and link.url != blank -%}
-                  <li>
-                    <a class="ks-mobile-nav__link ks-mobile-nav__link--all" href="{{ link.url }}">
-                      {{- section.settings.view_all_label }} {{ link.title | downcase -}}
-                    </a>
-                  </li>
-                {%- endif -%}
-                {%- for child in link.links -%}
-                  <li><a class="ks-mobile-nav__link" href="{{ child.url }}">{{ child.title }}</a></li>
-                {%- endfor -%}
+                {{ ks_children }}
               </ul>
             {%- else -%}
-              <a class="ks-mobile-nav__top" href="{{ link.url }}">{{ link.title }}</a>
+              {%- capture ks_cur -%}{%- render 'ks-nav-current', link: link, view_names: ks_view_names, view_suffix: template.suffix -%}{%- endcapture -%}
+              <a class="ks-mobile-nav__top" href="{{ top_url }}"{% if ks_cur contains 'true' %} aria-current="page"{% endif %}>{{ link.title }}</a>
             {%- endif -%}
           </li>
         {%- endfor -%}
@@ -247,6 +270,13 @@
     { "type": "link_list", "id": "menu", "label": "Huvudmeny", "default": "main-menu" },
     { "type": "checkbox", "id": "show_view_all", "label": "Visa länken \"Visa alla\" i undermenyn", "default": true },
     { "type": "text", "id": "view_all_label", "label": "Text för \"Visa alla\"", "default": "Visa alla" },
+    {
+      "type": "checkbox",
+      "id": "hide_duplicate_links",
+      "label": "Dölj undermenylänkar som går till samma sida som huvudlänken",
+      "default": true,
+      "info": "Platshållare som pekar på huvudkategorin visas inte; \"Visa alla\" leder dit. Länkar till opublicerade kategorier, produkter och sidor visas aldrig."
+    },
     { "type": "link_list", "id": "customer_account_menu", "label": "Kundkontomeny", "default": "customer-account-main-menu" },
     { "type": "header", "content": "Sök och kontakt" },
     { "type": "text", "id": "search_placeholder", "label": "Text i sökfältet", "default": "Sök produkter" },

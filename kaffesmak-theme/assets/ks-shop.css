@@ -36,9 +36,11 @@
 }
 
 /* ---------- Grått titelband med brödsmulor och H1 (kategori och sök) ---------- */
+/* Nederkant: 23 px under H1:ans radruta ger ≈36 px från H1:ans baslinje till bandets kant (tillbehor.jpg: bandet slutar
+   y 354 med H1:an på samma höjd som här). Bandet med beskrivning och sökbandet har egna regler i ks-collection.css. */
 .ks-title-band {
   background: var(--ks-grey-band);
-  padding-block: 24px 36px;
+  padding-block: 24px 23px;
 }
 .ks-title-band .ks-breadcrumb {
   margin-block-end: 40px;
@@ -88,6 +90,10 @@
 .ks-breadcrumb__link:hover {
   color: #333333;
   text-decoration: underline;
+}
+/* Etapp 5: på produktsidan slutar raden med kategorin (en länk); den får samma mörkare grå som aktuell sida (referensen). */
+.ks-breadcrumb__item:last-child > .ks-breadcrumb__link:not(:hover) {
+  color: #555555;
 }
 
 /* ---------- Tom ruta (tom varukorg, inga träffar, tom kategori) ---------- */
@@ -199,18 +205,8 @@ button.ks-button:disabled {
   margin: 0;
 }
 
-/* ---------- Pris med upphöjda ören ---------- */
-.ks-price {
-  white-space: nowrap;
-}
-.ks-price__dec {
-  position: relative;
-  top: -0.1em;
-  margin-inline-start: 1px;
-  font-size: 0.56em;
-  vertical-align: super;
-  line-height: 0;
-}
+/* ---------- Pris med upphöjda ören ----------
+   Etapp 5: reglerna .ks-price och .ks-price__dec ligger i ks-theme.css (laddas på alla sidor, även startsidans produktrad). */
 
 /* ---------- Lagerstatus ---------- */
 .ks-stock--in {

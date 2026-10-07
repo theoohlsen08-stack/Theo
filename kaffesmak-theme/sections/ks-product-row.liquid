@@ -56,11 +56,13 @@
               {%- if section.settings.show_sku and variant.sku != blank -%}
                 <p class="ks-product-card__sku"><span class="ks-visually-hidden">Artikelnummer:</span> {{ variant.sku }}</p>
               {%- endif -%}
-              {%- comment -%} Inget pris visas för produkter utan fastställt pris (0 kr), se etapp 4. {%- endcomment -%}
+              {%- comment -%}
+                Inget pris visas för produkter utan fastställt pris (0 kr), se etapp 4.
+                Etapp 5: samma prisformat som kategorisidan och referensen ("120,⁰⁰ kr", snippet ks-price).
+              {%- endcomment -%}
               {%- if product.price > 0 -%}
                 <p class="ks-product-card__price">
-                  {%- if product.price_varies -%}Från {% endif -%}
-                  {{- product.price | money -}}
+                  {%- render 'ks-price', price: product.price, from: product.price_varies -%}
                   {%- if product.compare_at_price > product.price -%}
                     <s class="ks-product-card__compare"><span class="ks-visually-hidden">Ordinarie pris</span> {{ product.compare_at_price | money }}</s>
                   {%- endif -%}

@@ -8,6 +8,8 @@
         "quote_label": "Begär offert",
         "review_preview": false,
         "show_category_fields": false,
+        "breadcrumb_menu": "monteriva-utkast-huvudmeny",
+        "breadcrumb_show_title": false,
         "show_related": true,
         "related_heading": "Fler produkter i samma kategori",
         "related_limit": 6

@@ -11,6 +11,7 @@
         "menu": "monteriva-utkast-huvudmeny",
         "show_view_all": true,
         "view_all_label": "Visa alla",
+        "hide_duplicate_links": true,
         "customer_account_menu": "customer-account-main-menu",
         "search_placeholder": "Produktsökning",
         "contact_label": "Kontakt",

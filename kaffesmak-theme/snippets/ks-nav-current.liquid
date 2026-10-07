@@ -1,0 +1,29 @@
+{%- comment -%}
+  KaffeSmak – skriver "true" när en menylänk är den sida som visas (etapp 5). Används av ks-nav-children och sidhuvudet.
+  Parametrar: link (link-objekt), view_names (menyns vy-namn som '|om-oss|'), view_suffix (template.suffix).
+  Shopifys link.current bortser från URL-parametrar, så /pages/contact?view=om-oss och /pages/contact är båda
+  "aktuella" på kontaktsidan. Därför:
+  - en länk med ?view=X är aktuell bara när sidan visas med vyn X (template.suffix = X);
+  - en länk utan ?view= är inte aktuell när sidan visas med en av menyns vyer (då gäller vy-länken).
+{%- endcomment -%}
+{%- liquid
+  if link.current
+    if link.url contains '?view=' or link.url contains '&view='
+      assign ks_link_view = link.url | split: 'view=' | last | split: '&' | first | split: '#' | first
+      if ks_link_view == view_suffix
+        echo 'true'
+      endif
+    else
+      assign ks_in_view = false
+      if view_suffix != blank
+        assign ks_suffix_key = '|' | append: view_suffix | append: '|'
+        if view_names contains ks_suffix_key
+          assign ks_in_view = true
+        endif
+      endif
+      unless ks_in_view
+        echo 'true'
+      endunless
+    endif
+  endif
+-%}
