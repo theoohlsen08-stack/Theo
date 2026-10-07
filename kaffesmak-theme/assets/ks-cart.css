@@ -432,3 +432,65 @@
     justify-content: center;
   }
 }
+
+/* ---------- Slututkast 2026-10-07: offertprodukter i varukorgen ----------
+   Ruta överst, notis vid raden med "Begär offert" och en förklaring vid den inaktiva kassaknappen. */
+.ks-cart__quote-alert {
+  margin-block-end: 24px;
+  padding: 16px 20px;
+  border: 1px solid #e3b6be;
+  border-inline-start: 4px solid var(--ks-red-dark);
+  border-radius: 3px;
+  background: #fbe9ec;
+  color: #5c0412;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.ks-shop .ks-cart__quote-alert p {
+  margin: 0;
+}
+.ks-shop .ks-cart__quote-alert p.ks-cart__quote-alert-heading {
+  margin-block-end: 4px;
+  font-weight: 700;
+}
+.ks-cart__quote-note {
+  margin-block-start: 8px;
+  padding: 8px 12px;
+  border-inline-start: 3px solid var(--ks-red-dark);
+  background: #fbe9ec;
+  color: #5c0412;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ks-shop .ks-cart__quote-note p {
+  margin: 0;
+}
+.ks-shop a.ks-cart__quote-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #9f0922;
+  font-weight: 600;
+}
+.ks-cart__checkout {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ks-shop p.ks-cart__checkout-note {
+  flex-basis: 100%;
+  margin: 0;
+  color: #555555;
+  font-size: 14px;
+  text-align: end;
+}
+@media screen and (max-width: 749px) {
+  .ks-shop p.ks-cart__checkout-note {
+    text-align: center;
+  }
+}
+@media (forced-colors: active) {
+  .ks-cart__quote-alert,
+  .ks-cart__quote-note {
+    border-color: CanvasText;
+  }
+}

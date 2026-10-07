@@ -637,3 +637,75 @@
     font-size: 22px;
   }
 }
+
+/* ---------- Slututkast 2026-10-07: kampanjkort med kundens erbjudanden ----------
+   Som referensens kampanjkort under titelbandet (tillbehor.jpg): 4 px ram (mörkröd på kort 1, brun på kort 2),
+   rundning 4 px, vit centrerad Jost-text och lika breda kort med 32 px mellanrum. Ingen bild (inga påhittade bilder),
+   så kortet har en mörkbrun yta i stället för fotot med mörk toning. Vit text på #653a2b ger kontrast 10,9:1. */
+.ks-collection__offers {
+  padding-block-start: 46px;
+}
+.ks-shop .ks-offer-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-offer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 204px;
+  padding: 28px 32px;
+  background: var(--ks-brown);
+  border: 4px solid var(--ks-red-dark);
+  border-radius: 4px;
+  color: #ffffff;
+  text-align: center;
+}
+.ks-offer-card--2 {
+  border-color: #7a5c36;
+}
+.ks-shop p.ks-offer-card__label {
+  margin: 0;
+  font-family: var(--ks-font-nav);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.ks-shop p.ks-offer-card__text {
+  margin: 0;
+  max-width: 760px;
+  font-family: var(--ks-font-heading);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #ffffff;
+  overflow-wrap: anywhere;
+}
+@media screen and (max-width: 749px) {
+  .ks-collection__offers {
+    padding-block-start: 24px;
+  }
+  .ks-shop .ks-offer-cards {
+    gap: 16px;
+  }
+  .ks-offer-card {
+    min-height: 0;
+    padding: 20px 16px;
+  }
+  .ks-shop p.ks-offer-card__text {
+    font-size: 20px;
+  }
+}
+@media (forced-colors: active) {
+  .ks-offer-card {
+    border-color: CanvasText;
+  }
+}

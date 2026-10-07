@@ -1084,6 +1084,16 @@
 .ks-carousel__arrow--next {
   right: -30px;
 }
+/* Slututkast 2026-10-07: när sidan inte är bredare än behållaren plus marginalerna (t.ex. 1024 px) stack pilarna ut
+   6 px utanför fönstret och gav vågrät rullning (syns först när en produktrad har fler kort än som ryms). */
+@media screen and (min-width: 990px) and (max-width: 1379px) {
+  .ks-carousel__arrow--prev {
+    left: -22px;
+  }
+  .ks-carousel__arrow--next {
+    right: -22px;
+  }
+}
 
 /* ---------- Produktrad ---------- */
 .ks-products__list {
@@ -1158,6 +1168,10 @@
 }
 .ks-product-card__buy {
   margin-top: auto;
+}
+/* Slututkast 2026-10-07: "Begär offert" på produktkort för offertprodukter har alltid en tryckyta på minst 44 px. */
+.ks-button.ks-product-card__quote {
+  min-height: 44px;
 }
 
 /* ---------- Pris med upphöjda ören (snippet ks-price) ----------
@@ -1835,6 +1849,39 @@
   border-color: #1a73e8;
   box-shadow: 0 0 0 2px #1a73e8;
 }
+/* Slututkast 2026-10-07: rutan Offertförfrågan (Produkt, Produktlänk, Valda alternativ) från "Begär offert". */
+.ks-contact-form__quote {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 16px 20px 20px;
+  border: 1px solid #cfc3b0;
+  border-inline-start: 4px solid var(--ks-red-dark);
+  border-radius: 3px;
+  background: #f7f3ed;
+}
+.ks-contact-form__quote[hidden],
+.ks-contact-form__field[hidden] {
+  display: none;
+}
+.ks-contact-form__quote-legend {
+  float: left;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--ks-red-dark);
+  font-family: var(--ks-font-heading);
+  font-size: 22px;
+  font-weight: 500;
+}
+.ks-contact-form__quote-legend + * {
+  clear: both;
+}
+.ks-contact-page__form-wrap:focus {
+  outline: none;
+}
 .ks-contact-form__required {
   margin: -6px 0 0;
   color: #555555;
@@ -1842,6 +1889,7 @@
 }
 .ks-contact-form__submit {
   align-self: flex-start;
+  min-height: 44px; /* slututkast 2026-10-07: tryckyta minst 44 px (offertförfrågan på mobil) */
   font-family: var(--ks-font-nav);
 }
 button.ks-button {

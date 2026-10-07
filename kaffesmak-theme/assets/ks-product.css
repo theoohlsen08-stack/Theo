@@ -349,6 +349,10 @@
 .ks-product__buy .ks-button--arrow {
   min-height: 43px;
 }
+/* Slututkast 2026-10-07: offertknappen har en tryckyta på minst 44 px. */
+.ks-product__buy .ks-button--arrow.ks-product__quote-button {
+  min-height: 44px;
+}
 .ks-shop a.ks-product__quote-link {
   font-size: 16px;
   line-height: 1.5;

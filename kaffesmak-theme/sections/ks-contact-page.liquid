@@ -3,6 +3,13 @@
   kontaktformulär på svenska med grön knapp och beige informationskort med ikon, grön rubrik och text.
   Kontaktuppgifterna fylls i som inställningar; tomma uppgifter visas inte. En karta visas bara när
   en verifierad inbäddningslänk har lagts in.
+  Slututkast 2026-10-07 – offertförfrågan: "Begär offert" (snippet ks-quote-url) länkar hit med ?produkt=<namn>,
+  &lank=<produktlänk> och, när produkten har verkliga val, &val=<valda alternativ>, och #offert (formuläret).
+  Skriptet under formuläret visar då rutan Offertförfrågan med fälten Produkt, Produktlänk och Valda alternativ
+  (skickas som contact[Produkt], contact[Produktlänk] och contact[Valda alternativ]) och fyller i ett tomt meddelande.
+  Allt fylls i som text (aldrig HTML). Produktlänken godtas bara när den går till en produkt i den här butiken
+  (samma adress som sidan, sökvägen /products/…); den visas som fullständig länk. Utan parametrar är rutan dold
+  och fälten inaktiva, så vanliga meddelanden skickas som förut. Efter ett fel visas rutan igen med de inskickade värdena.
 {%- endcomment -%}
 
 
@@ -39,7 +46,7 @@
       </div>
     {%- endif -%}
 
-    <div class="ks-contact-page__form-wrap">
+    <div class="ks-contact-page__form-wrap" id="offert" tabindex="-1">
       {%- if s.form_heading != blank -%}
         <h2 class="ks-contact-page__form-heading">{{ s.form_heading }}</h2>
       {%- endif -%}
@@ -105,6 +112,26 @@
             </div>
           {%- endif -%}
         </div>
+        {%- liquid
+          assign q_product = form['Produkt'] | default: ''
+          assign q_link = form['Produktlänk'] | default: ''
+          assign q_options = form['Valda alternativ'] | default: ''
+        -%}
+        <fieldset class="ks-contact-form__quote" data-ks-quote-fields{% if q_product == '' %} hidden disabled{% endif %}>
+          <legend class="ks-contact-form__quote-legend">Offertförfrågan</legend>
+          <div class="ks-contact-form__field">
+            <label for="{{ form_id }}-produkt">Produkt</label>
+            <input type="text" id="{{ form_id }}-produkt" name="contact[Produkt]" value="{{ q_product | escape }}" data-ks-quote-product>
+          </div>
+          <div class="ks-contact-form__field">
+            <label for="{{ form_id }}-produktlank">Produktlänk</label>
+            <input type="url" class="ks-contact-form__input" id="{{ form_id }}-produktlank" name="contact[Produktlänk]" value="{{ q_link | escape }}" spellcheck="false" autocapitalize="off" data-ks-quote-link>
+          </div>
+          <div class="ks-contact-form__field" data-ks-quote-options-field{% if q_options == '' %} hidden{% endif %}>
+            <label for="{{ form_id }}-val">Valda alternativ</label>
+            <input type="text" id="{{ form_id }}-val" name="contact[Valda alternativ]" value="{{ q_options | escape }}"{% if q_options == '' %} disabled{% endif %} data-ks-quote-options>
+          </div>
+        </fieldset>
         <div class="ks-contact-form__field">
           <label for="{{ form_id }}-body">Meddelande <span aria-hidden="true">*</span><span class="ks-visually-hidden">(obligatoriskt)</span></label>
           <textarea id="{{ form_id }}-body" name="contact[body]" rows="7" required>{{ form.body }}</textarea>
@@ -118,14 +145,50 @@
         </button>
       {%- endform -%}
     </div>
-    {%- comment -%} Etapp 4: "Begär offert" på produktsidan länkar hit med ?produkt=<namn>; fyll i ett tomt meddelandefält (som text, aldrig HTML). {%- endcomment -%}
+    {%- comment -%}
+      Etapp 4 och slututkast 2026-10-07: "Begär offert" länkar hit med ?produkt=, &lank= och &val= (snippet ks-quote-url).
+      Fyll i rutan Offertförfrågan och ett tomt meddelandefält (som text, aldrig HTML).
+    {%- endcomment -%}
     <script>
       (function () {
         try {
-          var namn = new URLSearchParams(window.location.search).get('produkt');
+          var form = document.getElementById({{ form_id | json }});
+          if (!form) return;
+          var params = new URLSearchParams(window.location.search);
+          var namn = (params.get('produkt') || '').trim().slice(0, 200);
+          if (!namn) return;
+          var val = (params.get('val') || '').trim().slice(0, 300);
+          var lank = '';
+          var raw = (params.get('lank') || '').trim();
+          if (raw) {
+            var u = new URL(raw, window.location.origin);
+            if (u.origin === window.location.origin && /^\/(collections\/[^\/]+\/)?products\/[^\/]+\/?$/.test(u.pathname)) {
+              var variant = u.searchParams.get('variant');
+              lank = u.origin + u.pathname + (variant && /^\d+$/.test(variant) ? '?variant=' + variant : '');
+            }
+          }
+          var box = form.querySelector('[data-ks-quote-fields]');
+          if (box) {
+            box.hidden = false;
+            box.disabled = false;
+            var product = box.querySelector('[data-ks-quote-product]');
+            var link = box.querySelector('[data-ks-quote-link]');
+            var options = box.querySelector('[data-ks-quote-options]');
+            var optionsField = box.querySelector('[data-ks-quote-options-field]');
+            if (product && product.value.trim() === '') product.value = namn;
+            if (link && link.value.trim() === '' && lank) link.value = lank;
+            if (options && optionsField && val) {
+              optionsField.hidden = false;
+              options.disabled = false;
+              if (options.value.trim() === '') options.value = val;
+            }
+          }
           var falt = document.getElementById({{ form_id | append: '-body' | json }});
-          if (namn && falt && falt.value.trim() === '') {
-            falt.value = 'Offertförfrågan: ' + namn.trim().slice(0, 200);
+          if (falt && falt.value.trim() === '') {
+            var rader = ['Offertförfrågan: ' + namn];
+            if (val) rader.push('Valda alternativ: ' + val);
+            if (lank) rader.push('Produktlänk: ' + lank);
+            falt.value = rader.join('\n');
           }
         } catch (e) {}
       })();

@@ -281,13 +281,23 @@
           "type": "card",
           "settings": {
             "icon": "none",
-            "background": "#8E6E43"
+            "heading": "Espressomaskiner",
+            "offer": "offer_1",
+            "button_label": "Se espressomaskiner",
+            "collection": "espressomaskiner",
+            "only_when_live": true,
+            "background": "#8A6A40"
           }
         },
         "guide_2": {
           "type": "card",
           "settings": {
             "icon": "none",
+            "heading": "Kaffekvarnar",
+            "offer": "offer_2",
+            "button_label": "Se kaffekvarnar",
+            "collection": "kaffekvarnar",
+            "only_when_live": true,
             "background": "#653A2B"
           }
         }
@@ -297,6 +307,7 @@
         "guide_2"
       ],
       "settings": {
+        "heading": "Erbjudanden",
         "background": "#E6E1DA"
       }
     },

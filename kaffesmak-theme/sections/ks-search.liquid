@@ -117,7 +117,20 @@
         {%- else -%}
           {%- capture ks_sidebar -%}
             {%- if section.settings.show_filters -%}
-              {% render 'ks-facets', part: 'sidebar', filters: ks_filters, id: section.id %}
+              {%- liquid
+                # Slututkast: inget filter "Slut i lager" när träffarna har offertprodukter (lager 0, snippet ks-sales-mode).
+                assign ks_hide_avail = false
+                for ks_item in ks_products
+                  capture ks_sales
+                    render 'ks-sales-mode', product: ks_item
+                  endcapture
+                  if ks_sales contains 'quote'
+                    assign ks_hide_avail = true
+                    break
+                  endif
+                endfor
+              -%}
+              {% render 'ks-facets', part: 'sidebar', filters: ks_filters, id: section.id, hide_availability: ks_hide_avail %}
             {%- endif -%}
           {%- endcapture -%}
 

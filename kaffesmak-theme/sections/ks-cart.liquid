@@ -9,8 +9,12 @@
   antalet ändrats (aldrig med tomt fält eller 0), döljer då knappen och sätter tillbaka fokus efter omladdningen.
   "Gå vidare till kassan" är en vanlig submit-knapp med name="checkout" (Shopifys kassa).
 
-  Medvetet utelämnat: rabattkodsfält, ordermeddelande, snabbkassaknappar (Shopify Pay m.fl.) och
-  "Begär offert" (offert är inte beslutat av kunden). Priser som är 0 visas aldrig.
+  Medvetet utelämnat: rabattkodsfält, ordermeddelande och snabbkassaknappar (Shopify Pay m.fl.). Priser som är 0
+  visas aldrig.
+  Slututkast 2026-10-07: offertprodukter (snippet ks-sales-mode, Espressomaskin och Kaffekvarn) kan inte köpas. Hamnar
+  en sådan rad ändå i varukorgen (t.ex. via en direktadress till /cart/add) visas en ruta överst och vid raden med
+  länken "Begär offert" (snippet ks-quote-url) och "Ta bort", och kassaknappen är inaktiv så länge raden finns.
+  Butiken nekar dessutom köp av dem eftersom lagret är 0 och "Fortsätt sälja när slut i lager" är avstängt.
   Kräver cart_type "page" i temainställningarna så att varukorgsikonen i sidhuvudet länkar hit.
 {%- endcomment -%}
 
@@ -25,6 +29,17 @@
   assign continue_url = s.continue_url | default: routes.all_products_collection_url
   assign checkout_label = s.checkout_label | default: 'Gå vidare till kassan'
   assign form_id = 'KsCartForm-' | append: section.id
+
+  # Slututkast: antal rader med offertprodukter (kan inte köpas, kassaknappen blir inaktiv).
+  assign quote_lines = 0
+  for item in cart.items
+    capture ks_sales
+      render 'ks-sales-mode', product: item.product
+    endcapture
+    if ks_sales contains 'quote'
+      assign quote_lines = quote_lines | plus: 1
+    endif
+  endfor
 -%}
 
 {%- capture continue_link -%}
@@ -56,6 +71,14 @@
         {%- endif -%}
       </div>
     {%- else -%}
+      {%- if quote_lines > 0 -%}
+        <div class="ks-cart__quote-alert" id="{{ form_id }}-quote-alert" role="alert" data-ks-cart-quote-alert>
+          <p class="ks-cart__quote-alert-heading">
+            {%- if quote_lines == 1 -%}En produkt i varukorgen säljs via offert{%- else -%}{{ quote_lines }} produkter i varukorgen säljs via offert{%- endif -%}
+          </p>
+          <p>Offertprodukter kan inte köpas i webbutiken. Skicka en offertförfrågan i stället och ta bort {% if quote_lines == 1 %}raden{% else %}raderna{% endif %} för att gå vidare till kassan.</p>
+        </div>
+      {%- endif -%}
       <form action="{{ routes.cart_url }}" method="post" id="{{ form_id }}" class="ks-cart__form" novalidate data-ks-cart-form>
         <table class="ks-cart__table">
           <caption class="ks-visually-hidden">Produkter i varukorgen</caption>
@@ -75,6 +98,17 @@
                   assign line_name = line_name | append: ' – ' | append: item.variant.title
                 endunless
                 assign qty_id = form_id | append: '-qty-' | append: forloop.index
+                capture line_sales
+                  render 'ks-sales-mode', product: item.product
+                endcapture
+                assign line_quote = false
+                if line_sales contains 'quote'
+                  assign line_quote = true
+                  capture line_quote_url
+                    render 'ks-quote-url', product: item.product, variant: item.variant
+                  endcapture
+                  assign line_quote_url = line_quote_url | strip
+                endif
                 # Utan JavaScript tar 0 + "Uppdatera varukorg" bort raden. ks-cart.js höjer min till 1 (raden tas bort med "Ta bort").
                 assign qty_min = 0
                 assign qty_step = 1
@@ -86,7 +120,7 @@
                   assign qty_max = item.variant.quantity_rule.max
                 endif
               -%}
-              <tr class="ks-cart__row" data-ks-cart-line="{{ forloop.index }}" data-ks-cart-key="{{ item.key | escape }}">
+              <tr class="ks-cart__row{% if line_quote %} ks-cart__row--quote{% endif %}" data-ks-cart-line="{{ forloop.index }}" data-ks-cart-key="{{ item.key | escape }}">
                 <td class="ks-cart__media">
                   {%- if item.image != blank -%}
                     <a href="{{ item.url }}" class="ks-cart__media-link" tabindex="-1" aria-hidden="true">
@@ -116,6 +150,12 @@
                   {%- endfor -%}
                   {%- if s.show_sku and item.sku != blank -%}
                     <p class="ks-cart__meta ks-cart__sku">Artikelnummer: {{ item.sku }}</p>
+                  {%- endif -%}
+                  {%- if line_quote -%}
+                    <div class="ks-cart__quote-note" data-ks-cart-quote-note>
+                      <p>Säljs via offert och kan inte köpas här.</p>
+                      <a href="{{ line_quote_url | escape }}" class="ks-link ks-cart__quote-link" aria-label="Begär offert på {{ item.product.title | escape }}"><span aria-hidden="true">›&nbsp;</span>Begär offert</a>
+                    </div>
                   {%- endif -%}
                   {%- for allocation in item.line_level_discount_allocations -%}
                     {%- if allocation.amount > 0 -%}
@@ -212,7 +252,12 @@
         <div class="ks-cart__actions">
           {{ continue_link }}
           <div class="ks-cart__checkout">
-            {% render 'ks-button', label: checkout_label, tag: 'button', button_type: 'submit', name: 'checkout', class: 'ks-cart__checkout-button' %}
+            {%- if quote_lines > 0 -%}
+              {% render 'ks-button', label: checkout_label, disabled: true, class: 'ks-cart__checkout-button' %}
+              <p class="ks-cart__checkout-note">Ta bort offertprodukterna för att gå vidare till kassan.</p>
+            {%- else -%}
+              {% render 'ks-button', label: checkout_label, tag: 'button', button_type: 'submit', name: 'checkout', class: 'ks-cart__checkout-button' %}
+            {%- endif -%}
           </div>
         </div>
       </form>

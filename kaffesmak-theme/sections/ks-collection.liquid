@@ -7,6 +7,10 @@
   - Tom kategori (inga publicerade produkter): en lugn tom ruta med länk vidare, utan filter och sortering.
   - Filter som ger noll träffar: "Inga produkter matchar filtren." och "Rensa alla filter".
   - På sidan /collections (mallen list-collections) visar samma sektion en översikt över butikens kategorier.
+  - Slututkast 2026-10-07: kampanjkort med kundens erbjudanden överst (som referensens kampanjkort under titelbandet).
+    Ett kort per erbjudande (temainställningarna under Erbjudanden) vars produkttyp finns bland kategorins publicerade
+    produkter (collection.all_types): Espressomaskiner visar espressomaskinens erbjudande, Kaffekvarnar kvarnens och
+    Kaffemaskiner båda när båda typerna finns där. Inga kort i tomma kategorier. Ingen bild (inga påhittade bilder).
 {%- endcomment -%}
 
 {{ 'ks-shop.css' | asset_url | stylesheet_tag }}
@@ -85,6 +89,42 @@
         endfor
       endif
     -%}
+    {%- liquid
+      assign ks_offer_cards = ''
+      if section.settings.show_offers and ks_empty_category == false
+        assign ks_types_lc = collection.all_types | join: '|' | downcase | split: '|'
+        for ks_n in (1..2)
+          if ks_n == 1
+            assign ks_o_type = settings.ks_offer_1_type | default: '' | strip | downcase
+          else
+            assign ks_o_type = settings.ks_offer_2_type | default: '' | strip | downcase
+          endif
+          if ks_o_type == ''
+            continue
+          endif
+          assign ks_o_found = false
+          for ks_t in ks_types_lc
+            assign ks_t_clean = ks_t | strip
+            if ks_t_clean == ks_o_type
+              assign ks_o_found = true
+              break
+            endif
+          endfor
+          if ks_o_found
+            capture ks_o_text
+              render 'ks-offer-text', type: ks_o_type
+            endcapture
+            assign ks_o_text = ks_o_text | strip
+            if ks_o_text != ''
+              capture ks_card
+                echo '<li class="ks-offer-card ks-offer-card--' | append: ks_n | append: '"><p class="ks-offer-card__label">Erbjudande</p><p class="ks-offer-card__text">' | append: ks_o_text | append: '</p></li>'
+              endcapture
+              assign ks_offer_cards = ks_offer_cards | append: ks_card
+            endif
+          endif
+        endfor
+      endif
+    -%}
     <div class="ks-shop ks-collection">
       <div class="ks-title-band{% if ks_show_description %} ks-title-band--with-text{% endif %}">
         <div class="ks-container">
@@ -95,6 +135,14 @@
           {%- endif -%}
         </div>
       </div>
+
+      {%- if ks_offer_cards != '' -%}
+        <div class="ks-container ks-collection__offers">
+          <ul class="ks-offer-cards" role="list" aria-label="Erbjudanden">
+            {{- ks_offer_cards -}}
+          </ul>
+        </div>
+      {%- endif -%}
 
       <div class="ks-container ks-collection__container">
         {%- if ks_empty_category -%}
@@ -116,7 +164,19 @@
         {%- else -%}
           {%- capture ks_sidebar -%}
             {%- if section.settings.show_filters -%}
-              {% render 'ks-facets', part: 'sidebar', filters: ks_filters, id: section.id %}
+              {%- liquid
+                # Slututkast: inget filter "Slut i lager" när kategorin har offertprodukter (lager 0, snippet ks-sales-mode).
+                assign ks_hide_avail = false
+                assign ks_qtypes = settings.ks_quote_types | default: '' | downcase | split: ','
+                assign ks_ctypes = collection.all_types | join: '|' | downcase | split: '|'
+                for ks_qt in ks_qtypes
+                  assign ks_qt_clean = ks_qt | strip
+                  if ks_qt_clean != '' and ks_ctypes contains ks_qt_clean
+                    assign ks_hide_avail = true
+                  endif
+                endfor
+              -%}
+              {% render 'ks-facets', part: 'sidebar', filters: ks_filters, id: section.id, hide_availability: ks_hide_avail %}
             {%- endif -%}
           {%- endcapture -%}
 
@@ -278,7 +338,8 @@
     { "type": "checkbox", "id": "show_sorting", "label": "Visa sortering", "default": true },
     { "type": "checkbox", "id": "show_sku", "label": "Visa artikelnummer", "default": true, "info": "Visas bara när produkten har ett artikelnummer (SKU)." },
     { "type": "checkbox", "id": "show_stock", "label": "Visa lagerstatus", "default": true, "info": "Visas bara när lagret spåras i Shopify och produkten har ett pris." },
-    { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan." },
+    { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan. Offertprodukter har alltid \"Begär offert\"." },
+    { "type": "checkbox", "id": "show_offers", "label": "Visa erbjudanden som kampanjkort", "default": true, "info": "Erbjudandena skrivs i temainställningarna (KaffeSmak › Erbjudanden). Kortet visas när kategorin har produkter av erbjudandets produkttyp." },
     { "type": "header", "content": "Rubrik och brödsmulor" },
     { "type": "text", "id": "all_heading", "label": "Rubrik för alla produkter (/collections/all)", "default": "Alla produkter", "info": "Ersätter Shopifys engelska standardtitel på sidan med alla produkter. Tomt fält visar kategorins egen titel." },
     { "type": "link_list", "id": "breadcrumb_menu", "label": "Meny för brödsmulor", "info": "Kategorier som ligger under en huvudpunkt i menyn får huvudpunkten i brödsmulorna, t.ex. Hem › Tillbehör › Presskannor. Använd samma meny som sidhuvudet." },
