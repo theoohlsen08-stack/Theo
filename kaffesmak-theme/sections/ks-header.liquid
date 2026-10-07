@@ -3,7 +3,8 @@
   Svart toppfält (logga, sökfält, konto, varukorg, Kontakt-knapp) och röd huvudmeny
   med nedfällbara undermenyer som öppnas vid klick. Menyn hämtas från en Shopify-meny.
   Etapp 5: undermenyernas rader byggs av snippet ks-nav-children (samma regler på dator och mobil): tomma länkar,
-  länkar till opublicerade resurser och platshållare till huvudpunktens sida visas inte, och aktuell sida markeras
+  länkar till saknade eller opublicerade resurser (snippet ks-link-usable) och platshållare till huvudpunktens sida
+  visas inte, och aktuell sida markeras
   med aria-current på högst en rad per undermeny (snippet ks-nav-current hanterar ?view=-länkar som Om oss).
 {%- endcomment -%}
 
@@ -25,7 +26,6 @@
       endif
     endfor
   endfor
-  assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
 
   assign nav_font = section.settings.nav_font
   assign heading_font = section.settings.heading_font
@@ -151,12 +151,14 @@
           {%- for link in menu.links -%}
             {%- liquid
               assign item_id = 'KsNav-' | append: section.id | append: '-' | append: forloop.index
-              # Huvudpunktens länk används bara när den finns, inte är '#' och inte pekar på en opublicerad resurs.
-              assign top_url = link.url
-              if top_url == '#'
-                assign top_url = ''
-              elsif ks_resource_types contains link.type and link.object == blank
-                assign top_url = ''
+              # Huvudpunktens länk används bara när den finns, inte är '#' och inte pekar på en saknad eller opublicerad
+              # resurs (snippet ks-link-usable).
+              assign top_url = ''
+              capture ks_usable
+                render 'ks-link-usable', link: link
+              endcapture
+              if ks_usable contains 'true'
+                assign top_url = link.url
               endif
               capture ks_children
                 render 'ks-nav-children', link: link, top_url: top_url, variant: 'desktop', show_view_all: section.settings.show_view_all, view_all_label: section.settings.view_all_label, hide_same: section.settings.hide_duplicate_links, view_names: ks_view_names, view_suffix: template.suffix
@@ -203,11 +205,12 @@
         {%- for link in menu.links -%}
           {%- liquid
             assign m_id = 'KsMobile-' | append: section.id | append: '-' | append: forloop.index
-            assign top_url = link.url
-            if top_url == '#'
-              assign top_url = ''
-            elsif ks_resource_types contains link.type and link.object == blank
-              assign top_url = ''
+            assign top_url = ''
+            capture ks_usable
+              render 'ks-link-usable', link: link
+            endcapture
+            if ks_usable contains 'true'
+              assign top_url = link.url
             endif
             capture ks_children
               render 'ks-nav-children', link: link, top_url: top_url, variant: 'mobile', show_view_all: section.settings.show_view_all, view_all_label: section.settings.view_all_label, hide_same: section.settings.hide_duplicate_links, view_names: ks_view_names, view_suffix: template.suffix

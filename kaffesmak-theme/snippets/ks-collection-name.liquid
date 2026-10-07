@@ -1,0 +1,42 @@
+{%- comment -%}
+  KaffeSmak – kategorins namn för besökare (rättelse efter etapp 5): menyns namn när kategorin finns i menyn,
+  annars kategorins titel i Shopify. Skriver bara namnet (utan escape; den som anropar escapar).
+  Parametrar: collection (kategorin), menu (valfritt menyhandtag; annars temainställningen "Meny för kategorinamn",
+  settings.ks_name_menu).
+
+  Så blir texterna desamma i menyn, rubrikerna, brödsmulorna, kategoriöversikten och sidtitlarna, t.ex. "Mokabryggare"
+  (kategorin heter "Mockabryggare" i Shopify) och "Presskannor" ("Presskanna"). Kategoriernas namn och adresser i
+  Shopify ändras inte.
+  Ordning: en huvudpunkt som länkar till kategorin, annars en undermenylänk till kategorin. Platshållare (en undermenylänk
+  till samma adress som huvudpunkten, t.ex. "Aluminium" under Mokabryggare) räknas inte.
+{%- endcomment -%}
+{%- liquid
+  assign ks_name = collection.title
+  assign ks_menu_handle = menu | default: settings.ks_name_menu
+  if collection != blank and ks_menu_handle != blank
+    assign ks_menu = linklists[ks_menu_handle]
+    assign ks_found = false
+    for top in ks_menu.links
+      if top.type == 'collection_link' and top.object != blank and top.object.handle == collection.handle and top.title != blank
+        assign ks_name = top.title
+        assign ks_found = true
+        break
+      endif
+    endfor
+    unless ks_found
+      for top in ks_menu.links
+        for child in top.links
+          if child.type == 'collection_link' and child.url != top.url and child.object != blank and child.object.handle == collection.handle and child.title != blank
+            assign ks_name = child.title
+            assign ks_found = true
+            break
+          endif
+        endfor
+        if ks_found
+          break
+        endif
+      endfor
+    endunless
+  endif
+  echo ks_name
+-%}

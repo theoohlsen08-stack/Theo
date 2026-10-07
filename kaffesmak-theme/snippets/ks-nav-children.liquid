@@ -13,7 +13,7 @@
   En undermenylänk hoppas över när
   - länken är tom eller '#';
   - den går till samma sida som huvudpunkten och hide_same är på ("Visa alla" leder redan dit);
-  - den pekar på en kategori, produkt, sida, blogg eller artikel som inte är publicerad (link.object saknas).
+  - den pekar på en kategori, produkt, sida, blogg eller artikel som saknas eller inte är publicerad (snippet ks-link-usable).
   Aktuell sida (aria-current="page", se ks-nav-current): högst en rad per undermeny markeras, "Visa alla" först.
   Skriver ingenting när ingen undermenylänk finns kvar; då visar sidhuvudet en vanlig länk eller ingen menypunkt.
 {%- endcomment -%}
@@ -23,7 +23,6 @@
   else
     assign ks_link_class = 'ks-dropdown__link'
   endif
-  assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
 
   assign ks_show_all = false
   if show_view_all and top_url != blank
@@ -45,12 +44,15 @@
   {%- for child in link.links -%}
     {%- liquid
       assign ks_skip = false
-      if child.url == blank or child.url == '#'
+      if hide_same and child.url == link.url
         assign ks_skip = true
-      elsif hide_same and child.url == link.url
-        assign ks_skip = true
-      elsif ks_resource_types contains child.type and child.object == blank
-        assign ks_skip = true
+      else
+        capture ks_usable
+          render 'ks-link-usable', link: child
+        endcapture
+        unless ks_usable contains 'true'
+          assign ks_skip = true
+        endunless
       endif
     -%}
     {%- if ks_skip -%}{%- continue -%}{%- endif -%}

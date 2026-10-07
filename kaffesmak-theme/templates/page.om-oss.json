@@ -30,7 +30,7 @@
         "button_company": {
           "type": "button",
           "settings": {
-            "label": "Företagsuppgifter",
+            "label": "Alla företagsuppgifter",
             "url": "/policies/contact-information"
           }
         }

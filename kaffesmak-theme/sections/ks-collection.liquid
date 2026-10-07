@@ -45,27 +45,33 @@
 
       # Etapp 5: Shopifys sida med alla produkter (/collections/all) har en engelsk standardtitel när butiken
       # saknar en egen kategori med handtaget all. Rubriken och brödsmulan använder då inställningen nedan.
-      assign ks_title = collection.title
+      # Rättelse efter etapp 5: kategorins namn från menyn (snippet ks-collection-name), t.ex. "Mokabryggare" och
+      # "Presskannor". Kategorins titel och adress i Shopify ändras inte.
+      capture ks_title
+        render 'ks-collection-name', collection: collection
+      endcapture
       if collection.handle == 'all' and section.settings.all_heading != blank
         assign ks_title = section.settings.all_heading
       endif
 
-      # Etapp 5: överkategori i brödsmulorna ("Hem › Tillbehör › Presskanna") från menyn i "Meny för brödsmulor".
+      # Etapp 5: överkategori i brödsmulorna ("Hem › Tillbehör › Presskannor") från menyn i "Meny för brödsmulor".
       # Kategorin måste vara en kategorilänk (collection_link) under en huvudpunkt med en egen länk. Huvudpunkter
-      # utan länk (#) eller till en opublicerad resurs och platshållare som pekar på samma kategori som huvudpunkten
-      # ger ingen extra nivå.
+      # utan länk (#) eller till en saknad eller opublicerad resurs (snippet ks-link-usable) och platshållare som pekar
+      # på samma kategori som huvudpunkten ger ingen extra nivå.
       assign ks_parent_title = ''
       assign ks_parent_url = ''
-      assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
       assign ks_crumb_menu = linklists[section.settings.breadcrumb_menu]
       if section.settings.breadcrumb_menu != blank and ks_crumb_menu != blank
         for top in ks_crumb_menu.links
           if top.url == blank or top.url == '#' or top.url == collection.url
             continue
           endif
-          if ks_resource_types contains top.type and top.object == blank
+          capture ks_usable
+            render 'ks-link-usable', link: top
+          endcapture
+          unless ks_usable contains 'true'
             continue
-          endif
+          endunless
           for child in top.links
             if child.type == 'collection_link' and child.object != blank and child.object.handle == collection.handle
               assign ks_parent_title = top.title
@@ -216,11 +222,12 @@
             <span class="ks-cat-tile__img ks-cat-tile__img--empty"></span>
           {%- endif -%}
         </a>
-        <h2 class="ks-cat-tile__title"><a href="{{ c.url }}">{{ c.title | escape }}</a></h2>
+        {%- capture ks_c_name -%}{%- render 'ks-collection-name', collection: c -%}{%- endcapture -%}
+        <h2 class="ks-cat-tile__title"><a href="{{ c.url }}">{{ ks_c_name | escape }}</a></h2>
         <p class="ks-cat-tile__count">
           {%- if c.products_count == 1 -%}1 produkt{%- else -%}{{ c.products_count }} produkter{%- endif -%}
         </p>
-        {%- assign ks_aria = section.settings.list_button_label | append: ' ' | append: c.title -%}
+        {%- assign ks_aria = section.settings.list_button_label | append: ' ' | append: ks_c_name -%}
         {% render 'ks-button', label: section.settings.list_button_label, url: c.url, size: 'small', aria_label: ks_aria %}
       </li>
     {%- endfor -%}
@@ -269,7 +276,7 @@
     { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan." },
     { "type": "header", "content": "Rubrik och brödsmulor" },
     { "type": "text", "id": "all_heading", "label": "Rubrik för alla produkter (/collections/all)", "default": "Alla produkter", "info": "Ersätter Shopifys engelska standardtitel på sidan med alla produkter. Tomt fält visar kategorins egen titel." },
-    { "type": "link_list", "id": "breadcrumb_menu", "label": "Meny för brödsmulor", "info": "Kategorier som ligger under en huvudpunkt i menyn får huvudpunkten i brödsmulorna, t.ex. Hem › Tillbehör › Presskanna. Använd samma meny som sidhuvudet." },
+    { "type": "link_list", "id": "breadcrumb_menu", "label": "Meny för brödsmulor", "info": "Kategorier som ligger under en huvudpunkt i menyn får huvudpunkten i brödsmulorna, t.ex. Hem › Tillbehör › Presskannor. Använd samma meny som sidhuvudet." },
     { "type": "header", "content": "Tomma lägen" },
     { "type": "text", "id": "empty_text", "label": "Text när kategorin saknar produkter", "default": "Det finns inga produkter i den här kategorin just nu." },
     { "type": "text", "id": "empty_button_label", "label": "Knapptext när kategorin saknar produkter", "default": "Till startsidan" },

@@ -1,6 +1,7 @@
 {%- comment -%}
   KaffeSmak – guldbrunt informationsband under bannern (Monteriva-referensens infoband):
   en centrerad rad med punkter åtskilda av mittpunkter. Varje punkt är ett eget block.
+  Rättelse efter etapp 5: mörkare guldbrunt (#8A6A40) så att den vita texten har kontrast 4,98:1 (tidigare #A38358, 3,53:1).
 {%- endcomment -%}
 
 {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
@@ -25,7 +26,7 @@
   "class": "ks-band-section",
   "max_blocks": 4,
   "settings": [
-    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#A38358" }
+    { "type": "color", "id": "background", "label": "Bakgrund", "default": "#8A6A40", "info": "Vit text kräver kontrast minst 4,5:1 mot bakgrunden (#8A6A40 ger 4,98:1)." }
   ],
   "blocks": [
     {

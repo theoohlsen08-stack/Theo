@@ -80,13 +80,24 @@
       </ul>
     </div>
 
-    {%- if menu.links.size > 0 -%}
+    {%- comment -%}
+      Rättelse efter etapp 5: länkar till saknade eller opublicerade sidor och kategorier visas inte (snippet
+      ks-link-usable), som i sidhuvudet. Utan kvarvarande länkar visas inte kolumnen.
+    {%- endcomment -%}
+    {%- capture ks_footer_links -%}
+      {%- for link in menu.links -%}
+        {%- capture ks_usable -%}{%- render 'ks-link-usable', link: link -%}{%- endcapture -%}
+        {%- if ks_usable contains 'true' -%}
+          <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign ks_footer_links = ks_footer_links | strip -%}
+    {%- if ks_footer_links != '' -%}
       <nav class="ks-footer__col" aria-labelledby="KsFooterMenu-{{ section.id }}">
         <h2 class="ks-footer__heading" id="KsFooterMenu-{{ section.id }}">{{ s.menu_heading | default: menu.title }}</h2>
         <ul class="ks-footer__list ks-footer__links" role="list">
-          {%- for link in menu.links -%}
-            <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
-          {%- endfor -%}
+          {{ ks_footer_links }}
         </ul>
       </nav>
     {%- endif -%}

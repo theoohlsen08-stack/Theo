@@ -12,7 +12,12 @@
   <section class="ks-section ks-products" aria-labelledby="KsProducts-{{ section.id }}">
     <div class="ks-container">
       <h2 class="ks-section__heading ks-section__heading--red ks-section__heading--rule" id="KsProducts-{{ section.id }}">
-        {{- section.settings.heading | default: collection.title -}}
+        {%- if section.settings.heading != blank -%}
+          {{- section.settings.heading -}}
+        {%- else -%}
+          {%- comment -%} Rättelse efter etapp 5: kategorins namn från menyn (snippet ks-collection-name). {%- endcomment -%}
+          {%- render 'ks-collection-name', collection: collection -%}
+        {%- endif -%}
       </h2>
       {%- if section.settings.text != blank -%}
         <div class="ks-section__lead ks-section__lead--wide">{{ section.settings.text }}</div>

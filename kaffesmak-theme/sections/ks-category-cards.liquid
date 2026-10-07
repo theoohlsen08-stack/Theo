@@ -16,7 +16,10 @@
       endif
       assign label = block.settings.label
       if label == blank and c != blank
-        assign label = c.title
+        # Rättelse efter etapp 5: kategorins namn från menyn (snippet ks-collection-name).
+        capture label
+          render 'ks-collection-name', collection: c
+        endcapture
       endif
       assign img = block.settings.image
       if img == blank and c != blank

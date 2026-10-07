@@ -83,9 +83,9 @@
   #    (Hem › Kaffemaskiner › Espressomaskiner);
   # 3. annars en huvudpunkt som är en kategori som produkten ligger i eller som har en länk till produkten (Hem › Kaffe);
   # 4. annars produktens första kategori (som i etapp 4).
-  # Huvudpunkter utan egen länk (#) eller till en opublicerad resurs ger ingen överkategori, och platshållare som
-  # pekar på huvudpunktens kategori räknas inte. Opublicerade kategorier (link.object saknas) hoppas över.
-  assign ks_resource_types = 'collection_link,product_link,page_link,blog_link,article_link' | split: ','
+  # Huvudpunkter utan egen länk (#) eller till en saknad eller opublicerad resurs ger ingen överkategori, och platshållare
+  # som pekar på huvudpunktens kategori räknas inte. Saknade och opublicerade kategorier hoppas över (snippet
+  # ks-link-usable; Shopify ger link.object även för opublicerade kategorier).
   assign ks_handles = product.collections | map: 'handle'
   assign crumb_handle = ''
   assign crumb_object = nil
@@ -102,6 +102,12 @@
         if child.type != 'collection_link' or child.object == blank or child.url == top.url
           continue
         endif
+        capture ks_usable
+          render 'ks-link-usable', link: child
+        endcapture
+        unless ks_usable contains 'true'
+          continue
+        endunless
         if crumb_handle != ''
           if child.object.handle == crumb_handle
             assign ks_found = true
@@ -112,13 +118,10 @@
         if ks_found
           assign crumb_handle = child.object.handle
           assign crumb_object = child.object
-          assign ks_top_ok = true
-          if top.url == blank or top.url == '#'
-            assign ks_top_ok = false
-          elsif ks_resource_types contains top.type and top.object == blank
-            assign ks_top_ok = false
-          endif
-          if ks_top_ok
+          capture ks_usable
+            render 'ks-link-usable', link: top
+          endcapture
+          if ks_usable contains 'true'
             assign ancestor_title = top.title
             assign ancestor_url = top.url
           endif
@@ -134,6 +137,12 @@
         if top.type != 'collection_link' or top.object == blank
           continue
         endif
+        capture ks_usable
+          render 'ks-link-usable', link: top
+        endcapture
+        unless ks_usable contains 'true'
+          continue
+        endunless
         if ks_handles contains top.object.handle
           assign ks_found = true
         else
@@ -177,7 +186,10 @@
   assign parent_url = ''
   if crumb_collection != blank
     assign back_url = crumb_collection.url
-    assign parent_title = crumb_collection.title
+    # Rättelse efter etapp 5: kategorins namn från menyn (snippet ks-collection-name), t.ex. "Presskannor".
+    capture parent_title
+      render 'ks-collection-name', collection: crumb_collection
+    endcapture
     assign parent_url = crumb_collection.url
   else
     assign ancestor_title = ''

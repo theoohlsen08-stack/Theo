@@ -11,7 +11,7 @@
   --ks-icon-red: #d91441;
   --ks-beige: #e2d8c8;
   --ks-brown: #653a2b;
-  --ks-gold: #a38358;
+  --ks-gold: #8a6a40; /* rättelse efter etapp 5: tidigare #a38358, vit text får nu kontrast 4,98:1 */
   /* Etapp 4: länkröd, lagergrön (mörkad för kontrast 4.7:1), grått titelband, kontrollfält och tunna linjer */
   --ks-link: #dd052b;
   --ks-stock: #3b831d;
