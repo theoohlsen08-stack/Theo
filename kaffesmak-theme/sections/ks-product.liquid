@@ -230,8 +230,10 @@
 {%- comment -%}
   Strukturerad data bara när produkten har ett pris. Utan pris skrivs ingen strukturerad data ut: ett Product
   utan offers, review eller aggregateRating är ogiltigt för Google, och ett pris på 0 kr får inte publiceras.
+  Slututkast: inte heller för offertprodukter. Shopifys data har offers med availability OutOfStock (lager 0), så
+  sökmotorer skulle kunna visa "Slut i lager" och ett köppris för en produkt som säljs via offert.
 {%- endcomment -%}
-{%- if product.price > 0 -%}
+{%- if product.price > 0 and sales_mode != 'quote' -%}
   <script type="application/ld+json">{{ product | structured_data }}</script>
 {%- endif -%}
 

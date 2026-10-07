@@ -119,7 +119,25 @@
             {%- if section.settings.show_filters -%}
               {%- liquid
                 # Slututkast: inget filter "Slut i lager" när träffarna har offertprodukter (lager 0, snippet ks-sales-mode).
+                # Filtrens antal gäller ALLA träffar (alla sidor), så offerttyperna letas först bland värdena i filtret
+                # Produkttyp (filter.p.product_type). Finns inte det filtret används den aktuella sidans produkter.
                 assign ks_hide_avail = false
+                assign ks_qtypes = settings.ks_quote_types | default: '' | downcase | split: ','
+                for ks_f in ks_filters
+                  if ks_f.param_name == 'filter.p.product_type'
+                    for ks_fv in ks_f.values
+                      if ks_fv.count > 0 or ks_fv.active
+                        assign ks_fv_type = ks_fv.value | downcase | strip
+                        for ks_qt in ks_qtypes
+                          assign ks_qt_clean = ks_qt | strip
+                          if ks_qt_clean != '' and ks_qt_clean == ks_fv_type
+                            assign ks_hide_avail = true
+                          endif
+                        endfor
+                      endif
+                    endfor
+                  endif
+                endfor
                 for ks_item in ks_products
                   capture ks_sales
                     render 'ks-sales-mode', product: ks_item

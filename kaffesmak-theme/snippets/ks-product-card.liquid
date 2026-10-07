@@ -29,7 +29,7 @@
     assign ks_label = 'Begär offert'
     assign ks_aria = 'Begär offert på ' | append: product.title
     capture ks_quote_url
-      render 'ks-quote-url', product: product
+      render 'ks-quote-url', product: product, with_choice: false
     endcapture
     assign ks_quote_url = ks_quote_url | strip | escape
   endif

@@ -89,7 +89,7 @@
                   assign buy_label = 'Begär offert'
                   assign buy_aria = 'Begär offert på ' | append: product.title
                   capture buy_url
-                    render 'ks-quote-url', product: product
+                    render 'ks-quote-url', product: product, with_choice: false
                   endcapture
                   assign buy_url = buy_url | strip | escape
                   assign buy_class = 'ks-product-card__buy ks-product-card__quote'

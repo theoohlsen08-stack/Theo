@@ -178,6 +178,15 @@
                 </td>
                 <td class="ks-cart__qty">
                   <div class="ks-cart__qty-wrap">
+                    {%- if line_quote -%}
+                      {%- comment -%}
+                        Slututkast: offertrader har ingen antalsväljare (kundens besked: ingen möjlighet att lägga
+                        offertprodukterna i varukorgen). Antalet visas som text; det dolda updates[] håller ordningen så
+                        att "Uppdatera varukorg" gäller rätt rader. Bara "Ta bort" finns kvar.
+                      {%- endcomment -%}
+                      <span class="ks-cart__qty-text">Antal: {{ item.quantity }}</span>
+                      <input type="hidden" name="updates[]" value="{{ item.quantity }}">
+                    {%- else -%}
                     <label for="{{ qty_id }}" class="ks-visually-hidden">Antal av {{ line_name | escape }}</label>
                     <div class="ks-qty ks-cart__stepper">
                       <button type="button" class="ks-qty__button" data-ks-qty-step="-1" data-ks-cart-control="minus" aria-controls="{{ qty_id }}" aria-label="Minska antal av {{ line_name | escape }}" hidden>
@@ -202,6 +211,7 @@
                         <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M0 7h14M7 0v14" stroke="currentColor" stroke-width="2"/></svg>
                       </button>
                     </div>
+                    {%- endif -%}
                     <a href="{{ item.url_to_remove }}" class="ks-cart__remove" data-ks-cart-control="remove" data-ks-cart-remove aria-label="Ta bort {{ line_name | escape }} från varukorgen">Ta bort</a>
                   </div>
                 </td>

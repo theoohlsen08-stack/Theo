@@ -1,7 +1,8 @@
 {%- comment -%}
   KaffeSmak – adress till offertförfrågan för en produkt (slututkast 2026-10-07). Skriver adressen, redan
   utan blanksteg före och efter (parametrarna är URL-kodade).
-  Parametrar: product, variant (valfri; standard produktens förvalda variant).
+  Parametrar: product, variant (valfri; standard produktens förvalda variant), with_choice (valfri; false =
+  ta inte med något val och ingen ?variant=, för produktkort och produktrader där besökaren inte har valt något).
   Adressen skrivs med vanliga & (anroparen använder | escape i attribut och | json i JSON).
   Kundens besked: "Offertförfrågan ska innehålla produktnamn och länk till produkten. Ta med kundens val där
   bekräftade alternativ finns."
@@ -23,6 +24,9 @@
   endif
   assign ks_has_options = true
   if product.has_only_default_variant or product.variants.size < 2
+    assign ks_has_options = false
+  endif
+  if with_choice == false
     assign ks_has_options = false
   endif
   assign ks_path = product.url

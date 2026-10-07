@@ -169,3 +169,72 @@ Sidor:
 - Startsidans kunskapskort (`sections/ks-article-cards.liquid`, `assets/ks-theme.css`): stående bilder håller 4:3, ingen
   tom bildyta för artiklar utan bild, långa ord bryts och utdraget smälter inte ihop ord vid rubriker och stycken.
 - Sökningen: tomt läge och sökförslag använder svenska citattecken (”…”).
+
+## Slututkast 2026-10-07 (försäljningsform och erbjudanden)
+
+Kundens besked: "Endast espressomaskiner och kaffekvarnar ska säljas via offert." Övriga produkter (kaffe, Royal-tillbehör,
+mokabryggare m.m.) har vanligt köpflöde. Inga varianter är skapade och inget är publicerat.
+
+Försäljningsform per produkttyp:
+
+- `config/settings_schema.json`, `config/settings_data.json` – nya temainställningar i gruppen KaffeSmak:
+  "Produkttyper som säljs via offert" (`ks_quote_types`, värde "Espressomaskin, Kaffekvarn"), "Sida för offertförfrågan"
+  (`ks_quote_link`, tomt = `/pages/contact`) och två erbjudanden (`ks_offer_1_type`/`_text`, `ks_offer_2_type`/`_text`)
+  med kundens exakta texter för Espressomaskin och Kaffekvarn.
+- `snippets/ks-sales-mode.liquid` – skriver `quote` eller `buy` för en produkt (produkttypen jämförs utan skillnad på stora
+  och små bokstäver). Används av produktsidan, produktkorten, produktraderna, sökresultatens filter och varukorgen, oberoende
+  av mall.
+- `sections/ks-product.liquid`, `snippets/ks-product-buy.liquid`, `assets/ks-product.js`, `assets/ks-product.css` –
+  offertprodukter visar den gröna knappen "Begär offert" (minst 44 px) och kundens erbjudande direkt under knappen; inget
+  köpformulär, ingen antal-ruta, ingen köpknapp, ingen lagerrad och aldrig "Slut i lager". Pris bara över 0 kr. Knappen
+  fungerar utan pris och med lager 0. Byter kunden variant uppdateras offertlänken med de nya valen.
+  - Den gamla spärren `catalog_only_types` och sektionsinställningen "Försäljning" (`sales_mode`) är borttagna (de
+    motverkade regeln). `templates/product.json` och `templates/product.maskin.json` följer regeln per produkttyp;
+    `templates/product.maskin-granskning.json` behåller granskningsläget (inaktiva knappar).
+- `snippets/ks-quote-url.liquid` – adressen till offertförfrågan: `/pages/contact?produkt=<namn>&lank=<fullständig
+  produktlänk>[&val=<valda alternativ>]#offert`. Val och `?variant=` tas bara med när produkten har verkliga val.
+- `sections/ks-contact-page.liquid`, `assets/ks-theme.css` – rutan "Offertförfrågan" i kontaktformuläret med de synliga
+  fälten Produkt, Produktlänk och (vid val) Valda alternativ, som skickas som `contact[Produkt]`, `contact[Produktlänk]`
+  och `contact[Valda alternativ]`. Ett tomt meddelande fylls i med produkt, val och länk. Allt fylls i som text, och
+  produktlänken godtas bara när den går till en produkt i den egna butiken. Utan parametrar är rutan dold och fälten
+  inaktiva. Skicka-knappen är minst 44 px hög.
+
+Produktkort, kategorier, sök och varukorg:
+
+- `snippets/ks-product-card.liquid` (kategorier, sökresultat, "Fler produkter i samma kategori", reservdelar) och
+  `sections/ks-product-row.liquid` (startsidans produktrader) – offertprodukter får knappen "Begär offert" till
+  offertformuläret (produkt och länk), inget lagermärke och inget 0 kr-pris. Inget snabbköp finns. Övriga kort är oförändrade.
+- `sections/ks-collection.liquid`, `assets/ks-collection.css` – kampanjkort med erbjudandet överst på kategorisidor som har
+  produkter av erbjudandets typ (Espressomaskiner: espressomaskinens, Kaffekvarnar: kvarnens, Kaffemaskiner: båda), i
+  referensens kampanjkortsstil men utan bild. Inställningen "Visa erbjudanden som kampanjkort" stänger av dem.
+- `snippets/ks-facets.liquid`, `sections/ks-collection.liquid`, `sections/ks-search.liquid` – filtret Tillgänglighet
+  ("I lager"/"Slut i lager") döljs på kategorisidor och sökresultat med offertprodukter, eftersom deras lager är 0.
+- `sections/ks-predictive-search.liquid` – sökförslagen hade redan varken pris, lager eller köp; oförändrade (kommentar).
+- `sections/ks-cart.liquid`, `assets/ks-cart.css` – hamnar en offertprodukt ändå i varukorgen (t.ex. via en direktadress
+  till `/cart/add`) visas en röd ruta överst och vid raden "Säljs via offert …" med länken "Begär offert" och "Ta bort",
+  och kassaknappen är inaktiv (utan `name="checkout"`) så länge raden finns. Butiken nekar dessutom köp av Royal-maskinerna
+  eftersom lagret är 0 och "Fortsätt sälja när slut i lager" är avstängt (ingenting är ändrat i butiken).
+- `assets/ks-theme.css` – karusellpilarna stannar inom fönstret mellan 990 och 1379 px (en produktrad med fler kort än som
+  ryms gav 6 px vågrät rullning vid 1024 px).
+
+Startsidan:
+
+- `sections/ks-info-cards.liquid`, `templates/index.json` – den dolda guidesektionen (`ks_guides`) är nu "Erbjudanden" med två
+  kort: Espressomaskiner (erbjudande 1) och Kaffekvarnar (erbjudande 2). Texten hämtas ordagrant ur temainställningarna,
+  knappen länkar till kategorin, och inga bilder används. Nya blockinställningar: "Erbjudande", "Kategori" och "Visa bara när
+  kategorin är publicerad och har produkter" (snippet `ks-collection-live`). Ett kort visas bara när dess kategori är
+  publicerad och har produkter; hela sektionen döljs annars, med en anteckning i temaredigeraren. Så länge Espressomaskiner
+  och Kaffekvarnar är opublicerade syns sektionen inte. Produktraderna och kategorikorten för maskiner och kvarnar följer
+  samma döljregel och offertregeln.
+
+Rättelser efter granskningen av slututkastet:
+
+- `snippets/ks-quote-url.liquid` – ny parameter `with_choice: false`. Produktkort och produktrader skickar den, så att
+  "Begär offert" där inte tar med något val eller `?variant=` (besökaren har inte valt något på kortet). Produktsidan
+  (vald variant) och varukorgsraden (radens variant) tar fortfarande med valet.
+- `sections/ks-search.liquid` – filtret Tillgänglighet döljs när offerttyperna finns bland värdena i filtret Produkttyp
+  (`filter.p.product_type`), som gäller alla träffar på alla sidor. Finns inte det filtret avgör den aktuella sidans produkter.
+- `sections/ks-product.liquid` – ingen strukturerad data (`structured_data`) för offertprodukter, eftersom Shopifys data har
+  `offers` med `OutOfStock` (lager 0). `og:price` visas som förut när priset är över 0 (det är samma pris som sidan visar).
+- `sections/ks-cart.liquid` – offertrader har ingen antalsväljare: antalet visas som text ("Antal: 1") med ett dolt
+  `updates[]` så att ordningen för "Uppdatera varukorg" stämmer. "Ta bort" finns kvar.
