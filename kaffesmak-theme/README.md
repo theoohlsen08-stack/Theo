@@ -145,3 +145,21 @@ Sidor:
 - `assets/ks-shop.css` – titelbandets nederkant och brödsmulornas sista länk som referensen.
 - `templates/index.json` – YouTube-kortet säger bara det som är verifierat: "Vår kanal på YouTube heter @Adamkaffe."
 - Horizons `templates/password.json` lämnas orörd (ingen egen lösenordssida).
+
+### Rättelser efter Theos granskning (2026-10-07)
+
+- `snippets/ks-link-usable.liquid`, `snippets/ks-collection-live.liquid` – en länk eller kategori räknas bara när den
+  går att öppna i webbutiken. Shopify ger menyns `link.object` även för opublicerade kategorier, så temat kräver också
+  `published_at` och att kategorin finns i `collections[handtag]`.
+  - Används i sidhuvudet (dator och mobil), brödsmulorna, sidfotsmenyn, startsidans kategorikort och produktrader,
+    kategoriöversikten och fliken Reservdelar.
+  - Espressomaskiner och Kaffekvarnar visas därför inte förrän de publiceras, och Kaffemaskiner är under tiden en vanlig
+    länk till `/collections/kaffemaskiner`.
+- `snippets/ks-collection-name.liquid` – kategoriernas namn hämtas från menyn i temainställningen "Meny för
+  kategorinamn" (`settings.ks_name_menu`, gruppen KaffeSmak i `config/settings_schema.json`, värdet
+  `monteriva-utkast-huvudmeny`). Därför visas "Mokabryggare" och "Presskannor" i rubriker, brödsmulor, kategoriöversikten
+  och sidtitlar (`snippets/meta-tags.liquid`, bara utan egen SEO-titel).
+  - Kategorierna heter fortfarande "Mockabryggare" och "Presskanna" i Shopify, och adresserna är oförändrade.
+  - Är inställningen tom visas Shopifys namn.
+- Infobandet har bakgrunden `#8A6A40` (vit text 4,98:1, tidigare `#A38358` med 3,53:1).
+- Om oss: knappen heter "Alla företagsuppgifter".

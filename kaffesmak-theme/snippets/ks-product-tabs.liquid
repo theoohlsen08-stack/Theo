@@ -88,7 +88,8 @@
   {%- if parts_ref != blank -%}
     {%- capture part_items -%}
       {%- for part in parts_ref limit: 24 -%}
-        {%- if part.url != blank -%}
+        {%- comment -%} Rättelse efter etapp 5: bara publicerade produkter (utkast ger 404). {%- endcomment -%}
+        {%- if part.url != blank and part.published_at != blank -%}
           <li>{% render 'ks-product-card', product: part, heading_tag: 'h3' %}</li>
         {%- endif -%}
       {%- endfor -%}

@@ -198,6 +198,11 @@
       {%- if c.products_count == 0 and section.settings.list_show_empty == false -%}
         {%- continue -%}
       {%- endif -%}
+      {%- comment -%} Rättelse efter etapp 5: opublicerade kategorier visas inte (snippet ks-collection-live). {%- endcomment -%}
+      {%- capture ks_live -%}{%- render 'ks-collection-live', collection: c -%}{%- endcapture -%}
+      {%- unless ks_live contains 'true' -%}
+        {%- continue -%}
+      {%- endunless -%}
       {%- comment -%}
         Etapp 5: kategorins bild, annars första produktens bild. Utan bild: Shopifys platshållarteckning bara i
         temaredigeraren; besökare ser en lugn grå yta (som startsidans kategorikort).

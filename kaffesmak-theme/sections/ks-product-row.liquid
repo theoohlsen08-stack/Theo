@@ -6,7 +6,9 @@
 
 
 {%- assign collection = section.settings.collection -%}
-{%- if collection != blank and collection.products_count > 0 -%}
+{%- comment -%} Rättelse efter etapp 5: bara publicerade kategorier (snippet ks-collection-live), annars leder "Se alla" till 404. {%- endcomment -%}
+{%- capture ks_live -%}{%- render 'ks-collection-live', collection: collection -%}{%- endcapture -%}
+{%- if collection != blank and collection.products_count > 0 and ks_live contains 'true' -%}
   {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'ks-carousel.js' | asset_url }}" defer></script>
   <section class="ks-section ks-products" aria-labelledby="KsProducts-{{ section.id }}">

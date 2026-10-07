@@ -32,6 +32,15 @@
       if c != blank and block.settings.hide_when_empty and c.products_count == 0
         assign hidden = true
       endif
+      # Rättelse efter etapp 5: ett kort till en opublicerad kategori visas aldrig (snippet ks-collection-live).
+      if c != blank
+        capture ks_live
+          render 'ks-collection-live', collection: c
+        endcapture
+        unless ks_live contains 'true'
+          assign hidden = true
+        endunless
+      endif
     -%}
     {%- unless hidden -%}
       <li class="ks-cat-card{% if img == blank %} ks-cat-card--no-image{% endif %}" {{ block.shopify_attributes }}>

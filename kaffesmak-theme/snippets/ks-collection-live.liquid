@@ -1,0 +1,21 @@
+{%- comment -%}
+  KaffeSmak – skriver "true" när en kategori är publicerad i webbutiken och går att öppna (rättelse efter etapp 5).
+  Parametrar: collection (kategorin).
+  Shopify ger kategoriobjektet även för opublicerade kategorier (t.ex. som link.object i menyn), men de saknar
+  published_at och finns inte bland butikens publicerade kategorier (collections[handtag]). Adminläsning 2026-10-07:
+  de sex publicerade kategorierna har ett publiceringsdatum, Espressomaskiner och Kaffekvarnar inget.
+  Shopifys sida med alla produkter (handtaget all) räknas alltid som publicerad.
+  Används av ks-link-usable, ks-category-cards, ks-product-row och kategoriöversikten i ks-collection.
+{%- endcomment -%}
+{%- liquid
+  if collection != blank
+    if collection.handle == 'all'
+      echo 'true'
+    elsif collection.published_at != blank
+      assign ks_live = collections[collection.handle]
+      if ks_live.handle == collection.handle
+        echo 'true'
+      endif
+    endif
+  endif
+-%}

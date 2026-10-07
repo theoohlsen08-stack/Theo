@@ -1,14 +1,17 @@
 {%- comment -%}
   KaffeSmak – skriver "true" när en menylänk går att använda för besökare (rättelse efter etapp 5).
   Parametrar: link (link-objekt).
-  Används av sidhuvudet (ks-header, ks-nav-children) och brödsmulorna (ks-collection, ks-product), så att menyn och
-  brödsmulorna aldrig länkar till en sida som ger "Sidan hittades inte".
+  Används av sidhuvudet (ks-header, ks-nav-children), brödsmulorna (ks-collection, ks-product) och sidfotsmenyn
+  (ks-footer), så att menyerna och brödsmulorna aldrig länkar till en sida som ger "Sidan hittades inte".
 
   En länk går inte att använda när
   - adressen är tom eller '#';
   - den pekar på en kategori, produkt, sida, blogg eller artikel som saknas (link.object är tomt);
-  - kategorin, produkten, sidan eller artikeln inte är publicerad i webbutiken (published_at saknas);
-  - kategorin inte finns bland butikens publicerade kategorier (collections[handtag]).
+  - kategorin inte är publicerad i webbutiken (snippet ks-collection-live: published_at saknas eller kategorin finns
+    inte bland butikens publicerade kategorier, collections[handtag]);
+  - produkten, sidan eller artikeln inte är publicerad i webbutiken (published_at saknas).
+  Känd begränsning: en egen länk (http_link) med en intern sökväg kontrolleras inte. Shopify gör normalt om sådana
+  sökvägar till kategori-, produkt- och sidlänkar.
   Förhandsvisningen visade 2026-10-07 att Shopify ger link.object även för opublicerade kategorier (Espressomaskiner och
   Kaffekvarnar fanns kvar i menyn och gav 404), så det räcker inte att kontrollera link.object.
 {%- endcomment -%}
@@ -19,13 +22,17 @@
   else
     case link.type
       when 'collection_link', 'product_link', 'page_link', 'article_link'
-        if link.object == blank or link.object.published_at == blank
+        if link.object == blank
           assign ks_ok = false
         elsif link.type == 'collection_link'
-          assign ks_live = collections[link.object.handle]
-          if ks_live.handle != link.object.handle
+          capture ks_live
+            render 'ks-collection-live', collection: link.object
+          endcapture
+          unless ks_live contains 'true'
             assign ks_ok = false
-          endif
+          endunless
+        elsif link.object.published_at == blank
+          assign ks_ok = false
         endif
       when 'blog_link'
         if link.object == blank
