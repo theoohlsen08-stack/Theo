@@ -4,10 +4,13 @@
   Anropas från sections/ks-product.liquid som räknar ut försäljningsläget:
   - buy_active: köpformuläret visas och kan skickas (/cart/add, fungerar utan JavaScript).
   - review: granskningsläge – allt visas men inaktivt, utan formulär och utan fungerande länkar.
-  - quote_enabled: "Begär offert" (länk till kontaktsidan med ?produkt=).
-  - stock_on: lagerstatus får visas (köp aktiverat). Visas ändå bara när lagret spåras och priset är över 0 kr.
+  - quote_enabled: "Begär offert" (offertprodukt, snippet ks-sales-mode). quote_url från snippet ks-quote-url
+    (kontaktformuläret med produkt, produktlänk och valda alternativ). Ingen lagerrad, inget formulär.
+  - offer_text: kundens erbjudande för produkttypen (snippet ks-offer-text), visas direkt under offertknappen.
+  - stock_on: lagerstatus får visas (köpprodukt). Visas ändå bara när lagret spåras och priset är över 0 kr.
   - taxes_included: cart.taxes_included ("inkl. moms" visas bara när priserna är inklusive moms).
-  Variantdata (pris, jämförpris, artikelnummer, lager, tillgänglighet) bäddas in som JSON för ks-product.js.
+  Variantdata (pris, jämförpris, artikelnummer, lager, tillgänglighet och för offertprodukter offertadressen med
+  variantens val) bäddas in som JSON för ks-product.js.
   Lager: "I lager" bara när varianten kan köpas och lagersaldot är över 0. En variant som säljs vidare vid
   slutsålt lager (inventory_policy continue) med saldo 0 får ingen lagerrad.
   Utan JavaScript går slutsålda varianter och varianter utan pris inte att välja i köpformuläret (disabled).
@@ -36,6 +39,7 @@
   if buy_active
     assign show_form = true
   endif
+  assign quote_url_attr = quote_url | escape
 -%}
 
 {%- capture variants_json -%}
@@ -55,6 +59,7 @@
         assign v_media = v.featured_media.id
       endif
     -%}
+    {%- capture v_quote -%}{%- if quote_enabled -%}{% render 'ks-quote-url', product: product, variant: v %}{%- endif -%}{%- endcapture -%}
     {%- capture v_price_html -%}{%- if v.price > 0 -%}{% render 'ks-price', price: v.price, class: 'ks-product__price' %}{%- endif -%}{%- endcapture -%}
     {%- capture v_unit_html -%}
       {%- if v.price > 0 and v.unit_price_measurement -%}
@@ -69,6 +74,7 @@
       "unitPriceHtml": {{ v_unit_html | strip | json }},
       "sku": {{ v.sku | default: '' | json }},
       "stock": {{ vs | json }},
+      "quoteUrl": {{ v_quote | strip | json }},
       "mediaId": {{ v_media | json }}
     }{%- unless forloop.last -%},{%- endunless -%}
   {%- endfor -%}
@@ -173,6 +179,15 @@
   {%- endif -%}
 {%- endcapture -%}
 
+{%- capture offer -%}
+  {%- if offer_text != blank -%}
+    <div class="ks-product__offer" data-ks-offer>
+      <p class="ks-product__offer-label">Erbjudande</p>
+      <p class="ks-product__offer-text">{{ offer_text }}</p>
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
 {%- capture actions -%}
   {%- if show_form -%}
     <div class="ks-product__buy" data-ks-buy-row{% if v_price_ok == false %} hidden{% endif %}>
@@ -182,7 +197,7 @@
         {% render 'ks-button', label: 'Slut i lager', tag: 'button', button_type: 'submit', name: 'add', class: 'ks-product__buy-button', disabled: true %}
       {%- endif -%}
       {%- if quote_enabled -%}
-        <a href="{{ quote_url }}" class="ks-link ks-product__quote-link"><span aria-hidden="true">› </span>{{ quote_label }}</a>
+        <a href="{{ quote_url_attr }}" class="ks-link ks-product__quote-link"><span aria-hidden="true">› </span>{{ quote_label }}</a>
       {%- endif -%}
     </div>
   {%- elsif review -%}
@@ -190,10 +205,13 @@
       {% render 'ks-button', label: buy_label, tag: 'button', button_type: 'button', class: 'ks-product__buy-button', disabled: true %}
       {% render 'ks-button', label: quote_label, disabled: true, class: 'ks-product__quote-button' %}
     </div>
+    {{ offer }}
   {%- elsif quote_enabled -%}
-    <div class="ks-product__buy">
-      {% render 'ks-button', label: quote_label, url: quote_url, class: 'ks-product__quote-button' %}
+    {%- comment -%} Offertprodukt: bara "Begär offert" (fungerar utan pris och med lager 0) och erbjudandet. {%- endcomment -%}
+    <div class="ks-product__buy ks-product__buy--quote">
+      {% render 'ks-button', label: quote_label, url: quote_url_attr, class: 'ks-product__quote-button' %}
     </div>
+    {{ offer }}
   {%- endif -%}
 {%- endcapture -%}
 

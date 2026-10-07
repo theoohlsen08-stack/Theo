@@ -8,7 +8,10 @@
   - show_sku, show_stock: false döljer raden (standard visas de när verkliga uppgifter finns)
   - sizes: bildens sizes-attribut
   Dataregler (etapp 4): artikelnummer bara när varianten har SKU; lagerstatus bara när lagret spåras och produkten har pris
-  ("I lager" kräver dessutom saldo över 0); pris bara när det är större än 0 kr. Knappen öppnar alltid produktsidan.
+  ("I lager" kräver dessutom saldo över 0); pris bara när det är större än 0 kr. Knappen öppnar produktsidan.
+  Slututkast 2026-10-07: offertprodukter (snippet ks-sales-mode, Espressomaskin och Kaffekvarn) får knappen
+  "Begär offert" till offertformuläret med produkt och länk (snippet ks-quote-url) och ingen lagerstatus, så
+  "Slut i lager" visas aldrig för dem. Inget snabbköp finns på korten.
 {%- endcomment -%}
 {%- liquid
   assign variant = product.selected_or_first_available_variant
@@ -16,6 +19,20 @@
   assign ks_label = buy_label | default: 'Visa produkt'
   assign ks_aria = ks_label | append: ' ' | append: product.title
   assign ks_sizes = sizes | default: '(min-width: 990px) 300px, (min-width: 750px) 30vw, 45vw'
+
+  capture ks_sales
+    render 'ks-sales-mode', product: product
+  endcapture
+  assign ks_quote = false
+  if ks_sales contains 'quote'
+    assign ks_quote = true
+    assign ks_label = 'Begär offert'
+    assign ks_aria = 'Begär offert på ' | append: product.title
+    capture ks_quote_url
+      render 'ks-quote-url', product: product
+    endcapture
+    assign ks_quote_url = ks_quote_url | strip | escape
+  endif
 
   assign ks_sku = ''
   unless show_sku == false
@@ -27,7 +44,7 @@
   # "I lager" bara när det spårade saldot är större än 0. En variant med lagerpolicyn "continue" (fortsätt sälja)
   # är köpbar även med saldo 0 eller lägre; då visas ingen lagerrad i stället för ett påhittat "I lager".
   assign ks_stock = ''
-  unless show_stock == false
+  unless show_stock == false or ks_quote
     if variant.inventory_management == 'shopify' and product.price > 0
       if variant.available and variant.inventory_quantity > 0
         assign ks_stock = 'in'
@@ -75,5 +92,9 @@
       {% render 'ks-price', price: product.price, from: product.price_varies %}
     </p>
   {%- endif -%}
-  {% render 'ks-button', label: ks_label, url: product.url, size: 'small', aria_label: ks_aria, class: 'ks-product-card__buy' %}
+  {%- if ks_quote -%}
+    {% render 'ks-button', label: ks_label, url: ks_quote_url, size: 'small', aria_label: ks_aria, class: 'ks-product-card__buy ks-product-card__quote' %}
+  {%- else -%}
+    {% render 'ks-button', label: ks_label, url: product.url, size: 'small', aria_label: ks_aria, class: 'ks-product-card__buy' %}
+  {%- endif -%}
 </article>

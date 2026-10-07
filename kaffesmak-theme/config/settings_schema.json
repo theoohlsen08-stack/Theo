@@ -2293,6 +2293,50 @@
         "id": "ks_name_menu",
         "label": "Meny för kategorinamn",
         "info": "Kategorier i menyn visas med menyns namn (t.ex. Mokabryggare) i rubriker, brödsmulor och sidtitlar. Kategorins namn och adress i Shopify ändras inte."
+      },
+      {
+        "type": "header",
+        "content": "Försäljning via offert"
+      },
+      {
+        "type": "text",
+        "id": "ks_quote_types",
+        "label": "Produkttyper som säljs via offert",
+        "default": "Espressomaskin, Kaffekvarn",
+        "info": "Kommaseparerade produkttyper. De får \"Begär offert\" i stället för köp i alla produktmallar, produktkort och varukorgen. Övriga produkter har vanligt köp."
+      },
+      {
+        "type": "url",
+        "id": "ks_quote_link",
+        "label": "Sida för offertförfrågan",
+        "info": "Tomt fält länkar till /pages/contact. Produktnamn, produktlänk och valda alternativ fylls i formuläret."
+      },
+      {
+        "type": "header",
+        "content": "Erbjudanden",
+        "info": "Visas vid offertknappen på produktsidan, som kort överst på kategorisidor med produkttypen och på startsidan. Skriv bara bekräftade erbjudanden."
+      },
+      {
+        "type": "text",
+        "id": "ks_offer_1_type",
+        "label": "Erbjudande 1: produkttyp",
+        "default": "Espressomaskin"
+      },
+      {
+        "type": "textarea",
+        "id": "ks_offer_1_text",
+        "label": "Erbjudande 1: text"
+      },
+      {
+        "type": "text",
+        "id": "ks_offer_2_type",
+        "label": "Erbjudande 2: produkttyp",
+        "default": "Kaffekvarn"
+      },
+      {
+        "type": "textarea",
+        "id": "ks_offer_2_text",
+        "label": "Erbjudande 2: text"
       }
     ]
   }

@@ -3,7 +3,6 @@
     "main": {
       "type": "ks-product",
       "settings": {
-        "sales_mode": "buy",
         "buy_label": "Köp",
         "quote_label": "Begär offert",
         "review_preview": false,

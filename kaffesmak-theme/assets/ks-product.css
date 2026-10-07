@@ -354,6 +354,40 @@
   line-height: 1.5;
 }
 
+/* Slututkast 2026-10-07: kundens erbjudande intill "Begär offert" (offertprodukter, snippet ks-offer-text). */
+.ks-product__offer {
+  margin-block-start: 20px;
+  max-width: 520px;
+  padding: 16px 20px;
+  background: var(--ks-beige);
+  border-inline-start: 4px solid var(--ks-red-dark);
+  border-radius: 4px;
+  color: #333333;
+}
+.ks-shop .ks-product__offer p {
+  margin: 0;
+}
+.ks-shop p.ks-product__offer-label {
+  margin-block-end: 4px;
+  font-family: var(--ks-font-nav, "Barlow Condensed", sans-serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ks-red-dark);
+}
+.ks-shop p.ks-product__offer-text {
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+@media (forced-colors: active) {
+  .ks-product__offer {
+    border: 1px solid CanvasText;
+    border-inline-start: 4px solid CanvasText;
+  }
+}
+
 /* ---------- Flikar ---------- */
 .ks-tabs {
   margin-block-start: 72px;

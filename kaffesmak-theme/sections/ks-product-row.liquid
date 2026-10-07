@@ -2,6 +2,8 @@
   KaffeSmak – produktrad (referensens produktkaruseller): röd rubrik med linje, valfri text och knapp,
   och en vågrät rad produktkort med bild, röd produkttitel, artikelnummer (om det finns), pris och en knapp som öppnar produktsidan.
   Produkterna hämtas från en vald kategori. Sektionen döljs helt när kategorin saknas eller är tom.
+  Slututkast 2026-10-07: offertprodukter (snippet ks-sales-mode) får knappen "Begär offert" till offertformuläret
+  (snippet ks-quote-url) i stället för "Visa produkt". Pris bara över 0 kr; korten har ingen lagerrad och inget snabbköp.
 {%- endcomment -%}
 
 
@@ -78,8 +80,22 @@
               {%- liquid
                 assign buy_label = section.settings.buy_label | default: 'Visa produkt'
                 assign buy_aria = buy_label | append: ' ' | append: product.title
+                assign buy_url = product.url
+                assign buy_class = 'ks-product-card__buy'
+                capture ks_sales
+                  render 'ks-sales-mode', product: product
+                endcapture
+                if ks_sales contains 'quote'
+                  assign buy_label = 'Begär offert'
+                  assign buy_aria = 'Begär offert på ' | append: product.title
+                  capture buy_url
+                    render 'ks-quote-url', product: product
+                  endcapture
+                  assign buy_url = buy_url | strip | escape
+                  assign buy_class = 'ks-product-card__buy ks-product-card__quote'
+                endif
               -%}
-              {% render 'ks-button', label: buy_label, url: product.url, size: 'small', aria_label: buy_aria, class: 'ks-product-card__buy' %}
+              {% render 'ks-button', label: buy_label, url: buy_url, size: 'small', aria_label: buy_aria, class: buy_class %}
             </li>
           {%- endfor -%}
         </ul>

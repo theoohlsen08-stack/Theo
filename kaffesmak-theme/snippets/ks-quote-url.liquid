@@ -1,0 +1,59 @@
+{%- comment -%}
+  KaffeSmak – adress till offertförfrågan för en produkt (slututkast 2026-10-07). Skriver adressen, redan
+  utan blanksteg före och efter (parametrarna är URL-kodade).
+  Parametrar: product, variant (valfri; standard produktens förvalda variant).
+  Adressen skrivs med vanliga & (anroparen använder | escape i attribut och | json i JSON).
+  Kundens besked: "Offertförfrågan ska innehålla produktnamn och länk till produkten. Ta med kundens val där
+  bekräftade alternativ finns."
+  - produkt: produktens namn.
+  - lank: fullständig länk till produkten (request.origin + produktens adress). Har produkten flera varianter med
+    verkliga val läggs ?variant=<id> till, så att länken öppnar rätt val.
+  - val: de valda alternativen ("Namn: Värde / Namn: Värde"), bara när produkten har verkliga val
+    (inte Shopifys "Default Title").
+  Sidan är temainställningen "Sida för offertförfrågan" (settings.ks_quote_link), annars /pages/contact.
+  Kontaktsidans formulär (sections/ks-contact-page.liquid) läser parametrarna och fyller i fälten. #offert hoppar
+  direkt till formuläret.
+{%- endcomment -%}
+{%- liquid
+  assign ks_v = variant | default: product.selected_or_first_available_variant
+  assign ks_base = settings.ks_quote_link | default: '/pages/contact'
+  assign ks_sep = '?'
+  if ks_base contains '?'
+    assign ks_sep = '&'
+  endif
+  assign ks_has_options = true
+  if product.has_only_default_variant or product.variants.size < 2
+    assign ks_has_options = false
+  endif
+  assign ks_path = product.url
+  if ks_has_options and ks_v != blank
+    assign ks_path = ks_v.url | default: product.url
+  endif
+  assign ks_origin = request.origin | default: ''
+  assign ks_link = ks_origin | append: ks_path
+
+  assign ks_val = ''
+  if ks_has_options and ks_v != blank
+    for ks_opt in product.options_with_values
+      assign ks_idx = forloop.index0
+      assign ks_value = ks_v.options[ks_idx] | default: ''
+      if ks_value != ''
+        assign ks_name = ks_opt.name | strip
+        if ks_val != ''
+          assign ks_val = ks_val | append: ' / '
+        endif
+        assign ks_val = ks_val | append: ks_name | append: ': ' | append: ks_value
+      endif
+    endfor
+  endif
+
+  assign ks_title_enc = product.title | url_encode
+  assign ks_link_enc = ks_link | url_encode
+  assign ks_url = ks_base | append: ks_sep | append: 'produkt=' | append: ks_title_enc | append: '&lank=' | append: ks_link_enc
+  if ks_val != ''
+    assign ks_val_enc = ks_val | url_encode
+    assign ks_url = ks_url | append: '&val=' | append: ks_val_enc
+  endif
+  assign ks_url = ks_url | append: '#offert'
+  echo ks_url
+-%}

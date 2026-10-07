@@ -1,0 +1,21 @@
+{%- comment -%}
+  KaffeSmak – kundens erbjudande för en produkttyp (slututkast 2026-10-07). Skriver erbjudandets text (HTML-säker)
+  eller ingenting.
+  Parametrar: type (produkttyp, t.ex. product.type).
+  Erbjudandena står i temainställningarna under "Erbjudanden" (settings.ks_offer_1_type/_text och
+  ks_offer_2_type/_text) med kundens exakta text. Typen jämförs utan skillnad på stora och små bokstäver. Ett
+  erbjudande utan text visas inte. Används av ks-product (vid offertknappen), ks-collection (kampanjkort) och
+  ks-info-cards (startsidans erbjudandekort).
+{%- endcomment -%}
+{%- liquid
+  assign ks_type = type | default: '' | strip | downcase
+  if ks_type != ''
+    assign ks_t1 = settings.ks_offer_1_type | default: '' | strip | downcase
+    assign ks_t2 = settings.ks_offer_2_type | default: '' | strip | downcase
+    if ks_t1 == ks_type and settings.ks_offer_1_text != blank
+      echo settings.ks_offer_1_text | strip | escape
+    elsif ks_t2 == ks_type and settings.ks_offer_2_text != blank
+      echo settings.ks_offer_2_text | strip | escape
+    endif
+  endif
+-%}

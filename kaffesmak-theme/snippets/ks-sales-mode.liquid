@@ -1,0 +1,25 @@
+{%- comment -%}
+  KaffeSmak – försäljningsform för en produkt (slututkast 2026-10-07). Skriver "quote" eller "buy".
+  Parametrar: product.
+  Kundens besked: "Endast espressomaskiner och kaffekvarnar ska säljas via offert." Produkttyperna står i
+  temainställningen "Produkttyper som säljs via offert" (settings.ks_quote_types, kommaseparerad, som standard
+  "Espressomaskin, Kaffekvarn"; jämförs utan skillnad på stora och små bokstäver). Produkter av de typerna får
+  "Begär offert" i alla produktmallar, produktkort, sökresultat, produktrader och varukorgen. Alla andra produkter
+  (kaffe, Royal-tillbehör, mokabryggare m.m.) har vanligt köp, som visas när priset är större än 0 kr.
+  Regeln gäller oberoende av produktmall. Används av ks-product, ks-product-card, ks-product-row och ks-cart.
+{%- endcomment -%}
+{%- liquid
+  assign ks_mode = 'buy'
+  if product != blank and product.type != blank
+    assign ks_type = product.type | strip | downcase
+    assign ks_types = settings.ks_quote_types | default: '' | split: ','
+    for ks_t in ks_types
+      assign ks_t_clean = ks_t | strip | downcase
+      if ks_t_clean != '' and ks_t_clean == ks_type
+        assign ks_mode = 'quote'
+        break
+      endif
+    endfor
+  endif
+  echo ks_mode
+-%}

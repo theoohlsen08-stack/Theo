@@ -2,7 +2,7 @@
    Progressiv förbättring: sidan fungerar utan JavaScript (formuläret skickas till /cart/add,
    miniatyrer och förstoring är vanliga bildlänkar, alla flikar visas under varandra).
    Här: bildbyte och förstoring i dialogruta, variantbyte (pris, artikelnummer, lager, knapp och ?variant=
-   i adressen), antalsväljare samt flikar (dator/surfplatta) och dragspel (mobil, högst 749 px).
+   i adressen; för offertprodukter offertlänken med variantens val, slututkast 2026-10-07), antalsväljare samt flikar (dator/surfplatta) och dragspel (mobil, högst 749 px).
    Länken "Läs fullständig beskrivning" väljer fliken Beskrivning (eller öppnar dragspelet). */
 (function () {
   'use strict';
@@ -151,6 +151,7 @@
     var form = root.querySelector('form.ks-product__form');
     var button = form ? form.querySelector('.ks-product__buy-button') : null;
     var live = root.querySelector('[data-ks-live]');
+    var quoteLinks = root.querySelectorAll('a.ks-product__quote-button, a.ks-product__quote-link');
     var review = !!root.querySelector('.ks-product__review-note');
     var buyText = root.getAttribute('data-buy-label') || 'Köp';
 
@@ -200,6 +201,11 @@
             label.textContent = 'Slut i lager';
           }
         }
+      }
+
+      // Offertprodukt: "Begär offert" skickar med den valda variantens alternativ och länk (snippet ks-quote-url).
+      if (v.quoteUrl) {
+        for (var q = 0; q < quoteLinks.length; q++) quoteLinks[q].setAttribute('href', v.quoteUrl);
       }
 
       if (gallery && v.mediaId) gallery.showMedia(v.mediaId);
