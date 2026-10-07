@@ -365,3 +365,120 @@
     margin-block-end: 28px;
   }
 }
+
+/* ---------- Bloggens listsida (etapp 5, sections/ks-blog.liquid) ----------
+   Monterivas kunskapsbank (kunskap.jpg): smal bild ≈198 px (valfri), centrerad röd H1 48 px, centrerad ingress
+   16 px / radavstånd 2 (#444, ≈840 px) ≈40 px under rubriken och kort med 32 px mellanrum, beige #e4e0dc utan skugga.
+   Korten är startsidans kunskapskort (.ks-article-card i ks-theme.css). Sidfoten länkar ks-theme.css efter den här
+   filen, så reglerna som ändrar korten har två klasser. 3 kolumner på dator, 2 på surfplatta och 1 på mobil. */
+.ks-blog__lead {
+  max-width: 850px;
+  margin: -4px auto 56px;
+  color: #444444;
+  font-size: 16px;
+  line-height: 2;
+  text-align: center;
+}
+.ks-shop .ks-blog__lead > * {
+  margin: 0;
+}
+.ks-shop .ks-blog__lead > * + * {
+  margin-block-start: 16px;
+}
+.ks-shop .ks-blog__lead a {
+  color: var(--ks-link);
+  text-decoration: underline;
+  text-decoration-color: currentcolor;
+}
+.ks-shop .ks-blog__lead a:hover {
+  color: var(--ks-red-dark);
+}
+.ks-shop .ks-blog__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-blog .ks-blog__card {
+  min-width: 0;
+  margin: 0;
+}
+/* Beige som kunskapsbankens kort (samma beige som faktarutan och kontaktkorten); vita kort = startsidans utseende. */
+.ks-blog__list--beige .ks-article-card {
+  background: #e5e0db;
+  box-shadow: none;
+}
+/* Bildytan håller formatet 4:3 även för stående bilder (bilden fyller ytan, object-fit: cover). */
+.ks-blog .ks-blog__media {
+  position: relative;
+  overflow: hidden;
+}
+.ks-blog .ks-blog__media .ks-article-card__img {
+  position: absolute;
+  inset: 0;
+}
+.ks-blog .ks-blog__body {
+  padding: 22px 24px 26px;
+}
+.ks-blog .ks-blog__card-title {
+  overflow-wrap: anywhere;
+}
+.ks-shop .ks-blog__date {
+  margin-block-start: -4px;
+  color: #555555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ks-blog__empty {
+  max-width: 850px;
+  margin-inline: auto;
+}
+.ks-blog__empty-actions {
+  display: flex;
+  justify-content: center;
+  margin-block-start: 32px;
+}
+.ks-blog .ks-pagination__link--arrow {
+  color: var(--ks-red-dark);
+}
+
+@media screen and (max-width: 989px) {
+  .ks-shop .ks-blog__list {
+    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ks-blog__lead {
+    margin-block-end: 44px;
+  }
+  /* Pekskärm: minst 44 px för knappar och sidnummer. */
+  .ks-blog__empty-actions .ks-button {
+    min-height: 44px;
+  }
+  .ks-blog .ks-pagination__link,
+  .ks-blog .ks-pagination__current,
+  .ks-blog .ks-pagination__gap {
+    min-width: 44px;
+    height: 44px;
+  }
+}
+@media screen and (max-width: 749px) {
+  .ks-shop .ks-blog__list {
+    gap: 20px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ks-blog__lead {
+    margin: 0 auto 32px;
+  }
+  .ks-blog .ks-blog__body {
+    padding: 20px 20px 24px;
+  }
+}
+/* Långa obrytbara strängar i utdraget (inklistrad adress, långt sammansatt ord) bryts inom kortet. Kortets textyta har
+   align-items: flex-start (ks-theme.css), så utan regeln blir utdraget lika brett som sitt längsta ord och klipps
+   av kortets overflow: hidden. */
+.ks-blog .ks-article-card__excerpt {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}

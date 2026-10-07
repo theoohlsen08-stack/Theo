@@ -131,7 +131,7 @@
             : `${items.length} förslag. Välj med pil upp och pil ned.`;
       } else {
         this.list.hidden = true;
-        this.empty.textContent = `Inga produkter hittades för "${term}".`;
+        this.empty.textContent = `Inga produkter hittades för ”${term}”.`;
         this.empty.hidden = false;
         this.status.textContent = 'Inga förslag.';
       }

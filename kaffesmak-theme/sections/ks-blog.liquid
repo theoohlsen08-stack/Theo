@@ -1,0 +1,180 @@
+{%- comment -%}
+  KaffeSmak – bloggens listsida (Kunskap/Nyheter), etapp 5. Samma formgivning som Monterivas kunskapsbank
+  (kunskap.jpg) och Om oss (ks-pages.css): valfri smal bild överst, centrerad röd H1, valfri ingress i en
+  kolumn på 850 px och artiklarna som kort i ett rutnät med 3/2/1 kolumner på dator/surfplatta/mobil.
+  Används av templates/blog.json.
+
+  - Rubrik: sektionens rubrik, annars bloggens namn (blog.title).
+  - Ingress: bara när den är ifylld (tom som standard). Skriv bara verifierad text.
+  - Korten återanvänder startsidans kunskapskort (.ks-article-card i ks-theme.css): bild bara när artikeln har en,
+    rubrik som länk, datum (kan stängas av), utdrag och grön knapp "Läs mer". Utdraget är artikelns eget utdrag,
+    annars början av texten utan HTML. Ingen författare, inga kommentarer och inga taggfilter.
+  - Kortens utseende: beige utan skugga som kunskapsbankens kort (standard) eller vita med skugga som på startsidan.
+  - Sidnumrering med snippets/ks-pagination.liquid.
+  - Inga artiklar: lugn tom ruta och en knapp till startsidan. En sida efter den sista (t.ex. ?page=9) får
+    en egen text och en knapp till bloggens första sida.
+  - Ingen bild vald = ingen banner (aldrig en bildbank-bild). Anteckningar visas bara i temaredigeraren.
+{%- endcomment -%}
+
+{{ 'ks-shop.css' | asset_url | stylesheet_tag }}
+{{ 'ks-pages.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = section.settings
+  assign heading = s.heading | default: blog.title
+  assign title_id = 'KsBlogTitle-' | append: section.id
+  assign card_style = s.card_style | default: 'beige'
+-%}
+
+<div class="ks-shop ks-page ks-blog{% if s.image == blank %} ks-page--no-banner{% endif %}" style="--ks-page-banner: {{ s.banner_height }}px; --ks-page-banner-mobile: {{ s.banner_height_mobile }}px;">
+  {%- if s.image != blank -%}
+    <div class="ks-page__banner ks-blog__banner">
+      {{
+        s.image
+        | image_url: width: 2400
+        | image_tag:
+          widths: '750, 1100, 1500, 1920, 2400',
+          sizes: '100vw',
+          alt: s.image.alt,
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'ks-page__banner-img'
+      }}
+    </div>
+  {%- elsif request.design_mode -%}
+    <div class="ks-container">
+      <div class="ks-editor-note">Ingen bild är vald, så bannern visas inte för besökare. Välj en bild som kunden har godkänt (ingen bildbank och inga bilder från referensen).</div>
+    </div>
+  {%- endif -%}
+
+  <section class="ks-page__main ks-blog__main" aria-labelledby="{{ title_id }}">
+    <div class="ks-container">
+      <h1 class="ks-page-title ks-page__title ks-blog__title" id="{{ title_id }}">{{ heading | escape }}</h1>
+
+      {%- if s.text != blank -%}
+        <div class="ks-blog__lead">{{ s.text }}</div>
+      {%- endif -%}
+
+      {%- paginate blog.articles by section.settings.articles_per_page -%}
+        {%- if blog.articles.size > 0 -%}
+          <ul class="ks-blog__list ks-blog__list--{{ card_style }}" role="list">
+            {%- for article in blog.articles -%}
+              {%- comment -%}
+                Utdrag: artikelns eget utdrag, annars början av texten. Mellanslag före slutet av block (stycke,
+                rubrik 1–6, listpunkt, citat, tabellcell, bildtext, radbrytning) så att orden inte smälter ihop när
+                HTML tas bort. Bara block: ett mellanslag i slutet av fet stil eller en länk skulle hamna före skiljetecken.
+              {%- endcomment -%}
+              {%- liquid
+                if article.excerpt != blank
+                  assign ks_source = article.excerpt
+                  assign ks_words = 50
+                else
+                  assign ks_source = article.content
+                  assign ks_words = 30
+                endif
+                assign read_aria = s.read_label | append: ': ' | append: article.title
+              -%}
+              {%- assign ks_excerpt = ks_source
+                | replace: '</p>', ' </p>'
+                | replace: '</li>', ' </li>'
+                | replace: '</h1>', ' </h1>'
+                | replace: '</h2>', ' </h2>'
+                | replace: '</h3>', ' </h3>'
+                | replace: '</h4>', ' </h4>'
+                | replace: '</h5>', ' </h5>'
+                | replace: '</h6>', ' </h6>'
+                | replace: '</blockquote>', ' </blockquote>'
+                | replace: '</td>', ' </td>'
+                | replace: '</th>', ' </th>'
+                | replace: '</figcaption>', ' </figcaption>'
+                | replace: '</div>', ' </div>'
+                | replace: '<br', ' <br'
+                | strip_html
+                | strip
+                | truncatewords: ks_words, '…'
+              -%}
+              <li class="ks-article-card ks-blog__card">
+                {%- if article.image != blank -%}
+                  <a href="{{ article.url }}" class="ks-article-card__media ks-blog__media" tabindex="-1" aria-hidden="true">
+                    {{
+                      article.image
+                      | image_url: width: 900
+                      | image_tag:
+                        widths: '350, 500, 700, 900',
+                        sizes: '(min-width: 1320px) 402px, (min-width: 990px) 31vw, (min-width: 750px) 48vw, 100vw',
+                        alt: '',
+                        loading: 'lazy',
+                        class: 'ks-article-card__img'
+                    }}
+                  </a>
+                {%- endif -%}
+                <div class="ks-article-card__body ks-blog__body">
+                  <h2 class="ks-article-card__title ks-blog__card-title">
+                    <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                  </h2>
+                  {%- if s.show_date and article.published_at != blank -%}
+                    <p class="ks-blog__date">{{ article.published_at | time_tag: format: 'date' }}</p>
+                  {%- endif -%}
+                  {%- if ks_excerpt != blank -%}
+                    <p class="ks-article-card__excerpt">{{ ks_excerpt }}</p>
+                  {%- endif -%}
+                  {%- if s.read_label != blank -%}
+                    {% render 'ks-button', label: s.read_label, url: article.url, size: 'small', aria_label: read_aria %}
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+          {% render 'ks-pagination', paginate: paginate %}
+        {%- elsif paginate.current_page > 1 -%}
+          {%- comment -%} En sida efter den sista (t.ex. ?page=9): bloggen har artiklar men inte på den här sidan. {%- endcomment -%}
+          <div class="ks-blog__empty">
+            <p class="ks-empty-box">Det finns inga artiklar på den här sidan.</p>
+            <div class="ks-blog__empty-actions">
+              {% render 'ks-button', label: 'Till första sidan', url: blog.url %}
+            </div>
+          </div>
+        {%- else -%}
+          <div class="ks-blog__empty">
+            <p class="ks-empty-box">{{ s.empty_text | default: 'Det finns inga artiklar ännu.' | escape }}</p>
+            <div class="ks-blog__empty-actions">
+              {% render 'ks-button', label: 'Till startsidan', url: routes.root_url %}
+            </div>
+          </div>
+          {%- if request.design_mode -%}
+            <div class="ks-editor-note">KaffeSmak blogg: "{{ blog.title }}" har inga publicerade artiklar. Besökare ser den tomma rutan ovan. Artiklar som är dolda visas inte.</div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "KaffeSmak blogg",
+  "class": "ks-blog-section",
+  "enabled_on": { "templates": ["blog"] },
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Smal bild överst", "info": "Valfri. Använd bara bilder som kunden har godkänt. Utan bild visas ingen banner." },
+    { "type": "range", "id": "banner_height", "label": "Bildens höjd, dator", "min": 120, "max": 400, "step": 10, "unit": "px", "default": 200 },
+    { "type": "range", "id": "banner_height_mobile", "label": "Bildens höjd, mobil", "min": 100, "max": 240, "step": 10, "unit": "px", "default": 120 },
+    { "type": "text", "id": "heading", "label": "Rubrik", "info": "Tomt fält visar bloggens namn." },
+    { "type": "richtext", "id": "text", "label": "Ingress", "info": "Valfri. Visas under rubriken. Skriv bara verifierad text." },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Kortens utseende",
+      "options": [
+        { "value": "beige", "label": "Beige utan skugga (som kunskapsbanken)" },
+        { "value": "white", "label": "Vita med skugga (som startsidans kunskapskort)" }
+      ],
+      "default": "beige"
+    },
+    { "type": "range", "id": "articles_per_page", "label": "Artiklar per sida", "min": 3, "max": 24, "step": 3, "default": 6 },
+    { "type": "checkbox", "id": "show_date", "label": "Visa publiceringsdatum", "default": true },
+    { "type": "text", "id": "read_label", "label": "Knapptext", "default": "Läs mer" },
+    { "type": "text", "id": "empty_text", "label": "Text när bloggen saknar artiklar", "default": "Det finns inga artiklar ännu." }
+  ]
+}
+{% endschema %}

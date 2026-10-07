@@ -4,7 +4,7 @@
   - Bara produkter visas (search.results filtreras på object_type 'product'); sökfältet i sidhuvudet skickar type=product.
     Söks det utan type=product räknas bara produkterna (inte sidor och artiklar) och bara sidor/artiklar ger "Inga träffar".
   - Filter och sortering kommer från Shopify (search.filters / search.sort_options, standard "Relevans").
-  - Inga träffar: tom ruta "Inga träffar för "…"." med ett nytt sökfält och länken "Fortsätt handla".
+  - Inga träffar: tom ruta "Inga träffar för ”…”." med ett nytt sökfält och länken "Fortsätt handla".
   - Tom sökning (inget sökord): H1 "Sök" och ett sökfält.
 {%- endcomment -%}
 
@@ -227,7 +227,7 @@
     { "type": "checkbox", "id": "show_stock", "label": "Visa lagerstatus", "default": true, "info": "Visas bara när lagret spåras i Shopify och produkten har ett pris." },
     { "type": "text", "id": "buy_label", "label": "Knapptext på produktkort", "default": "Visa produkt", "info": "Knappen öppnar produktsidan." },
     { "type": "header", "content": "Tomma lägen" },
-    { "type": "text", "id": "no_results_text", "label": "Text när sökningen saknar träffar", "default": "Inga träffar för \"[sökord]\".", "info": "[sökord] ersätts med det besökaren sökte efter." },
+    { "type": "text", "id": "no_results_text", "label": "Text när sökningen saknar träffar", "default": "Inga träffar för ”[sökord]”.", "info": "[sökord] ersätts med det besökaren sökte efter." },
     { "type": "text", "id": "filtered_empty_text", "label": "Text när filtren ger noll träffar", "default": "Inga produkter matchar filtren." },
     { "type": "text", "id": "empty_search_text", "label": "Text när inget sökord har angetts", "default": "Skriv vad du letar efter, till exempel ett kaffe eller en produkttyp." },
     { "type": "text", "id": "continue_label", "label": "Text för länken tillbaka till butiken", "default": "Fortsätt handla" },

@@ -1,6 +1,6 @@
 {%- comment -%}
   KaffeSmak – kunskapskort (referensens fyra kunskapskort på startsidan): de senaste artiklarna
-  från en vald blogg som kort med bild, röd rubrik, kort text och grön knapp.
+  från en vald blogg som kort med bild (bara när artikeln har en), röd rubrik, kort text och grön knapp.
   Sektionen döljs helt när ingen blogg är vald eller bloggen saknar artiklar.
 {%- endcomment -%}
 
@@ -19,24 +19,48 @@
       <ul class="ks-articles__list" role="list">
         {%- for article in blog.articles limit: section.settings.limit -%}
           <li class="ks-article-card">
-            <a href="{{ article.url }}" class="ks-article-card__media" tabindex="-1" aria-hidden="true">
-              {%- if article.image != blank -%}
+            {%- if article.image != blank -%}
+              <a href="{{ article.url }}" class="ks-article-card__media" tabindex="-1" aria-hidden="true">
                 {{
                   article.image
                   | image_url: width: 700
                   | image_tag: widths: '350, 500, 700', sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw', alt: '', loading: 'lazy', class: 'ks-article-card__img'
                 }}
-              {%- endif -%}
-            </a>
+              </a>
+            {%- endif -%}
             <div class="ks-article-card__body">
               <h3 class="ks-article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+              {%- comment -%}
+                Utdrag: artikelns eget utdrag, annars början av texten. Mellanslag före slutet av block (stycke,
+                rubrik 1–6, listpunkt, citat, tabellcell, bildtext, radbrytning) så att orden inte smälter ihop när
+                HTML tas bort, som på bloggsidan (ks-blog).
+              {%- endcomment -%}
               {%- liquid
                 if article.excerpt != blank
-                  assign excerpt = article.excerpt | strip_html | truncatewords: 24
+                  assign ks_source = article.excerpt
                 else
-                  assign excerpt = article.content | strip_html | truncatewords: 24
+                  assign ks_source = article.content
                 endif
                 assign read_aria = section.settings.read_label | append: ': ' | append: article.title
+              -%}
+              {%- assign excerpt = ks_source
+                | replace: '</p>', ' </p>'
+                | replace: '</li>', ' </li>'
+                | replace: '</h1>', ' </h1>'
+                | replace: '</h2>', ' </h2>'
+                | replace: '</h3>', ' </h3>'
+                | replace: '</h4>', ' </h4>'
+                | replace: '</h5>', ' </h5>'
+                | replace: '</h6>', ' </h6>'
+                | replace: '</blockquote>', ' </blockquote>'
+                | replace: '</td>', ' </td>'
+                | replace: '</th>', ' </th>'
+                | replace: '</figcaption>', ' </figcaption>'
+                | replace: '</div>', ' </div>'
+                | replace: '<br', ' <br'
+                | strip_html
+                | strip
+                | truncatewords: 24
               -%}
               {%- if excerpt != blank -%}
                 <p class="ks-article-card__excerpt">{{ excerpt }}</p>

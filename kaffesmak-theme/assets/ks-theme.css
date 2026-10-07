@@ -1947,12 +1947,17 @@ button.ks-button {
   background: #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
 }
+/* Bildytan håller formatet 4:3 även för stående bilder (bilden fyller ytan, object-fit: cover). */
 .ks-article-card__media {
+  position: relative;
   display: block;
+  overflow: hidden;
   aspect-ratio: 4 / 3;
   background: var(--ks-beige);
 }
 .ks-article-card__img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -1988,6 +1993,13 @@ button.ks-button {
   color: #444444;
   font-size: 15px;
   line-height: 1.7;
+}
+/* Långa obrytbara strängar (inklistrad adress, långt sammansatt ord) bryts inom kortet. Textytan har
+   align-items: flex-start, så utan regeln blir texten lika bred som sitt längsta ord och klipps av kortets overflow: hidden. */
+.ks-article-card__title,
+.ks-article-card__excerpt {
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 .ks-article-card .ks-button {
   margin-top: auto;

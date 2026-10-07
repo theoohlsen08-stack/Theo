@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "ks-blog",
+      "settings": {
+        "banner_height": 200,
+        "banner_height_mobile": 120,
+        "card_style": "beige",
+        "articles_per_page": 6,
+        "show_date": true,
+        "read_label": "Läs mer",
+        "empty_text": "Det finns inga artiklar ännu."
+      }
+    }
+  },
+  "order": ["main"]
+}
