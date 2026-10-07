@@ -163,3 +163,9 @@ Sidor:
   - Är inställningen tom visas Shopifys namn.
 - Infobandet har bakgrunden `#8A6A40` (vit text 4,98:1, tidigare `#A38358` med 3,53:1).
 - Om oss: knappen heter "Alla företagsuppgifter".
+- Bloggens listsida: `sections/ks-blog.liquid` och `templates/blog.json` ersätter Horizons `main-blog` (originalet sparat
+  i projektmappen `etapp-5/tema-fore-etapp-5/horizon-blog.json`). Röd H1, kort med bild bara när artikeln har en, utdrag,
+  sidnumrering och en tom ruta på svenska när bloggen saknar artiklar.
+- Startsidans kunskapskort (`sections/ks-article-cards.liquid`, `assets/ks-theme.css`): stående bilder håller 4:3, ingen
+  tom bildyta för artiklar utan bild, långa ord bryts och utdraget smälter inte ihop ord vid rubriker och stycken.
+- Sökningen: tomt läge och sökförslag använder svenska citattecken (”…”).
