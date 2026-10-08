@@ -20,9 +20,10 @@
         "org_number": "559237-4747",
         "vat_number": "",
         "map_heading": "Hitta hit",
-        "directions_text": "",
-        "directions_url": "",
-        "map_embed_url": ""
+        "directions_text": "<p>Kaffe Smak Rosteri<br/>Storgatan 55<br/>881 30 Sollefteå</p><p>Du hittar oss i samma lokal som Smak Mat &amp; Glass Café.</p>",
+        "directions_url": "https://www.google.com/maps/search/?api=1&query=Storgatan+55%2C+881+30+Sollefte%C3%A5",
+        "directions_label": "Öppna i Google Maps",
+        "map_embed_url": "https://www.google.com/maps?q=Storgatan%2055%2C%20881%2030%20Sollefte%C3%A5&output=embed"
       }
     }
   },

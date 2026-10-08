@@ -44,7 +44,7 @@
       "type": "ks-intro",
       "settings": {
         "heading": "Välkommen till Kaffe Smak Rosteri.",
-        "text": "<p>Utforska vårt sortiment av kaffe, kaffemaskiner och tillbehör, eller <strong>besök vår kaffebar på Storgatan 55 i Sollefteå.</strong></p>",
+        "text": "<p>Utforska vårt sortiment av kaffe, kaffemaskiner och accessoarer, eller <strong>besök vår kaffebar på Storgatan 55 i Sollefteå.</strong></p>",
         "show_icon": true,
         "button_label": "",
         "button2_label": "",
@@ -85,7 +85,8 @@
           "type": "card",
           "settings": {
             "collection": "tillbehor",
-            "label": "Tillbehör",
+            "label": "Accessoarer",
+            "image_product": "mjolkkanna-utan-logotyp",
             "hide_when_empty": true
           }
         },
@@ -125,7 +126,7 @@
       ],
       "settings": {
         "heading": "Hitta rätt i vårt sortiment",
-        "text": "<p>Kaffe, kaffemaskiner och tillbehör, och en kaffebar på Storgatan 55 i Sollefteå.</p>",
+        "text": "<p>Kaffe, kaffemaskiner och accessoarer, och en kaffebar på Storgatan 55 i Sollefteå.</p>",
         "card_height": 100,
         "card_height_mobile": 100
       }
@@ -232,11 +233,11 @@
       "type": "ks-product-row",
       "settings": {
         "collection": "tillbehor",
-        "heading": "Tillbehör",
+        "heading": "Accessoarer",
         "limit": 12,
         "show_sku": true,
         "buy_label": "Visa produkt",
-        "button_label": "Se alla tillbehör",
+        "button_label": "Se alla accessoarer",
         "button_link": "shopify://collections/tillbehor"
       }
     },
@@ -248,10 +249,14 @@
           "settings": {
             "icon": "map",
             "heading": "Hitta hit",
-            "text": "<p>Kaffe Smak Rosteri<br/>Storgatan 55<br/>881 30 Sollefteå</p>",
+            "text": "<p>Kaffe Smak Rosteri<br/>Storgatan 55<br/>881 30 Sollefteå</p><p>Du hittar oss i samma lokal som Smak Mat &amp; Glass Café.</p>",
             "button_label": "Kontakt och hitta hit",
             "link": "shopify://pages/contact",
-            "border_color": "#7A5C3A"
+            "border_color": "#7A5C3A",
+            "map_embed_url": "https://www.google.com/maps?q=Storgatan%2055%2C%20881%2030%20Sollefte%C3%A5&output=embed",
+            "map_title": "Karta: Kaffe Smak Rosteri, Storgatan 55, 881 30 Sollefteå",
+            "map_link_label": "Öppna i Google Maps",
+            "map_link_url": "https://www.google.com/maps/search/?api=1&query=Storgatan+55%2C+881+30+Sollefte%C3%A5"
           }
         },
         "k_fragor": {

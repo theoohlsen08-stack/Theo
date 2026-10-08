@@ -1,19 +1,37 @@
 {%- comment -%}
   KaffeSmak – kontaktkort (referensens två inramade kort före sidfoten):
   rubrik i rött, text och grön knapp. Kort utan rubrik döljs.
+  Kundändring 2026-10-08: ett kort kan visa en inbäddad Google Maps-karta (fältet Inbäddningslänk för karta)
+  och en extra länk, till exempel "Öppna i Google Maps". Kort med karta blir bredare.
 {%- endcomment -%}
 
 
 {%- capture cards -%}
   {%- for block in section.blocks -%}
     {%- if block.settings.heading != blank -%}
-      <li class="ks-contact-card" style="--ks-card-border: {{ block.settings.border_color }};" {{ block.shopify_attributes }}>
+      <li class="ks-contact-card{% if block.settings.map_embed_url != blank %} ks-contact-card--map{% endif %}" style="--ks-card-border: {{ block.settings.border_color }};" {{ block.shopify_attributes }}>
         {%- if block.settings.icon != 'none' -%}
           <span class="ks-contact-card__icon">{% render 'ks-icon', icon: block.settings.icon, size: 34 %}</span>
         {%- endif -%}
         <h2 class="ks-contact-card__heading">{{ block.settings.heading }}</h2>
         {%- if block.settings.text != blank -%}
           <div class="ks-contact-card__text">{{ block.settings.text }}</div>
+        {%- endif -%}
+        {%- if block.settings.map_embed_url != blank -%}
+          <iframe
+            class="ks-contact-card__map"
+            src="{{ block.settings.map_embed_url }}"
+            title="{{ block.settings.map_title | default: 'Karta' | escape }}"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        {%- endif -%}
+        {%- if block.settings.map_link_label != blank and block.settings.map_link_url != blank -%}
+          <a class="ks-contact-card__map-link" href="{{ block.settings.map_link_url }}" target="_blank" rel="noopener">
+            {{- block.settings.map_link_label | escape -}}
+            <span class="ks-visually-hidden"> (öppnas i ny flik)</span>
+          </a>
         {%- endif -%}
         {%- assign new_tab = false -%}
         {%- if block.settings.link contains 'http' -%}{%- assign new_tab = true -%}{%- endif -%}
@@ -65,7 +83,12 @@
         { "type": "richtext", "id": "text", "label": "Text" },
         { "type": "text", "id": "button_label", "label": "Knapptext" },
         { "type": "url", "id": "link", "label": "Knapplänk" },
-        { "type": "color", "id": "border_color", "label": "Ramfärg", "default": "#7A5C3A" }
+        { "type": "color", "id": "border_color", "label": "Ramfärg", "default": "#7A5C3A" },
+        { "type": "header", "content": "Karta" },
+        { "type": "text", "id": "map_embed_url", "label": "Inbäddningslänk för karta", "info": "src-adressen från Google Maps inbäddningskod. Tomt fält visar ingen karta." },
+        { "type": "text", "id": "map_title", "label": "Kartans titel för skärmläsare" },
+        { "type": "text", "id": "map_link_label", "label": "Text på kartlänken", "default": "Öppna i Google Maps" },
+        { "type": "url", "id": "map_link_url", "label": "Kartlänk" }
       ]
     }
   ],

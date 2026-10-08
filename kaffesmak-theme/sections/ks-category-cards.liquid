@@ -1,6 +1,9 @@
 {%- comment -%}
   KaffeSmak – kategorikort (referensens "Hur kan vi hjälpa dig"-rad):
-  breda bildkort med röd ram och en grön knapp på bilden.
+  bildkort med röd ram. Kundändring 2026-10-08: rymliga kort med bildyta 4:3 där hela produkten syns
+  (object-fit: contain med luft runt motivet) och den gröna knappen i en egen nederdel nere till höger,
+  så att den aldrig täcker bilden. Tre kolumner på dator, två på surfplatta, en på mobil.
+  Bilden väljs i första hand i kortets bildfält, sedan från kortets bildprodukt, sist kategorins bild.
   Ett kort som pekar på en kategori utan produkter döljs automatiskt (kan stängas av per kort),
   och hela sektionen döljs när inget kort har innehåll.
 {%- endcomment -%}
@@ -22,6 +25,9 @@
         endcapture
       endif
       assign img = block.settings.image
+      if img == blank and block.settings.image_product != blank
+        assign img = block.settings.image_product.featured_image
+      endif
       if img == blank and c != blank
         assign img = c.featured_image
       endif
@@ -44,19 +50,25 @@
     -%}
     {%- unless hidden -%}
       <li class="ks-cat-card{% if img == blank %} ks-cat-card--no-image{% endif %}" {{ block.shopify_attributes }}>
-        {%- if img != blank -%}
-          {{
-            img
-            | image_url: width: 900
-            | image_tag:
-              widths: '420, 640, 900',
-              sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
-              alt: '',
-              loading: 'lazy',
-              class: 'ks-cat-card__img'
-          }}
-        {%- endif -%}
-        {% render 'ks-button', label: label, url: url, class: 'ks-cat-card__button' %}
+        <a class="ks-cat-card__media" href="{{ url }}" tabindex="-1" aria-hidden="true">
+          {%- if img != blank -%}
+            {{
+              img
+              | image_url: width: 900
+              | image_tag:
+                widths: '420, 640, 900',
+                sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                alt: '',
+                loading: 'lazy',
+                class: 'ks-cat-card__img'
+            }}
+          {%- else -%}
+            <span class="ks-cat-card__icon">{% render 'ks-icon', icon: 'cup', size: 64 %}</span>
+          {%- endif -%}
+        </a>
+        <div class="ks-cat-card__footer">
+          {% render 'ks-button', label: label, url: url, class: 'ks-cat-card__button' %}
+        </div>
       </li>
     {%- endunless -%}
   {%- endfor -%}
@@ -64,7 +76,7 @@
 
 {%- if cards != blank -%}
   {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
-  <section class="ks-section ks-cat" style="--ks-card-height: {{ section.settings.card_height }}px; --ks-card-height-mobile: {{ section.settings.card_height_mobile }}px;">
+  <section class="ks-section ks-cat">
     <div class="ks-container">
       {%- if section.settings.heading != blank -%}
         <h2 class="ks-section__heading ks-section__heading--red">{{ section.settings.heading }}</h2>
@@ -89,8 +101,8 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Rubrik", "default": "Hitta rätt i vårt sortiment" },
     { "type": "richtext", "id": "text", "label": "Text" },
-    { "type": "range", "id": "card_height", "label": "Kortens höjd, dator", "min": 80, "max": 320, "step": 10, "unit": "px", "default": 100 },
-    { "type": "range", "id": "card_height_mobile", "label": "Kortens höjd, mobil", "min": 80, "max": 240, "step": 10, "unit": "px", "default": 100 }
+    { "type": "range", "id": "card_height", "label": "Kortens höjd, dator (används inte längre)", "info": "Kundändring 2026-10-08: bildytan har formatet 4:3.", "min": 80, "max": 320, "step": 10, "unit": "px", "default": 100 },
+    { "type": "range", "id": "card_height_mobile", "label": "Kortens höjd, mobil (används inte längre)", "info": "Kundändring 2026-10-08: bildytan har formatet 4:3.", "min": 80, "max": 240, "step": 10, "unit": "px", "default": 100 }
   ],
   "blocks": [
     {
@@ -100,7 +112,8 @@
         { "type": "collection", "id": "collection", "label": "Kategori" },
         { "type": "text", "id": "label", "label": "Knapptext", "info": "Tomt fält visar kategorins namn." },
         { "type": "url", "id": "link", "label": "Länk", "info": "Tomt fält länkar till kategorin." },
-        { "type": "image_picker", "id": "image", "label": "Bild", "info": "Tomt fält använder kategorins bild. Utan bild visas ett brunt kort." },
+        { "type": "image_picker", "id": "image", "label": "Bild", "info": "Tomt fält använder bildproduktens bild, annars kategorins bild. Utan bild visas en brun bildyta med en kaffekopp." },
+        { "type": "product", "id": "image_product", "label": "Bildprodukt", "info": "Kortet visar produktens huvudbild när fältet Bild är tomt." },
         { "type": "checkbox", "id": "hide_when_empty", "label": "Dölj kortet när kategorin saknar produkter", "default": true }
       ]
     }

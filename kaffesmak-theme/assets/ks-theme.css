@@ -992,38 +992,54 @@
 }
 
 /* ---------- Kategorikort ---------- */
+/* Kundändring 2026-10-08: rymliga kort med bildyta 4:3 där hela produkten syns (contain med luft runt motivet)
+   och knappen i en egen nederdel nere till höger, så att den aldrig täcker bilden. */
 .ks-cat__list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px 32px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 32px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .ks-cat-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  border: 2px solid var(--ks-red-dark);
+  border-radius: 4px;
+  background: #ffffff;
+}
+.ks-cat-card__media {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  flex: 0 1 calc((100% - 64px) / 3);
-  height: var(--ks-card-height, 100px);
-  overflow: hidden;
-  border: 2px solid var(--ks-red-dark);
-  border-radius: 4px;
-  background: var(--ks-brown);
+  aspect-ratio: 4 / 3;
+  background: #ffffff;
 }
 .ks-cat-card__img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  inset: 16px;
+  width: calc(100% - 32px);
+  height: calc(100% - 32px);
+  object-fit: contain;
+}
+.ks-cat-card--no-image .ks-cat-card__media {
+  background: var(--ks-brown);
+  color: #ffffff;
+}
+.ks-cat-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 14px 14px;
+  border-top: 1px solid #e5e0db;
+  background: #f7f4f1;
 }
 .ks-cat-card__button {
-  position: relative;
-  z-index: 1;
+  max-width: 100%;
 }
 
 /* ---------- Karusell ---------- */
@@ -1422,6 +1438,32 @@
   color: var(--ks-red-dark);
   text-decoration: underline;
 }
+/* Kundändring 2026-10-08: inbäddad Google Maps-karta i kortet "Hitta hit". */
+.ks-contact-card--map {
+  flex-basis: 560px;
+}
+.ks-contact-card--map .ks-contact-card__text {
+  margin-block-end: 20px;
+}
+.ks-contact-card__map {
+  display: block;
+  width: 100%;
+  height: 300px;
+  margin-block-end: 14px;
+  border: 0;
+  border-radius: 4px;
+  background: #e5e0db;
+}
+.ks-contact-card__text p + p {
+  margin-block-start: 10px;
+}
+.ks-contact-card__map-link {
+  margin-block-end: 24px;
+  color: var(--ks-red-dark);
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: underline;
+}
 
 /* ---------- Sidfot ---------- */
 .ks-footer {
@@ -1557,8 +1599,9 @@
   .ks-section__heading {
     font-size: 32px;
   }
-  .ks-cat-card {
-    flex-basis: calc((100% - 32px) / 2);
+  .ks-cat__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
   }
   /* min-width: 0 (etapp 5): med 190px rymdes inte fyra kort i 750–808px (t.ex. iPad 768), så det fjärde kortets knapp klipptes av spåret. */
   .ks-product-card {
@@ -1603,9 +1646,8 @@
   .ks-cat__list {
     gap: 16px;
   }
-  .ks-cat-card {
-    flex-basis: 100%;
-    height: var(--ks-card-height-mobile, 96px);
+  .ks-cat__list {
+    grid-template-columns: minmax(0, 1fr);
   }
   .ks-product-card {
     flex-basis: 50%;
@@ -1654,6 +1696,9 @@
   }
   .ks-contact-card__text {
     font-size: 18px;
+  }
+  .ks-contact-card__map {
+    height: 260px;
   }
   .ks-footer__top {
     grid-template-columns: 1fr;
@@ -1974,6 +2019,22 @@ button.ks-button {
   margin-block-start: 20px;
   border: 0;
 }
+.ks-contact-page__card--map {
+  grid-column: 1 / -1;
+}
+.ks-contact-page__card--map .ks-contact-page__card-text {
+  align-self: center;
+  text-align: center;
+}
+.ks-contact-page__card--map .ks-contact-page__map {
+  height: 380px;
+}
+.ks-contact-page__map {
+  background: #d9d2ca;
+}
+.ks-contact-page__card--map .ks-contact-page__card-text p + p {
+  margin-block-start: 8px;
+}
 .ks-contact-page__card .ks-button {
   margin-block-start: 24px;
 }
@@ -2084,6 +2145,9 @@ button.ks-button {
   }
   .ks-contact-page__card {
     padding: 30px 20px 34px;
+  }
+  .ks-contact-page__card--map .ks-contact-page__map {
+    height: 300px;
   }
   .ks-contact-page__card-heading {
     font-size: 30px;

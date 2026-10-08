@@ -242,7 +242,7 @@
             ></iframe>
           {%- endif -%}
           {%- if s.directions_url != blank -%}
-            {% render 'ks-button', label: 'Vägbeskrivning', url: s.directions_url, new_tab: true %}
+            {% render 'ks-button', label: s.directions_label, url: s.directions_url, new_tab: true %}
           {%- endif -%}
         </li>
       {%- endif -%}
@@ -280,6 +280,7 @@
     { "type": "text", "id": "map_heading", "label": "Rubrik", "default": "Hitta hit" },
     { "type": "richtext", "id": "directions_text", "label": "Vägbeskrivning", "info": "Tomt fält visar adressen." },
     { "type": "url", "id": "directions_url", "label": "Länk till vägbeskrivning", "info": "Till exempel länken till företagets verifierade Google-profil." },
+    { "type": "text", "id": "directions_label", "label": "Knapptext, vägbeskrivning", "default": "Öppna i Google Maps" },
     { "type": "text", "id": "map_embed_url", "label": "Inbäddningslänk för karta", "info": "Klistra in src-adressen från Google Maps inbäddningskod för rätt verksamhet. Tomt fält visar ingen karta." }
   ],
   "presets": [{ "name": "KaffeSmak kontaktsida" }]
