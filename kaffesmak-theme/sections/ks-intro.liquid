@@ -1,12 +1,13 @@
 {%- comment -%}
   KaffeSmak – beige introduktion (Monteriva-referensens första innehållssektion):
   brun ikonruta, stor brun rubrik och en smalare textkolumn till höger.
+  2026-10-09: valfritt porträtt (kundens eget foto) bredvid texten. Utan vald bild visas ingen bildyta.
 {%- endcomment -%}
 
 {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
 
 <section
-  class="ks-intro"
+  class="ks-intro{% if section.settings.portrait != blank %} ks-intro--portrait{% endif %}"
   style="--ks-intro-bg: {{ section.settings.background }}; --ks-intro-heading: {{ section.settings.heading_color }}; --ks-intro-icon-bg: {{ section.settings.icon_background }};"
 >
   <div class="ks-intro__grid">
@@ -43,6 +44,20 @@
         </div>
       {%- endif -%}
     </div>
+    {%- if section.settings.portrait != blank -%}
+      <figure class="ks-intro__portrait">
+        {{
+          section.settings.portrait
+          | image_url: width: 600
+          | image_tag:
+            widths: '240, 360, 480, 600',
+            sizes: '(min-width: 990px) 220px, 260px',
+            alt: section.settings.portrait_alt,
+            loading: 'lazy',
+            class: 'ks-intro__portrait-img'
+        }}
+      </figure>
+    {%- endif -%}
   </div>
 </section>
 
@@ -72,6 +87,9 @@
     },
     { "type": "checkbox", "id": "show_icon", "label": "Visa ikon", "default": true },
     { "type": "image_picker", "id": "icon_image", "label": "Egen ikon (valfri)", "info": "Utan egen bild visas en vit kaffekopp." },
+    { "type": "header", "content": "Porträtt" },
+    { "type": "image_picker", "id": "portrait", "label": "Porträtt bredvid texten", "info": "Bara kundens eget foto. Utan bild visas ingen bildyta." },
+    { "type": "text", "id": "portrait_alt", "label": "Alt-text för porträttet", "info": "Beskriv vem som syns, t.ex. namn och roll, med kundens godkännande." },
     { "type": "header", "content": "Valfria knappar" },
     { "type": "text", "id": "button_label", "label": "Knapp 1, text" },
     { "type": "url", "id": "button_link", "label": "Knapp 1, länk" },

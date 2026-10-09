@@ -423,6 +423,14 @@
 .ks-nav__item--current > .ks-nav__top {
   background: var(--ks-red-dark);
 }
+/* 2026-10-09: fler menypunkter (Kaffevärlden, Smak Mat & Glass Café och senare Te) ryms på en rad även på mindre datorskärmar. */
+@media screen and (min-width: 990px) and (max-width: 1279px) {
+  .ks-nav__top {
+    gap: 6px;
+    padding: 0 9px;
+    font-size: 19px;
+  }
+}
 .ks-nav__top:focus-visible {
   outline: 2px solid #ffffff;
   outline-offset: -4px;
@@ -835,6 +843,26 @@
   gap: 12px;
   margin-top: 16px;
 }
+/* 2026-10-09: valfritt porträtt bredvid texten (bara när en bild är vald). */
+.ks-intro--portrait .ks-intro__grid {
+  grid-template-columns: 76px minmax(0, 1.3fr) minmax(0, 1fr) 190px;
+  column-gap: 36px;
+}
+.ks-intro--portrait .ks-intro__heading {
+  padding-inline-end: 0;
+  font-size: 42px;
+}
+.ks-intro__portrait {
+  margin: 0;
+}
+.ks-intro__portrait-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 4px;
+}
 
 @media screen and (max-width: 989px) {
   .ks-intro__grid {
@@ -856,6 +884,13 @@
   }
   .ks-intro__text {
     grid-column: 1 / -1;
+  }
+  .ks-intro--portrait .ks-intro__grid {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+  .ks-intro__portrait {
+    grid-column: 1 / -1;
+    max-width: 260px;
   }
 }
 
