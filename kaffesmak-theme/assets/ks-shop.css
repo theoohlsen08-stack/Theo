@@ -215,6 +215,10 @@ button.ks-button:disabled {
 .ks-stock--out {
   color: #555555;
 }
+/* Beställningsvara (custom.leveransbesked, försäljning vid slut i lager på): brun, kontrast 6,3:1 mot vitt. */
+.ks-stock--backorder {
+  color: #7a4f00;
+}
 
 /* ---------- Produktrutnät och produktkort (rutnätsvarianten) ---------- */
 .ks-product-grid {

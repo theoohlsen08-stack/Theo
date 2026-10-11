@@ -12,7 +12,9 @@
   Variantdata (pris, jämförpris, artikelnummer, lager, tillgänglighet och för offertprodukter offertadressen med
   variantens val) bäddas in som JSON för ks-product.js.
   Lager: "I lager" bara när varianten kan köpas och lagersaldot är över 0. En variant som säljs vidare vid
-  slutsålt lager (inventory_policy continue) med saldo 0 får ingen lagerrad.
+  slutsålt lager (inventory_policy continue) med saldo 0 får ingen lagerrad, utom när produkten har ett
+  leveransbesked (metafältet custom.leveransbesked, t.ex. "Beställningsvara. Beräknas åter i lager om cirka tre
+  veckor."): då visas det beskedet som lagerrad (beställningsvara, 2026-10-11).
   Utan JavaScript går slutsålda varianter och varianter utan pris inte att välja i köpformuläret (disabled).
 {%- endcomment -%}
 {%- liquid
@@ -26,12 +28,16 @@
     assign v_price_ok = true
   endif
 
+  assign backorder_text = product.metafields.custom.leveransbesked.value | default: '' | strip
+
   assign v_stock = ''
   if stock_on and variant.inventory_management == 'shopify' and v_price_ok
     if variant.available == false
       assign v_stock = 'out'
     elsif variant.inventory_quantity > 0
       assign v_stock = 'in'
+    elsif backorder_text != ''
+      assign v_stock = 'backorder'
     endif
   endif
 
@@ -52,6 +58,8 @@
           assign vs = 'out'
         elsif v.inventory_quantity > 0
           assign vs = 'in'
+        elsif backorder_text != ''
+          assign vs = 'backorder'
         endif
       endif
       assign v_media = ''
@@ -74,6 +82,7 @@
       "unitPriceHtml": {{ v_unit_html | strip | json }},
       "sku": {{ v.sku | default: '' | json }},
       "stock": {{ vs | json }},
+      "stockText": {% if vs == 'backorder' %}{{ backorder_text | json }}{% else %}""{% endif %},
       "quoteUrl": {{ v_quote | strip | json }},
       "mediaId": {{ v_media | json }}
     }{%- unless forloop.last -%},{%- endunless -%}
@@ -118,8 +127,8 @@
     <div class="ks-product__row" data-ks-stock-row{% if v_stock == '' %} hidden{% endif %}>
       <span class="ks-product__label">Lager</span>
       <div class="ks-product__value">
-        <span class="ks-stock {% if v_stock == 'in' %}ks-stock--in{% else %}ks-stock--out{% endif %}" data-ks-stock>
-          {%- if v_stock == 'in' -%}I lager{%- elsif v_stock == 'out' -%}Slut i lager{%- endif -%}
+        <span class="ks-stock {% if v_stock == 'in' %}ks-stock--in{% elsif v_stock == 'backorder' %}ks-stock--backorder{% else %}ks-stock--out{% endif %}" data-ks-stock>
+          {%- if v_stock == 'in' -%}I lager{%- elsif v_stock == 'out' -%}Slut i lager{%- elsif v_stock == 'backorder' -%}{{ backorder_text | escape }}{%- endif -%}
         </span>
       </div>
     </div>

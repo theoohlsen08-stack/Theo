@@ -179,9 +179,10 @@
 
       if (stockRow && stock) {
         stockRow.hidden = !v.stock;
-        stock.textContent = v.stock === 'in' ? 'I lager' : v.stock === 'out' ? 'Slut i lager' : '';
+        stock.textContent = v.stock === 'in' ? 'I lager' : v.stock === 'out' ? 'Slut i lager' : v.stock === 'backorder' ? v.stockText || '' : '';
         stock.classList.toggle('ks-stock--in', v.stock === 'in');
-        stock.classList.toggle('ks-stock--out', v.stock !== 'in');
+        stock.classList.toggle('ks-stock--backorder', v.stock === 'backorder');
+        stock.classList.toggle('ks-stock--out', v.stock !== 'in' && v.stock !== 'backorder');
       }
 
       if (form) {

@@ -42,7 +42,9 @@
   endunless
 
   # "I lager" bara när det spårade saldot är större än 0. En variant med lagerpolicyn "continue" (fortsätt sälja)
-  # är köpbar även med saldo 0 eller lägre; då visas ingen lagerrad i stället för ett påhittat "I lager".
+  # är köpbar även med saldo 0 eller lägre; då visas ingen lagerrad i stället för ett påhittat "I lager",
+  # utom när produkten har ett leveransbesked (custom.leveransbesked): då visas "Beställningsvara".
+  assign ks_backorder = product.metafields.custom.leveransbesked.value | default: '' | strip
   assign ks_stock = ''
   unless show_stock == false or ks_quote
     if variant.inventory_management == 'shopify' and product.price > 0
@@ -50,6 +52,8 @@
         assign ks_stock = 'in'
       elsif variant.available == false
         assign ks_stock = 'out'
+      elsif ks_backorder != ''
+        assign ks_stock = 'backorder'
       endif
     endif
   endunless
@@ -84,6 +88,8 @@
         <span class="ks-product-card__stock ks-stock ks-stock--in">I lager</span>
       {%- elsif ks_stock == 'out' -%}
         <span class="ks-product-card__stock ks-stock ks-stock--out">Slut i lager</span>
+      {%- elsif ks_stock == 'backorder' -%}
+        <span class="ks-product-card__stock ks-stock ks-stock--backorder">Beställningsvara</span>
       {%- endif -%}
     </p>
   {%- endif -%}
