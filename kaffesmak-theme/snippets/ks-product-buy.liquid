@@ -16,6 +16,10 @@
   leveransbesked (metafältet custom.leveransbesked, t.ex. "Beställningsvara. Beräknas åter i lager om cirka tre
   veckor."): då visas det beskedet som lagerrad (beställningsvara, 2026-10-11).
   Utan JavaScript går slutsålda varianter och varianter utan pris inte att välja i köpformuläret (disabled).
+  Gemensamt malet kaffe (2026-10-11):
+  - Varianter med metafältet custom.dold_variant = true visas inte i variantvalet (de har lager 0 och kan inte köpas).
+  - En variant med custom.malningsval (lista, t.ex. Brygg, Kokt, Mockabryggare) får raden "Malning": ett obligatoriskt
+    val som skickas med som radegenskapen "Malning" (properties[Malning]) och syns i varukorgen och ordern.
 {%- endcomment -%}
 {%- liquid
   assign multi = true
@@ -46,11 +50,23 @@
     assign show_form = true
   endif
   assign quote_url_attr = quote_url | escape
+
+  assign grind_values = ''
+  for v in product.variants
+    if v.metafields.custom.malningsval.value != blank and grind_values == ''
+      assign grind_values = v.metafields.custom.malningsval.value
+    endif
+  endfor
+  assign v_grinds = variant.metafields.custom.malningsval.value
 -%}
 
 {%- capture variants_json -%}
   [
+  {%- assign ks_json_first = true -%}
   {%- for v in product.variants -%}
+    {%- if v.metafields.custom.dold_variant.value == true and v.id != variant.id -%}{%- continue -%}{%- endif -%}
+    {%- unless ks_json_first -%},{%- endunless -%}
+    {%- assign ks_json_first = false -%}
     {%- liquid
       assign vs = ''
       if stock_on and v.inventory_management == 'shopify' and v.price > 0
@@ -84,8 +100,9 @@
       "stock": {{ vs | json }},
       "stockText": {% if vs == 'backorder' %}{{ backorder_text | json }}{% else %}""{% endif %},
       "quoteUrl": {{ v_quote | strip | json }},
-      "mediaId": {{ v_media | json }}
-    }{%- unless forloop.last -%},{%- endunless -%}
+      "mediaId": {{ v_media | json }},
+      "grinds": {{ v.metafields.custom.malningsval.value | default: '' | json }}
+    }
   {%- endfor -%}
   ]
 {%- endcapture -%}
@@ -151,6 +168,7 @@
             "Slut i lager" med inaktiv köpknapp. Varianter utan pris förblir inaktiva.
           {%- endcomment -%}
           {%- for v in product.variants -%}
+            {%- if v.metafields.custom.dold_variant.value == true and v.id != variant.id -%}{%- continue -%}{%- endif -%}
             <option value="{{ v.id }}"{% if v.id == variant.id %} selected="selected"{% endif %}{% if show_form %}{% if v.available == false or v.price <= 0 %} disabled{% endif %}{% endif %}>
               {{- v.title | escape -}}
               {%- if show_form and v.price <= 0 %} – inget pris{% elsif stock_on and v.available == false and v.inventory_management == 'shopify' and v.price > 0 %} – slut i lager{% endif -%}
@@ -161,6 +179,21 @@
     </div>
   {%- elsif show_form -%}
     <input type="hidden" name="id" value="{{ variant.id }}">
+  {%- endif -%}
+
+  {%- comment -%} Malning (gemensamt malet kaffe, custom.malningsval) {%- endcomment -%}
+  {%- if grind_values != '' and show_form -%}
+    <div class="ks-product__row ks-product__row--grind" data-ks-grind-row{% if v_grinds == blank %} hidden{% endif %}>
+      <label class="ks-product__label" for="KsGrind-{{ uid }}">Malning</label>
+      <div class="ks-product__value">
+        <select id="KsGrind-{{ uid }}" class="ks-control ks-product__select" name="properties[Malning]" form="{{ form_id }}" required data-ks-grind-select{% if v_grinds == blank %} disabled{% endif %}>
+          <option value="">Välj malning</option>
+          {%- for g in grind_values -%}
+            <option value="{{ g | escape }}">{{ g | escape }}</option>
+          {%- endfor -%}
+        </select>
+      </div>
+    </div>
   {%- endif -%}
 
   {%- comment -%} Antal och Köp {%- endcomment -%}

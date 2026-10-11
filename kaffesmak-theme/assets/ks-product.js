@@ -154,6 +154,8 @@
     var quoteLinks = root.querySelectorAll('a.ks-product__quote-button, a.ks-product__quote-link');
     var review = !!root.querySelector('.ks-product__review-note');
     var buyText = root.getAttribute('data-buy-label') || 'Köp';
+    var grindRow = root.querySelector('[data-ks-grind-row]');
+    var grindSelect = root.querySelector('[data-ks-grind-select]');
 
     function update() {
       var v = byId[select.value];
@@ -183,6 +185,13 @@
         stock.classList.toggle('ks-stock--in', v.stock === 'in');
         stock.classList.toggle('ks-stock--backorder', v.stock === 'backorder');
         stock.classList.toggle('ks-stock--out', v.stock !== 'in' && v.stock !== 'backorder');
+      }
+
+      // Gemensamt malet kaffe: malningsvalet visas och krävs bara för varianten med custom.malningsval.
+      if (grindRow && grindSelect) {
+        var needsGrind = !!(v.grinds && v.grinds.length);
+        grindRow.hidden = !needsGrind;
+        grindSelect.disabled = !needsGrind;
       }
 
       if (form) {
