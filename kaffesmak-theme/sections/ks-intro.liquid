@@ -2,6 +2,7 @@
   KaffeSmak – beige introduktion (Monteriva-referensens första innehållssektion):
   brun ikonruta, stor brun rubrik och en smalare textkolumn till höger.
   2026-10-09: valfritt porträtt (kundens eget foto) bredvid texten. Utan vald bild visas ingen bildyta.
+  2026-10-12: porträttet står till höger om ikon, rubrik och text även på surfplatta och mobil (kundens exempelbild).
 {%- endcomment -%}
 
 {{ 'ks-theme.css' | asset_url | stylesheet_tag }}
@@ -51,7 +52,7 @@
           | image_url: width: 600
           | image_tag:
             widths: '240, 360, 480, 600',
-            sizes: '(min-width: 990px) 220px, 260px',
+            sizes: '(min-width: 990px) 220px, (min-width: 750px) 220px, 38vw',
             alt: section.settings.portrait_alt,
             loading: 'lazy',
             class: 'ks-intro__portrait-img'

@@ -885,12 +885,21 @@
   .ks-intro__text {
     grid-column: 1 / -1;
   }
+  /* 2026-10-12: kundens exempelbild – porträttet till höger, ikon, rubrik och text till vänster. */
   .ks-intro--portrait .ks-intro__grid {
-    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 220px);
+    column-gap: 28px;
   }
-  .ks-intro__portrait {
-    grid-column: 1 / -1;
-    max-width: 260px;
+  .ks-intro--portrait .ks-intro__icon,
+  .ks-intro--portrait .ks-intro__heading,
+  .ks-intro--portrait .ks-intro__text {
+    grid-column: 1;
+  }
+  .ks-intro--portrait .ks-intro__portrait {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    width: 100%;
   }
 }
 
@@ -908,6 +917,26 @@
   }
   .ks-intro__buttons .ks-button {
     flex: 1 1 auto;
+  }
+  .ks-intro--portrait .ks-intro__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 38%);
+    column-gap: 14px;
+    row-gap: 12px;
+  }
+  .ks-intro--portrait .ks-intro__heading {
+    font-size: 24px;
+  }
+  .ks-intro--portrait .ks-intro__text {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .ks-intro--portrait .ks-intro__icon {
+    width: 48px;
+    height: 46px;
+  }
+  .ks-intro--portrait .ks-intro__icon svg {
+    width: 28px;
+    height: 28px;
   }
 }
 

@@ -2295,6 +2295,12 @@
         "info": "Kategorier i menyn visas med menyns namn (t.ex. Mokabryggare) i rubriker, brödsmulor och sidtitlar. Kategorins namn och adress i Shopify ändras inte."
       },
       {
+        "type": "text",
+        "id": "ks_hidden_media",
+        "label": "Dolda produktbilder (media-id)",
+        "info": "Kommaseparerade media-id för bilder som inte ska visas i produktgalleriet. Bilden finns kvar på produkten i Shopify."
+      },
+      {
         "type": "header",
         "content": "Försäljning via offert"
       },

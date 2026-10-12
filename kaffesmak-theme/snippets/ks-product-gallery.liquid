@@ -8,7 +8,25 @@
   använder den synliga länken "Klicka för förstoring" i stället.
 {%- endcomment -%}
 {%- liquid
-  assign images = product.media | where: 'media_type', 'image'
+  assign all_images = product.media | where: 'media_type', 'image'
+  comment
+    2026-10-12: bilder vars media-id står i temainställningen "Dolda produktbilder" visas inte.
+    Bilden ligger kvar på produkten i Shopify.
+  endcomment
+  assign hidden_media = settings.ks_hidden_media | default: '' | remove: ' ' | prepend: ',' | append: ','
+  if hidden_media == ',,'
+    assign images = all_images
+  else
+    assign images = all_images | where: 'media_type', 'none'
+    for m in all_images
+      assign m_key = ',' | append: m.id | append: ','
+      if hidden_media contains m_key
+        continue
+      endif
+      assign one = all_images | where: 'id', m.id
+      assign images = images | concat: one
+    endfor
+  endif
   assign image_count = images.size
   assign start_index = 0
   if variant.featured_media != blank
