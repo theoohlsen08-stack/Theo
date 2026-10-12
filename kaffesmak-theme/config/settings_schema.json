@@ -2298,6 +2298,7 @@
         "type": "text",
         "id": "ks_hidden_media",
         "label": "Dolda produktbilder (media-id)",
+        "default": "74189608354136",
         "info": "Kommaseparerade media-id för bilder som inte ska visas i produktgalleriet. Bilden finns kvar på produkten i Shopify."
       },
       {
