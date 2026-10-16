@@ -95,7 +95,7 @@
   {%- endif -%}
   {%- if product.price > 0 -%}
     <p class="ks-product-card__price">
-      {% render 'ks-price', price: product.price, from: product.price_varies %}
+      {% render 'ks-price', price: product.price, from: product.price_varies, compare_at: product.compare_at_price %}
     </p>
   {%- endif -%}
   {%- if ks_quote -%}

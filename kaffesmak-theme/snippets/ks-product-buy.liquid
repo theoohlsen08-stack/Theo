@@ -103,7 +103,7 @@
       endif
     -%}
     {%- capture v_quote -%}{%- if quote_enabled -%}{% render 'ks-quote-url', product: product, variant: v %}{%- endif -%}{%- endcapture -%}
-    {%- capture v_price_html -%}{%- if v.price > 0 -%}{% render 'ks-price', price: v.price, class: 'ks-product__price' %}{%- endif -%}{%- endcapture -%}
+    {%- capture v_price_html -%}{%- if v.price > 0 -%}{% render 'ks-price', price: v.price, compare_at: v.compare_at_price, class: 'ks-product__price' %}{%- endif -%}{%- endcapture -%}
     {%- capture v_unit_html -%}
       {%- if v.price > 0 and v.unit_price_measurement -%}
         Jämförpris {{ v.unit_price | money }}/{% if v.unit_price_measurement.reference_value != 1 %}{{ v.unit_price_measurement.reference_value }}{% endif %}{{ v.unit_price_measurement.reference_unit }}
@@ -139,7 +139,7 @@
     <div class="ks-product__value ks-product__price-wrap">
       <span data-ks-price>
         {%- if v_price_ok -%}
-          {% render 'ks-price', price: variant.price, class: 'ks-product__price' %}
+          {% render 'ks-price', price: variant.price, compare_at: variant.compare_at_price, class: 'ks-product__price' %}
         {%- elsif review -%}
           <span class="ks-product__price-missing">Inget pris angivet ännu</span>
         {%- endif -%}
