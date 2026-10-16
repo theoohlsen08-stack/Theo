@@ -1,3 +1,22 @@
+{% doc %}
+  Renders the product purchase controls and its promotion.
+  @param {product} product - The current product.
+  @param {variant} variant - The selected variant.
+  @param {string} offer_text - Promotion text for the product type.
+  @param {string} uid - Unique component identifier.
+  @param {string} form_id - Product form identifier.
+  @param {boolean} review - Theme editor preview state.
+  @param {boolean} buy_enabled - Purchase setting.
+  @param {boolean} buy_active - Whether purchasing is available.
+  @param {boolean} quote_enabled - Whether quotation is available.
+  @param {boolean} sellable - Whether the product has a purchasable price.
+  @param {boolean} stock_on - Whether inventory is shown.
+  @param {string} option_label - Variant selection label.
+  @param {string} quote_url - Quotation request URL.
+  @param {string} quote_label - Quotation button label.
+  @param {string} buy_label - Purchase button label.
+  @param {boolean} taxes_included - Whether prices include tax.
+{% enddoc %}
 {%- comment -%}
   KaffeSmak – produktsidans köpruta (rader med etikett och värde som referensen):
   Pris, Lager, variantval, Antal och knapparna Köp / Begär offert.
@@ -242,6 +261,7 @@
         <a href="{{ quote_url_attr }}" class="ks-link ks-product__quote-link"><span aria-hidden="true">› </span>{{ quote_label }}</a>
       {%- endif -%}
     </div>
+    {{ offer }}
   {%- elsif review -%}
     <div class="ks-product__buy">
       {% render 'ks-button', label: buy_label, tag: 'button', button_type: 'button', class: 'ks-product__buy-button', disabled: true %}
@@ -270,3 +290,4 @@
   <script type="application/json" data-ks-variants>{{ variants_json | strip }}</script>
   <p class="ks-visually-hidden" aria-live="polite" data-ks-live></p>
 </div>
+
