@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "ks_hero": {
@@ -51,7 +60,9 @@
         "background": "#E2D8C8",
         "heading_color": "#653A2B",
         "icon_background": "#653A2B",
-        "heading_tag": "h1"
+        "heading_tag": "h1",
+        "portrait": "shopify://shop_images/kaffesmak-adam-rosteri-portratt-2026-10-13.png",
+        "portrait_alt": "Kaffe Smak Rosteris ägare vid kafferostaren"
       }
     },
     "ks_categories": {
@@ -125,8 +136,8 @@
         "c_kaffebar"
       ],
       "settings": {
-        "heading": "Hitta rätt i vårt sortiment",
-        "text": "<p>Kaffe, kaffemaskiner och accessoarer, och en kaffebar på Storgatan 55 i Sollefteå.</p>",
+        "heading": "Sugen på bättre kaffe? ☕",
+        "text": "<p>Vi guidar dig privat och företag till rätt utrustning och bönor – oavsett om du driver café, vill lyfta kontorsfikat eller söker premiumkaffe till hemmet.</p><p><strong>Café &amp; Restaurang</strong> – Professionella maskiner och bönor i toppklass.</p><p><strong>Företag &amp; Kontor</strong> – Smidiga kaffelösningar för piggare medarbetare.</p><p><strong>Hem &amp; Barista</strong> – Utrustning och specialkaffe för den perfekta koppen hemma.</p><p>Har du frågor? <a href=\"/pages/contact\">Kontakta oss</a>, vi hjälper dig hela vägen!</p>",
         "card_height": 100,
         "card_height_mobile": 100
       }
@@ -136,10 +147,10 @@
       "settings": {
         "collection": "morkt-kaffe",
         "heading": "Vårt kaffe",
-        "text": "",
+        "text": "<p><strong>Köp 4 påsar och få 1 gratis.</strong></p>",
         "button_label": "Se allt kaffe",
         "button_link": "shopify://collections/morkt-kaffe",
-        "limit": 12,
+        "limit": 14,
         "show_sku": true,
         "buy_label": "Visa produkt"
       }
@@ -169,7 +180,8 @@
         "show_sku": true,
         "buy_label": "Visa produkt",
         "button_label": "Se alla kaffemaskiner",
-        "button_link": "shopify://collections/kaffemaskiner"
+        "button_link": "shopify://collections/kaffemaskiner",
+        "text": "<p>Köp, hyr eller leasa din espressomaskin.</p>"
       }
     },
     "ks_knowledge": {
@@ -323,6 +335,19 @@
         "heading": "Så säger våra företags- och cafékunder",
         "background": "#E2D8C8"
       }
+    },
+    "ks_products_te": {
+      "type": "ks-product-row",
+      "settings": {
+        "collection": "te",
+        "heading": "Vårt te",
+        "text": "<p><strong>Köp 4 påsar och få 1 gratis.</strong></p>",
+        "button_label": "Se allt te",
+        "button_link": "shopify://collections/te",
+        "limit": 12,
+        "show_sku": true,
+        "buy_label": "Visa produkt"
+      }
     }
   },
   "order": [
@@ -332,6 +357,7 @@
     "ks_categories",
     "ks_guides",
     "ks_products_kaffe",
+    "ks_products_te",
     "ks_reviews",
     "ks_products_maskiner",
     "ks_knowledge",
